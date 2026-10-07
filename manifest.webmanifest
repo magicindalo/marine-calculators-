@@ -1,0 +1,18 @@
+{
+  "name": "Marine Load Demand Calculator",
+  "short_name": "Marine Load",
+  "description": "Marine AC, three-phase, DC, generator, inverter and battery load-demand calculator.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071c2b",
+  "theme_color": "#071c2b",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
