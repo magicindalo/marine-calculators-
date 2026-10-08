@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="app">
-<header><div><h1>Marine Propeller Calculator</h1><p>Wageningen B-series preliminary matching • diesel & electric</p></div><a class="btn" href="./index.html">Load calculator</a></header>
+<header><div><h1>Marine Propeller Calculator</h1><p>Wageningen B-series preliminary matching • diesel & electric</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><a class="btn" href="./">Home</a><a class="btn" href="./load.html">Load calculator</a></div></header>
 <div class="modebar"><button class="seg active" id="sizeTab" type="button">Size a propeller</button><button class="seg" id="checkTab" type="button">Check existing prop</button></div>
 
 <section class="section"><div class="head"><h2>Vessel details</h2><span>Improves the vessel-specific checks</span></div><div class="body">
@@ -69,6 +69,7 @@
 <div class="actions"><button class="btn primary" id="calculate" type="button">Calculate propeller</button><button class="btn" id="example" type="button">Load example</button></div>
 </div></section>
 
+<section class="section"><div class="head"><h2>Project & report</h2><span>Save • reopen • PDF</span></div><div class="body" id="projectTools"></div></section>
 <section id="resultsWrap" class="hidden">
 <div class="section"><div class="head"><h2>Vessel speed & resistance</h2><span id="speedConfidence">Preliminary estimate</span></div><div class="body">
 <div class="results" style="margin:0">
@@ -103,6 +104,7 @@
 </div></section>
 </div>
 <script src="./resistance.js"></script>
+<script src="./reports.js"></script>
 <script>
 (()=>{
 const $=id=>document.getElementById(id); let mode='size';
@@ -216,6 +218,117 @@ function calculate(){const x=getInputs();if((x.lwl||x.beam||x.draft||x.disp) && 
 function updateVesselSummary(){const x=getInputs(),V=x.speed*.514444,fn=x.lwl>0?V/Math.sqrt(9.80665*x.lwl):0,kwt=x.disp>0?x.totalPower/x.disp:0;$('cbOut').textContent=x.cb>0?fmt(x.cb,3):'—';$('fnOut').textContent=fn>0?fmt(fn,3):'—';$('kwtOut').textContent=kwt>0?fmt(kwt,2)+' kW/t':'—';$('confidenceOut').textContent=x.resistance>0?'Vessel matched':(x.cb>0?'Hull-informed':'Propeller match only');if($('hull').value==='auto'&&x.cb>0)$('wake').value=fmt(x.wake,3)}function setMode(m){mode=m;$('sizeTab').classList.toggle('active',m==='size');$('checkTab').classList.toggle('active',m==='check');$('maxDField').classList.toggle('hidden',m==='check');$('existingDField').classList.toggle('hidden',m!=='check');$('existingPField').classList.toggle('hidden',m!=='check');$('modeHint').textContent=m==='size'?'Find a starting diameter & pitch':'Analyse an existing diameter & pitch';$('calculate').textContent=m==='size'?'Calculate propeller':'Check propeller';$('heroLabel').textContent=m==='size'?'Practical starting size':'Existing propeller';$('resultsWrap').classList.add('hidden')}
 $('sizeTab').addEventListener('click',()=>setMode('size'));$('checkTab').addEventListener('click',()=>setMode('check'));$('calculate').addEventListener('click',calculate);$('hull').addEventListener('change',()=>{if($('hull').value!=='custom'&&$('hull').value!=='auto')$('wake').value=$('hull').value;updateVesselSummary()});$('blades').addEventListener('change',()=>{let z=n($('blades').value,3);$('ear').value=z<=3?.55:z===4?.65:.75});$('drive').addEventListener('change',()=>{$('powerHelp').textContent=$('drive').value==='electric'?'Use continuous mechanical motor output for continuous-duty sizing; set ratio 1.00 for direct drive.':'Use power available at the propeller shaft after transmission losses.';$('driveHelp').textContent=$('drive').value==='electric'?'Electric mode also shows a power-limited static-thrust estimate.':'Diesel / engine mode uses the same hydrodynamic shaft matching.'});$('example').addEventListener('click',()=>{if($('drive').value==='electric'){$('lwl').value=18;$('beam').value=3.2;$('draft').value=.75;$('disp').value=16;$('propCount').value=1;$('water').value=1000;$('resistance').value='';$('trialSpeed').value='';$('trialPower').value='';$('power').value=22;$('powerUnit').value='kw';$('rpm').value=1600;$('ratio').value=1;$('speed').value=4;$('hull').value='0.25';$('wake').value=.25;$('blades').value=3;$('ear').value=.55;$('maxD').value=18}else{$('lwl').value=18;$('beam').value=4.2;$('draft').value=1.1;$('disp').value=35;$('propCount').value=1;$('water').value=1025;$('resistance').value='';$('trialSpeed').value='';$('trialPower').value='';$('power').value=140;$('powerUnit').value='hp';$('rpm').value=2800;$('ratio').value=2.5;$('speed').value=8;$('hull').value='0.25';$('wake').value=.25;$('blades').value=4;$('ear').value=.65;$('maxD').value=26}updateVesselSummary();calculate()});
 ['lwl','beam','draft','disp','propCount','resistance','trialSpeed','trialPower','trialEta','speed','power','powerUnit','water'].forEach(id=>$(id).addEventListener('input',updateVesselSummary));setMode('size');updateVesselSummary();
+
+globalThis.MarineReports.init({
+ kind:"propeller",
+ suggestName:()=>($('vesselName').value.trim()||"Marine Propeller"),
+ getState:()=>({
+   mode,
+   fields:Object.fromEntries([...document.querySelectorAll("input[id],select[id]")].filter(e=>e.id).map(e=>[e.id,e.value]))
+ }),
+ setState:payload=>{
+   if(!payload||!payload.fields||typeof payload.fields!=="object")throw Error("Invalid propeller project");
+   for(const [id,value] of Object.entries(payload.fields)){
+     const el=$(id);
+     if(el&&(el.tagName==="INPUT"||el.tagName==="SELECT"))el.value=String(value);
+   }
+   setMode(payload.mode==="check"?"check":"size");
+   updateVesselSummary();
+   calculate();
+ },
+ report:()=>{
+   const x=getInputs();
+   if(!(x.power>0&&x.speed>0&&x.srpm>0))throw Error("Enter valid power, design speed and RPM first.");
+   if(x.cb>1.02)throw Error("Vessel displacement exceeds the volume implied by LWL, beam and draft.");
+   let p;
+   if(mode==="check"){
+     const diameter=n($('existingD').value,0)*.0254,pitch=n($('existingP').value,0)*.0254;
+     if(diameter<=0||pitch<=0)throw Error("Enter existing propeller diameter and pitch.");
+     p=performance(diameter,pitch/diameter,x);
+   } else p=optimize(x);
+   if(!p)throw Error("No valid B-series propeller match. Check speed, RPM and diameter.");
+   render(p,x);
+   const res=globalThis.MarineResistance?.estimate(x,p,performance);
+   const speed=res?.valid?res.base.vKn:NaN;
+   const f=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):"Not calculated";
+   const inch=v=>f(v/.0254,2)+" in";
+   const fmtPower=v=>f(v,1)+" kW";
+   const reportName=$('vesselName').value.trim()||"Marine propeller project";
+   const difference=(p.P-x.power)/x.power*100;
+   const hullsource=res?.hull?.source||"none";
+   const resultNote=$('speedCaution').textContent;
+   const pStatus=$('message').textContent;
+   return{
+     title:"Marine Propeller & Vessel Report",
+     subtitle:reportName+" / "+(mode==="size"?"Propeller selection":"Existing propeller verification"),
+     filename:reportName+"-propeller",
+     metrics:[
+       ["Propeller",f(p.D/.0254,1)+" x "+f(p.pitch/.0254,1)+" in"],
+       ["Predicted speed",Number.isFinite(speed)?f(speed,1)+" kn":"N/A"],
+       ["Shaft RPM",f(x.srpm,0)+" rpm"],
+       ["Shaft power",fmtPower(x.totalPower)]
+     ],
+     sections:[
+       {title:"Vessel particulars",rows:[
+         ["Vessel / reference",reportName],
+         ["Loaded displacement",x.disp?f(x.disp,2)+" tonnes":"Not supplied"],
+         ["Length at waterline",x.lwl?f(x.lwl,2)+" m":"Not supplied"],
+         ["Beam",x.beam?f(x.beam,2)+" m":"Not supplied"],
+         ["Loaded draft",x.draft?f(x.draft,2)+" m":"Not supplied"],
+         ["Block coefficient",x.cb?f(x.cb,3):"Not calculated"],
+         ["Number of propellers",String(x.propCount)],
+         ["Design / target speed",f(x.speed,2)+" knots"],
+         ["Water density",f(x.rho,0)+" kg/m3"]
+       ]},
+       {title:"Propulsion and selection inputs",rows:[
+         ["Drive",x.drive==="electric"?"Electric propulsion":"Diesel / engine"],
+         ["Total available shaft power",fmtPower(x.totalPower)],
+         ["Rated engine/motor speed",f(x.erpm,0)+" rpm"],
+         ["Transmission reduction",f(x.ratio,2)+":1"],
+         ["Design propeller shaft speed",f(x.srpm,0)+" rpm"],
+         ["Blades",String(x.z)],
+         ["Blade area ratio Ae/Ao",f(x.ear,2)],
+         ["Estimated effective wake fraction",f(x.wake,3)],
+         ["Assumed thrust deduction",f(x.t*100,0)+"%"],
+         ["Max propeller diameter",x.maxD>0?inch(x.maxD):"Not limited by input"]
+       ]},
+       {title:"Propeller hydrodynamic results",rows:[
+         ["Mode",mode==="size"?"Recommended preliminary size":"Existing propeller check"],
+         ["Calculated diameter",inch(p.D)+" ("+f(p.D*1000,0)+" mm)"],
+         ["Calculated pitch",inch(p.pitch)+" ("+f(p.pitch*1000,0)+" mm)"],
+         ["Practical rounded size",mode==="size"?(f(practical(p.D/.0254,x.round),2)+" x "+f(practical(p.pitch/.0254,x.round),2)+" in"):"Existing dimensions retained"],
+         ["Pitch to diameter ratio",f(p.pd,3)],
+         ["Power absorbed per propeller",fmtPower(p.P)],
+         ["Power absorption vs available",(difference>0?"+":"")+f(difference,1)+"%"],
+         ["Thrust per propeller",f(p.T/1000,3)+" kN"],
+         ["Shaft torque per propeller",f(p.Q,1)+" Nm"],
+         ["Open-water propeller efficiency",f(p.eta*100,1)+"%"],
+         ["Advance ratio J",f(p.J,3)],
+         ["Apparent slip",f(p.slip*100,1)+"%"],
+         ["Tip speed",f(p.tip,1)+" m/s"],
+         ["Estimated Reynolds number",p.Re?f(p.Re/1e6,2)+" million":"Not calculated"]
+       ]},
+       {title:"Vessel resistance and predicted speed",rows:[
+         ["Predicted calm-water speed",Number.isFinite(speed)?f(speed,2)+" knots":"Cannot resolve - review model"],
+         ["Predicted operating shaft RPM",res?.valid?f(res.base.rpm,0)+" rpm":"Not calculated"],
+         ["Predicted delivered power",res?.valid?fmtPower(res.base.powerKW):"Not calculated"],
+         ["Resistance at target speed",res?.hull?f(res.hull.target.resistanceN/1000,3)+" kN":"Not calculated"],
+         ["Indicative shaft power for target",res?.hull?fmtPower(res.estimatedShaftKW):"Not calculated"],
+         ["Resistance model",hullsource==="known-resistance"?"Anchored to provided resistance":hullsource==="sea-trial"?"Calibrated to trial speed/power":"Uncalibrated screening estimate"],
+         ["Sea-trial speed",x.trialSpeed?f(x.trialSpeed,2)+" knots":"Not supplied"],
+         ["Sea-trial delivered power",x.trialPower?fmtPower(x.trialPower):"Not supplied"]
+       ]},
+       {title:"Interpretation and limitations",paragraphs:[
+         pStatus,
+         resultNote,
+         "Wageningen B-series open-water polynomial; early-design wake estimate; wetted area and ITTC-1957 frictional correlation with non-standard heuristic residuary resistance. Uncalibrated speed is a preliminary screening estimate, not a validated Holtrop calculation.",
+         "Actual motor torque curve, gearbox efficiency, propeller aperture / tip clearance, blade area / cavitation and vessel resistance must be checked before specification. Air and water conditions, loading, shallow-water effects, fouling and appendages may change actual trials."
+       ]}
+     ]
+   };
+ }
+});
+
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
 </script>
