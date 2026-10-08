@@ -74,7 +74,7 @@ const formatPDF = report=>{
   });
   objects[root]="<< /Type /Catalog /Pages "+pagesIndex+" 0 R >>";
   objects[pagesIndex]="<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+kids.length+" >>";
-  const segments=["%PDF-1.4\n%MARINE\n"],offsets=[0],current=enc.encode(segments[0]).length;
+  const segments=["%PDF-1.4\n%MARINE\n"],offsets=[0];let current=enc.encode(segments[0]).length;
   for(let i=1;i<objects.length;i++){offsets[i]=current;const block=i+" 0 obj\n"+objects[i]+"\nendobj\n";segments.push(block);current+=enc.encode(block).length;}
   const startxref=current;
   const xref="xref\n0 "+objects.length+"\n0000000000 65535 f \n"+offsets.slice(1).map(n=>String(n).padStart(10,"0")+" 00000 n \n").join("")+"trailer\n<< /Size "+objects.length+" /Root "+root+" 0 R >>\nstartxref\n"+startxref+"\n%%EOF\n";
