@@ -1,5 +1,5 @@
-const CACHE='marine-calculators-v3';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./propeller.html','./propeller.webmanifest','./icon.svg'];
+const CACHE='marine-calculators-v4';
+const ASSETS=['./','./index.html','./manifest.webmanifest','./propeller.html','./resistance.js','./propeller.webmanifest','./icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
