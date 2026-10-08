@@ -33,7 +33,7 @@ dialog{width:min(94%,700px);border:1px solid var(--l);border-radius:18px;backgro
 <div class="card"><div class="lab">Connected load</div><div class="val" id="conn">0.00 kW</div></div>
 </div></div>
 <div class="toolbar"><button class="btn" id="preset">＋ Common load</button><button class="btn" id="export">Export</button><button class="btn" id="import">Import</button><input type="file" id="file" accept=".json,application/json" hidden></div>
-<div class="section"><div class="head"><h2>Project & report</h2><span>Save • reopen • PDF</span></div><div class="body" id="projectTools"></div></div><div class="section"><div class="head"><h2>Load schedule</h2><span>Saved on this device</span></div><div class="body" id="loads"></div></div>
+<div class="section"><div class="head"><h2>Project & report</h2><span>Save • reopen • PDF</span></div><div class="body"><label for="loadProjectName" style="display:block;font-size:12px;color:#a3bccb;margin:0 0 5px">Vessel / project name</label><input id="loadProjectName" placeholder="e.g. Yacht refit — electrical audit" style="display:block;width:100%;min-height:44px;background:#061c2a;color:#edf9ff;border:1px solid #1e4962;border-radius:9px;padding:10px;font-size:16px;margin-bottom:12px"><div id="projectTools"></div></div></div><div class="section"><div class="head"><h2>Load schedule</h2><span>Saved on this device</span></div><div class="body" id="loads"></div></div>
 <div class="add"><button class="btn primary" id="add">＋ Add load</button></div>
 <p class="note" style="text-align:center">Engineering aid only. Confirm nameplate data, diversity, cable protection and manufacturer starting-current requirements.</p>
 </div>
@@ -73,7 +73,7 @@ const presets=[
 {name:'Bow thruster',type:'DC',v:24,input:3000,mode:'W',pf:1,demand:10,hours:.1,surge:2,qty:1,startQty:1},
 {name:'3-phase motor',type:'AC3',v:400,input:4000,mode:'W',pf:.85,demand:100,hours:2,surge:5,qty:1,startQty:1}
 ];
-state.loads=(state.loads||[]).map(x=>({...blank(),...x,id:x.id||uid()}));
+state.name=state.name||'';state.loads=(state.loads||[]).map(x=>({...blank(),...x,id:x.id||uid()}));$('loadProjectName').value=state.name;$('loadProjectName').addEventListener('input',()=>{state.name=$('loadProjectName').value;save();});
 function calc(l){
  const q=clamp(l.qty,0,1000,1),v=clamp(l.v,.1,100000,230),x=clamp(l.input,0,1e9,0),pf=clamp(l.pf,.01,1,1),dem=clamp(l.demand,0,100,100)/100,h=clamp(l.hours,0,24,0),surge=clamp(l.surge,1,20,1),starts=clamp(l.startQty,0,q,1);
  let w,a,va;
@@ -119,11 +119,12 @@ $('import').onclick=()=>$('file').click();$('file').onchange=e=>{let f=e.target.
 // Report interface: calculations are taken from the live working schedule, not a cached PDF.
 globalThis.MarineReports.init({
  kind:"load",
- suggestName:()=> "Marine Electrical Load",
+ suggestName:()=> state.name||"Marine Electrical Load",
  getState:()=>JSON.parse(JSON.stringify(state)),
  setState:payload=>{
    if(!payload||!payload.settings||!Array.isArray(payload.loads))throw Error("Invalid load schedule");
    state=JSON.parse(JSON.stringify(payload));
+   $('loadProjectName').value=state.name||"";
    state.loads=state.loads.map(l=>({...blank(),...l,id:l.id||uid()}));
    save();render();
  },
@@ -134,8 +135,8 @@ globalThis.MarineReports.init({
    const fmt=(v,d=1)=>Number(v||0).toFixed(d);
    return{
       title:"Electrical Load Demand Report",
-      subtitle:"AC single-phase / 3-phase / DC",
-      filename:"marine-electrical-load",
+      subtitle:(state.name||"Unnamed vessel / project")+" / AC single-phase, 3-phase and DC",
+      filename:(state.name||"marine-electrical-load"),
       metrics:[
         ["AC running",fmt(t.acW/1000,2)+" kW"],
         ["AC apparent",fmt(t.acVA/1000,2)+" kVA"],
@@ -144,6 +145,7 @@ globalThis.MarineReports.init({
       ],
       sections:[
         {title:"Electrical demand summary",rows:[
+          ["Vessel / project",state.name||"Not supplied"],
           ["AC connected power",fmt(t.acW/1000,2)+" kW (diversified demand)"],
           ["AC design apparent power",fmt(t.designVA/1000,2)+" kVA incl. headroom / largest startup allowance"],
           ["DC running demand",fmt(t.dcW,0)+" W"],
