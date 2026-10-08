@@ -119,7 +119,7 @@ function init(options){
     const items=read();
     const clash=items.find(x=>x.kind===kind&&x.name.toLowerCase()===trimmed.toLowerCase());
     if(clash&&clash.id!==active&&!confirm("Replace existing saved project named '"+clash.name+"'?"))return;
-    const id=clash?.id||active||"p_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+    const id=clash?.id||((existing&&existing.name.toLowerCase()===trimmed.toLowerCase())?active:null)||"p_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
     const entry={id,kind,name:trimmed,saved:new Date().toISOString(),payload:config.getState()};
     const filtered=items.filter(x=>x.id!==id);
     try{write([...filtered,entry]);active=id;label("Saved: "+trimmed);alert("Project saved on this device. For a backup, export a copy or PDF.")}catch(e){alert("Unable to save on this device: "+e.message)}
