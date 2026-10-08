@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Prop Calculator">
+<link rel="manifest" href="./propeller.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Marine Propeller Calculator</title>
+<style>
+:root{--bg:#071c2b;--p:#0c2a3d;--p2:#10354c;--f:#061c2a;--t:#eff8ff;--m:#9eb8c9;--l:#1e4962;--a:#21c0d9;--g:#66d9a6;--w:#ffd166;--d:#ff7b7b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#061925,#0a2536 55%,#071c2b);color:var(--t);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}button,input,select,summary{font:inherit}.app{max-width:900px;margin:auto;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 36px)}header{display:flex;gap:10px;align-items:center;justify-content:space-between}h1{font-size:22px;margin:0}header p{font-size:12px;color:var(--m);margin:3px 0}.btn,.seg{min-height:44px;border-radius:12px;border:1px solid var(--l);background:var(--p2);color:var(--t);padding:0 13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--a);color:#03212a;border:0}.modebar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.seg.active{background:var(--a);color:#03212a;border-color:transparent}.section,.card{background:rgba(12,42,61,.95);border:1px solid var(--l);border-radius:16px}.section{margin:12px 0;overflow:hidden}.head{padding:12px 13px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between;align-items:center;gap:8px}.head h2{font-size:16px;margin:0}.head span{font-size:11px;color:var(--m)}.body{padding:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field{min-width:0}.field label{display:block;font-size:11px;color:var(--m);margin-bottom:4px}.field input,.field select{width:100%;min-height:46px;border:1px solid var(--l);border-radius:10px;background:var(--f);color:var(--t);padding:8px 10px;font-size:16px}.field small{display:block;color:var(--m);font-size:10px;margin-top:3px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;margin-top:12px}.actions .btn{flex:1}.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}.card{padding:12px}.lab{font-size:11px;color:var(--m)}.val{font-size:22px;font-weight:800;margin-top:4px}.sub{font-size:11px;color:var(--m);margin-top:2px}.hero{grid-column:1/-1;background:linear-gradient(145deg,#0b3349,#0d4057);border-color:#2a6078}.hero .val{font-size:30px}.good{color:var(--g)}.warn{color:var(--w)}.bad{color:var(--d)}.note{font-size:12px;color:var(--m)}.message{padding:11px 12px;border-radius:12px;border:1px solid var(--l);background:var(--f);font-size:13px;margin-top:10px}.message strong{display:block;margin-bottom:3px}.details{margin:10px 0}.details summary{cursor:pointer;color:var(--t);font-weight:700;min-height:44px;display:flex;align-items:center}.method{font-size:12px;color:var(--m);line-height:1.5}.method b{color:var(--t)}.hidden{display:none!important}.mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mini div{background:var(--f);border:1px solid var(--l);border-radius:11px;padding:9px}.mini span{display:block;color:var(--m);font-size:10px}.mini strong{font-size:14px}.badge{display:inline-block;font-size:11px;border-radius:999px;padding:4px 8px;background:#123a50;border:1px solid var(--l);color:var(--m)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.hero{grid-column:span 2}.wide{grid-column:span 2}.mini{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>Marine Propeller Calculator</h1><p>Wageningen B-series preliminary matching • diesel & electric</p></div><a class="btn" href="./index.html">Load calculator</a></header>
+<div class="modebar"><button class="seg active" id="sizeTab" type="button">Size a propeller</button><button class="seg" id="checkTab" type="button">Check existing prop</button></div>
+
+<section class="section"><div class="head"><h2>Basic inputs</h2><span id="modeHint">Find a starting diameter & pitch</span></div><div class="body">
+<div class="grid">
+<div class="field"><label>Propulsion</label><select id="drive"><option value="diesel">Diesel / engine</option><option value="electric">Electric motor</option></select><small id="driveHelp">Use available power at the propeller shaft.</small></div>
+<div class="field"><label>Available shaft power</label><div style="display:grid;grid-template-columns:1fr 84px;gap:6px"><input id="power" type="number" min="0.1" step="0.1" value="22"><select id="powerUnit"><option value="kw">kW</option><option value="hp">hp</option></select></div><small id="powerHelp">For electric, use continuous mechanical output for continuous-duty sizing.</small></div>
+<div class="field"><label>Engine / motor max RPM</label><input id="rpm" type="number" min="50" step="10" value="1600"><small>Rated RPM at the entered power.</small></div>
+<div class="field"><label>Reduction ratio</label><input id="ratio" type="number" min="0.2" step="0.01" value="1"><small>2.00 means engine 2 rev : prop 1 rev.</small></div>
+<div class="field"><label>Design boat speed</label><input id="speed" type="number" min="0.1" step="0.1" value="4"><small>Knots through the water.</small></div>
+<div class="field"><label>Hull / wake preset</label><select id="hull"><option value="0.25">Full displacement / single screw</option><option value="0.15">Light displacement / semi-displacement</option><option value="0.05">Planing / low wake</option><option value="custom">Custom wake</option></select><small>Sets propeller inflow speed; editable below.</small></div>
+<div class="field"><label>Blades</label><select id="blades"><option>3</option><option>4</option><option>5</option></select><small>3 is a common starting point.</small></div>
+<div class="field" id="maxDField"><label>Maximum diameter (optional)</label><input id="maxD" type="number" min="6" step="0.5" placeholder="e.g. 18"><small>Inches. Use the largest that physically fits with correct clearance.</small></div>
+<div class="field hidden" id="existingDField"><label>Existing diameter</label><input id="existingD" type="number" min="4" step="0.1" value="16"><small>Inches.</small></div>
+<div class="field hidden" id="existingPField"><label>Existing pitch</label><input id="existingP" type="number" min="2" step="0.1" value="9"><small>Inches.</small></div>
+</div>
+<details class="details"><summary>Advanced assumptions</summary><div class="grid">
+<div class="field"><label>Wake fraction</label><input id="wake" type="number" min="0" max="0.6" step="0.01" value="0.25"><small>VA = vessel speed × (1 − wake).</small></div>
+<div class="field"><label>Blade area ratio Ae/Ao</label><input id="ear" type="number" min="0.30" max="1.05" step="0.01" value="0.55"><small>Wageningen valid range 0.30–1.05.</small></div>
+<div class="field"><label>Water</label><select id="water"><option value="1025">Sea water (1025 kg/m³)</option><option value="1000">Fresh water (1000 kg/m³)</option></select></div>
+<div class="field"><label>Practical size rounding</label><select id="rounding"><option value="0.5">Nearest 0.5 in</option><option value="0.25">Nearest 0.25 in</option><option value="1">Nearest 1 in</option></select></div>
+</div></details>
+<div class="actions"><button class="btn primary" id="calculate" type="button">Calculate propeller</button><button class="btn" id="example" type="button">Load example</button></div>
+</div></section>
+
+<section id="resultsWrap" class="hidden">
+<div class="results">
+<div class="card hero"><div class="lab" id="heroLabel">Practical starting size</div><div class="val" id="propSize">—</div><div class="sub" id="propMetric">—</div></div>
+<div class="card"><div class="lab">Shaft RPM</div><div class="val" id="shaftRpm">—</div><div class="sub" id="ratioOut">—</div></div>
+<div class="card"><div class="lab">Absorbed power</div><div class="val" id="absPower">—</div><div class="sub" id="powerMatch">—</div></div>
+<div class="card"><div class="lab">Open-water efficiency</div><div class="val" id="eta">—</div><div class="sub">B-series at design point</div></div>
+<div class="card"><div class="lab">Predicted thrust</div><div class="val" id="thrust">—</div><div class="sub" id="thrustLbf">—</div></div>
+<div class="card"><div class="lab">Shaft torque</div><div class="val" id="torque">—</div><div class="sub" id="torqueFt">—</div></div>
+<div class="card"><div class="lab">P/D ratio</div><div class="val" id="pd">—</div><div class="sub" id="advance">—</div></div>
+<div class="card"><div class="lab">Apparent slip</div><div class="val" id="slip">—</div><div class="sub">Based on advance speed in wake</div></div>
+<div class="card"><div class="lab">Tip speed</div><div class="val" id="tip">—</div><div class="sub">Screen only — not a cavitation guarantee</div></div>
+<div class="card" id="electricCard"><div class="lab">Power-limited static estimate</div><div class="val" id="staticThrust">—</div><div class="sub" id="staticRpm">—</div></div>
+</div>
+<div class="section"><div class="head"><h2>Engineering interpretation</h2><span class="badge" id="statusBadge">Preliminary</span></div><div class="body"><div id="message" class="message"></div><div class="mini" id="technical"></div></div></div>
+</section>
+
+<section class="section"><div class="head"><h2>Method</h2><span>Why this is more than a pitch-speed rule</span></div><div class="body method">
+<p><b>Primary calculation:</b> Wageningen B-series open-water regression. The calculator searches diameter and pitch/diameter ratio for a propeller that absorbs the entered shaft power at the calculated shaft RPM and advance speed, then favours the highest open-water efficiency inside the B-series validity envelope.</p>
+<p><b>Wake:</b> propeller advance speed is lower than vessel speed on many single-screw hulls. The presets are only starting assumptions; measured/modelled wake is better. A typical mean wake fraction for single-screw vessels can be around 0.2–0.3, and depends strongly on hull form and propeller position.</p>
+<p><b>Electric propulsion:</b> hydrodynamic matching is still based on shaft power, RPM and speed. The electric option emphasises continuous mechanical power and shows a power-limited static-thrust estimate; low shaft RPM and the largest practical diameter generally improve efficiency, subject to aperture, clearance and cavitation constraints.</p>
+<p><b>Limits:</b> this is a preliminary fixed-pitch, non-ducted propeller selection tool. Final selection should be checked against actual hull resistance, propeller aperture/tip clearance, blade area/cavitation, gearbox/motor torque limits, shafting, class/flag requirements and propeller manufacturer data.</p>
+</div></section>
+</div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id); let mode='size';
+const coeff=`0.00379368 0 0 0 0 0.00880496 0 0 0 0
+0.00886523 2 0 0 0 -0.204554 1 0 0 0
+-0.032241 1 1 0 0 0.166351 0 1 0 0
+0.00344778 0 2 0 0 0.158114 0 2 0 0
+-0.0408811 0 1 1 0 -0.147581 2 0 1 0
+-0.108009 1 1 1 0 -0.481497 1 1 1 0
+-0.0885381 2 1 1 0 0.415437 0 2 1 0
+0.188561 0 2 1 0 0.0144043 0 0 0 1
+-0.00370871 1 0 0 1 -0.0530054 2 0 0 1
+0.00513696 0 1 0 1 0.0143481 0 1 0 1
+0.0209449 1 1 0 1 0.0606826 1 1 0 1
+0.00474319 2 1 0 1 -0.0125894 0 0 1 1
+-0.00723408 2 0 1 1 0.0109689 1 0 1 1
+0.00438388 1 1 1 1 -0.133698 0 3 0 0
+-0.0269403 0 2 1 1 0.00638407 0 6 0 0
+0.0558082 3 0 1 0 -0.00132718 2 6 0 0
+0.0161886 0 3 1 0 0.168496 3 0 1 0
+0.00318086 1 3 1 0 -0.0507214 0 0 2 0
+0.015896 0 0 2 0 0.0854559 2 0 2 0
+0.0471729 1 0 2 0 -0.0504475 3 0 2 0
+0.0196283 3 0 2 0 0.010465 1 6 2 0
+-0.0502782 0 1 2 0 -0.00648272 2 6 2 0
+-0.030055 3 1 2 0 -0.00841728 0 3 0 1
+0.0417122 2 2 2 0 0.0168424 1 3 0 1
+-0.0397722 0 3 2 0 -0.00102296 3 3 0 1
+-0.00350024 0 6 2 0 -0.0317791 0 3 1 1
+-0.0106854 3 0 0 1 0.018604 1 0 2 1
+0.00110903 3 3 0 1 -0.00410798 0 2 2 1
+-0.000313912 0 6 0 1 -0.000606848 0 0 0 2
+0.0035985 3 0 1 1 -0.0049819 1 0 0 2
+-0.00142121 0 6 1 1 0.0025983 2 0 0 2
+-0.00383637 1 0 2 1 -0.000560528 3 0 0 2
+0.0126803 0 2 2 1 -0.00163652 1 2 0 2
+-0.00318278 2 3 2 1 -0.000328787 1 6 0 2
+0.00334268 0 6 2 1 0.000116502 2 6 0 2
+-0.00183491 1 1 0 2 0.000690904 0 0 1 2
+0.000112451 3 2 0 2 0.00421749 0 3 1 2
+-0.0000297228 3 6 0 2 0.0000565229 3 6 1 2
+0.000269551 1 0 1 2 -0.00146564 0 3 2 2
+0.00083265 2 0 1 2 0 0 0 0 0
+0.00155334 0 2 1 2 0 0 0 0 0
+0.000302683 0 6 1 2 0 0 0 0 0
+-0.0001843 0 0 2 2 0 0 0 0 0
+-0.000425399 0 3 2 2 0 0 0 0 0
+0.0000869243 3 3 2 2 0 0 0 0 0
+-0.0004689 0 6 2 2 0 0 0 0 0
+0.0000554194 1 6 2 2 0 0 0 0 0`;
+const C=coeff.trim().split('\n').map(r=>r.trim().split(/\s+/).map(Number));
+const n=(v,d=0)=>{v=parseFloat(v);return Number.isFinite(v)?v:d}; const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)); const fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
+function ktKq(J,pd,ear,z){let kt=0,kq=0;for(const r of C){kq+=r[0]*J**r[1]*pd**r[2]*ear**r[3]*z**r[4];kt+=r[5]*J**r[6]*pd**r[7]*ear**r[8]*z**r[9]}return{kt,kq}}
+function getInputs(){const power=n($('power').value,0)*($('powerUnit').value==='hp'?0.745699872:1);const erpm=Math.max(1,n($('rpm').value,1));const ratio=Math.max(.01,n($('ratio').value,1));return{drive:$('drive').value,power,erpm,ratio,srpm:erpm/ratio,speed:Math.max(.01,n($('speed').value,0)),wake:clamp(n($('wake').value,.2),0,.6),z:clamp(Math.round(n($('blades').value,3)),2,7),ear:clamp(n($('ear').value,.55),.3,1.05),rho:n($('water').value,1025),maxD:n($('maxD').value,0)*.0254,round:n($('rounding').value,.5)}}
+function performance(D,pd,x){const nr=x.srpm/60,va=x.speed*.514444*(1-x.wake),J=va/(nr*D),b=ktKq(J,pd,x.ear,x.z);if(!(b.kt>0&&b.kq>0&&J>=0&&J<2))return null;const Q=x.rho*nr*nr*D**5*b.kq,P=2*Math.PI*nr*Q/1000,T=x.rho*nr*nr*D**4*b.kt,eta=J*b.kt/(2*Math.PI*b.kq),tip=Math.PI*D*nr,slip=1-J/pd;return{D,pd,pitch:D*pd,J,...b,Q,P,T,eta,tip,slip,va}}
+function optimize(x){if(!(x.power>0&&x.srpm>0&&x.speed>0))return null;let dMax=x.maxD>0?x.maxD:1.5,dMin=Math.max(.12,Math.min(.35,dMax*.45)),best=null,near=null;const steps=220;for(let i=0;i<=steps;i++){const D=dMin+(dMax-dMin)*i/steps;for(let j=0;j<=180;j++){const pd=.5+.9*j/180;const p=performance(D,pd,x);if(!p||!(p.eta>0&&p.eta<.9))continue;const err=Math.abs(p.P-x.power)/x.power;if(!near||err<near.err)near={...p,err};if(err<=.02){let boundary=(pd<.54||pd>1.36)?.015:0;let tipPenalty=Math.max(0,p.tip-50)*.001;let score=p.eta-boundary-tipPenalty-err*.08;if(!best||score>best.score)best={...p,err,score}}}}
+return best||near}
+function staticEstimate(p,x){const b=ktKq(0,p.pd,x.ear,x.z);if(!(b.kt>0&&b.kq>0))return null;const nr=(x.power*1000/(2*Math.PI*x.rho*p.D**5*b.kq))**(1/3);const T=x.rho*nr*nr*p.D**4*b.kt;return{rpm:nr*60,T,torque:x.power*1000/(2*Math.PI*nr)}}
+function practical(v,step){return Math.round(v/step)*step}
+function render(p,x,extra={}){$('resultsWrap').classList.remove('hidden');const Din=p.D/0.0254,Pin=p.pitch/0.0254,rd=practical(Din,x.round),rp=practical(Pin,x.round);$('propSize').textContent=(mode==='size'?rd.toFixed(x.round<.5?2:1):Din.toFixed(1))+' × '+(mode==='size'?rp.toFixed(x.round<.5?2:1):Pin.toFixed(1))+' in';$('propMetric').textContent=fmt(p.D*1000,0)+' × '+fmt(p.pitch*1000,0)+' mm calculated • '+x.z+' blade';$('shaftRpm').textContent=fmt(x.srpm,0)+' rpm';$('ratioOut').textContent='Reduction '+fmt(x.ratio,2)+':1';$('absPower').textContent=fmt(p.P,1)+' kW';let diff=(p.P-x.power)/x.power*100;$('powerMatch').textContent=(diff>=0?'+':'')+fmt(diff,1)+'% vs available';$('eta').textContent=fmt(p.eta*100,1)+'%';$('thrust').textContent=fmt(p.T/1000,2)+' kN';$('thrustLbf').textContent=fmt(p.T*0.224809,0)+' lbf';$('torque').textContent=fmt(p.Q,0)+' Nm';$('torqueFt').textContent=fmt(p.Q*.737562,0)+' lb·ft';$('pd').textContent=fmt(p.pd,2);$('advance').textContent='Advance ratio J '+fmt(p.J,2);$('slip').textContent=fmt(p.slip*100,0)+'%';$('tip').textContent=fmt(p.tip,1)+' m/s';const st=staticEstimate(p,x);$('staticThrust').textContent=st?fmt(st.T/1000,2)+' kN':'—';$('staticRpm').textContent=st?'at ~'+fmt(st.rpm,0)+' rpm if full shaft power is available':'—';$('electricCard').style.display=x.drive==='electric'?'block':'none';
+let issues=[];if(!x.maxD&&mode==='size')issues.push('No maximum diameter was entered, so the optimiser was free to choose diameter. Verify physical aperture and tip clearance before using the result.');if(x.maxD&&p.D>x.maxD*.97)issues.push('The result is diameter-limited: the optimiser is using almost all of the maximum diameter you allowed.');if(p.pd<.54||p.pd>1.36)issues.push('The optimum is close to the edge of the Wageningen P/D validity range; treat it as a stronger prompt for a propeller-maker check.');if(p.tip>50)issues.push('Tip speed is high. Cavitation cannot be judged from tip speed alone; blade loading, immersion and local wake must be checked.');if(p.eta<.30)issues.push('Low open-water efficiency is common on heavily loaded, slow propellers, but it can also indicate that shaft RPM is too high for the available diameter. A greater reduction ratio may improve the match.');if(mode==='check'){if(diff>10)issues.push('This propeller is predicted to absorb materially more power than is available at the entered RPM/speed — an over-propped tendency.');else if(diff<-10)issues.push('This propeller is predicted to absorb materially less power than is available — an under-propped tendency at this operating point.');else issues.push('Predicted absorbed power is reasonably close to the entered available shaft power at this operating point.');}
+if(x.drive==='electric')issues.push('Electric sizing is based on continuous mechanical shaft power. Check the motor/controller continuous torque envelope as well as the short-duration peak rating.');$('message').innerHTML='<strong>'+ (issues.length?'Check these points':'Good preliminary match') +'</strong>'+issues.map(s=>'• '+s).join('<br>');$('statusBadge').textContent=Math.abs(diff)<=5?'Power match good':'Review match';$('statusBadge').className='badge '+(Math.abs(diff)<=5?'good':'warn');$('technical').innerHTML=`<div><span>Calculated diameter</span><strong>${fmt(Din,2)} in</strong></div><div><span>Calculated pitch</span><strong>${fmt(Pin,2)} in</strong></div><div><span>Advance speed</span><strong>${fmt(p.va/0.514444,2)} kn</strong></div><div><span>Wake fraction</span><strong>${fmt(x.wake*100,0)}%</strong></div><div><span>KT</span><strong>${fmt(p.kt,4)}</strong></div><div><span>KQ</span><strong>${fmt(p.kq,4)}</strong></div><div><span>Ae/Ao</span><strong>${fmt(x.ear,2)}</strong></div><div><span>Available power</span><strong>${fmt(x.power,1)} kW</strong></div>`;}
+function calculate(){const x=getInputs();let p;if(mode==='size'){p=optimize(x)}else{const D=Math.max(.05,n($('existingD').value,0)*.0254),P=Math.max(.01,n($('existingP').value,0)*.0254);p=performance(D,P/D,x)}if(!p){alert('No valid propeller match was found. Check the inputs, especially shaft RPM, speed and diameter limits.');return}render(p,x)}
+function setMode(m){mode=m;$('sizeTab').classList.toggle('active',m==='size');$('checkTab').classList.toggle('active',m==='check');$('maxDField').classList.toggle('hidden',m==='check');$('existingDField').classList.toggle('hidden',m!=='check');$('existingPField').classList.toggle('hidden',m!=='check');$('modeHint').textContent=m==='size'?'Find a starting diameter & pitch':'Analyse an existing diameter & pitch';$('calculate').textContent=m==='size'?'Calculate propeller':'Check propeller';$('heroLabel').textContent=m==='size'?'Practical starting size':'Existing propeller';$('resultsWrap').classList.add('hidden')}
+$('sizeTab').addEventListener('click',()=>setMode('size'));$('checkTab').addEventListener('click',()=>setMode('check'));$('calculate').addEventListener('click',calculate);$('hull').addEventListener('change',()=>{if($('hull').value!=='custom')$('wake').value=$('hull').value});$('blades').addEventListener('change',()=>{let z=n($('blades').value,3);$('ear').value=z<=3?.55:z===4?.65:.75});$('drive').addEventListener('change',()=>{$('powerHelp').textContent=$('drive').value==='electric'?'Use continuous mechanical motor output for continuous-duty sizing; set ratio 1.00 for direct drive.':'Use power available at the propeller shaft after transmission losses.';$('driveHelp').textContent=$('drive').value==='electric'?'Electric mode also shows a power-limited static-thrust estimate.':'Diesel / engine mode uses the same hydrodynamic shaft matching.'});$('example').addEventListener('click',()=>{if($('drive').value==='electric'){$('power').value=22;$('powerUnit').value='kw';$('rpm').value=1600;$('ratio').value=1;$('speed').value=4;$('hull').value='0.25';$('wake').value=.25;$('blades').value=3;$('ear').value=.55;$('maxD').value=18}else{$('power').value=140;$('powerUnit').value='hp';$('rpm').value=2800;$('ratio').value=2.5;$('speed').value=8;$('hull').value='0.25';$('wake').value=.25;$('blades').value=4;$('ear').value=.65;$('maxD').value=26}calculate()});
+setMode('size');
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>
+</body></html>
