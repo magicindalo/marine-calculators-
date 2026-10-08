@@ -1,7 +1,7 @@
 {
-  "name": "Marine Load Demand Calculator",
-  "short_name": "Marine Load",
-  "description": "Marine AC, three-phase, DC, generator, inverter and battery load-demand calculator.",
+  "name": "Marine Calculators",
+  "short_name": "Marine Calc",
+  "description": "Marine engineering tools — electrical load demand and propeller / vessel speed",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
