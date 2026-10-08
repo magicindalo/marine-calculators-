@@ -1,0 +1,10 @@
+{
+  "name":"Marine Propeller Calculator",
+  "short_name":"Prop Calculator",
+  "start_url":"./propeller.html",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#071c2b",
+  "theme_color":"#071c2b",
+  "icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
