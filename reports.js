@@ -51,7 +51,7 @@ const formatPDF = report=>{
     rows.forEach((r,ri)=>{
       const columns=r.map((v,i)=>wrap(str(v),Math.max(5,Math.floor((widths[i]-10)/4.35))));
       const lines=Math.max(1,...columns.map(a=>a.length));const h=Math.max(25,lines*11+10);
-      if(y-h<63)tableHead();
+      if(y-h<63){next();tableHead();}
       need(h);
       if(ri%2===0)rect(M,y-h,usable,h,.96,.98,.99);
       let x=M+5;columns.forEach((group,i)=>{group.forEach((t,j)=>draw(t,x,y-13-j*10,7.7,false,[.10,.20,.29]));x+=widths[i]});
