@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Indalo Exhaust"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./exhaust.webmanifest"><link rel="icon" href="./assets/indalo-app-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Exhaust Backflow & Waterlock</title>
+<style>
+:root{--bg:#051a30;--panel:#0a2b47;--well:#041e35;--border:#1c597b;--cyan:#21c8e6;--text:#eef9ff;--muted:#a8c8d8;--warning:#ffd393;--good:#91e5bc}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 12% 8%,#104b73 0%,transparent 35%),radial-gradient(ellipse at 85% 72%,#063a60 0%,transparent 35%),linear-gradient(#04182a,#0a2c48 60%,#05192d);color:var(--text);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+input,select,button{font:inherit}main{max-width:950px;margin:auto;padding:calc(15px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.brand{font-size:10px;color:#28d7ec;letter-spacing:.18em;font-weight:850;margin-bottom:5px}
+h1{font-size:clamp(19px,4.7vw,25px);margin:0;line-height:1.16}header p{color:var(--muted);font-size:12px;margin:4px 0 0}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+a.nav,button{border-radius:10px;border:1px solid #356a83;min-height:44px;padding:10px 13px;color:#effaff;background:#103f5c;text-decoration:none;font-size:13px;font-weight:750;display:inline-flex;align-items:center;justify-content:center}
+a.nav:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #38e5fb;outline-offset:2px}
+.panel{border-radius:17px;margin-top:12px;overflow:hidden;border:1px solid var(--border);background:linear-gradient(140deg,#0b3451,#092842)}
+.head{padding:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:6px}.head h2{font-size:16px;margin:0}.head span{font-size:11px;color:var(--muted);text-align:right}.body{padding:13px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field{min-width:0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select{display:block;background:var(--well);border:1px solid var(--border);border-radius:10px;padding:10px;width:100%;min-width:0;min-height:45px;color:var(--text);font-size:16px}
+.field small{display:block;font-size:10.5px;color:var(--muted);margin-top:5px}.wide{grid-column:1/-1}.note{font-size:12px;color:var(--muted);line-height:1.55;margin:11px 0 0}
+.visual{position:relative;background:#062239;border:1px solid #2b617c;border-radius:14px;padding:14px 10px;margin:12px 0 0;overflow:hidden}
+.pipe{margin:18px 6px 10px;display:flex;align-items:flex-end;gap:0;min-height:77px}.lock{border:2px solid #3ce0f0;border-radius:12px 12px 28px 28px;background:linear-gradient(0deg,#037eaf77 40%,#063855 40%);width:76px;height:65px;position:relative;display:grid;place-items:center;font-size:11px;font-weight:750;color:#eaffff;flex-shrink:0}
+.linePipe{border-top:7px double #6fd6e7;border-right:7px double #6fd6e7;border-radius:0 26px 0 0;height:58px;margin-bottom:30px;flex:1;position:relative}.linePipe:after{position:absolute;content:"";width:20%;height:7px;background:#62c8db;right:-8px;top:-7px}
+.goose{height:104px;width:40px;border:7px double #6fd6e7;border-right:0;border-bottom:0;border-radius:38px 0 0 0;margin-bottom:28px;flex-shrink:0}
+.visualText{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:#b6ddea;line-height:1.2}
+.summaries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px}
+.kpi{border:1px solid #2e6179;border-radius:14px;background:#0a2f49;padding:13px;min-width:0}
+.kpi.hero{grid-column:1/-1;background:linear-gradient(125deg,#104d69,#065f7a);border-color:#2897ad}
+.kpi span{display:block;font-size:11px;color:#b5d3e0}.kpi strong{font-size:24px;display:block;margin-top:3px;overflow-wrap:anywhere}.kpi.hero strong{font-size:31px}.kpi em{font-style:normal;font-size:11px;color:#bed7e4}
+.candidate{border:1px solid #31667c;background:#06283f;border-radius:13px;padding:14px;margin:10px 0}.candidate.best{border-color:#36d2da;box-shadow:inset 0 0 0 1px #36d2da22}
+.top{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:space-between}.candidate strong{font-size:18px}.pill{font-size:11px;color:#c0f2fa;background:#124e65;border:1px solid #3e849b;padding:5px 8px;border-radius:999px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{background:#13415a;color:#b9dce8;border-radius:8px;font-size:11px;padding:6px 8px}
+.candidate a{display:inline-block;margin-top:11px;color:#71e4ee;font-size:12px;font-weight:750}
+.warning{background:#322e2c;border:1px solid #726447;color:#f7dcad;border-radius:10px;padding:10px;font-size:12px;line-height:1.52;margin:8px 0}
+.error{border:1px solid #ba6676;background:#4a2533;color:#ffe9ee;padding:11px;border-radius:11px;font-size:13px}
+.empty{border:1px dashed #4585a0;border-radius:12px;padding:15px;color:#cde1ec;font-size:13px}
+details summary{font-size:13px;font-weight:760;min-height:44px;display:flex;align-items:center;cursor:pointer}details .fields{margin-top:8px}
+.hidden{display:none!important}
+@media(min-width:700px){.fields{grid-template-columns:repeat(4,minmax(0,1fr))}.wide{grid-column:span 2}.summaries{grid-template-columns:repeat(4,minmax(0,1fr))}.kpi.hero{grid-column:span 2}}
+</style></head><body><main>
+<header>
+<div><div class="brand">INDALO MARINE CALCULATORS</div><h1>Exhaust Backflow &amp; Waterlock</h1><p>VETUS wet-exhaust backflow volume and product selection</p></div>
+<nav><a class="nav" href="./">Home</a><a class="nav" href="./load.html">Load Demand</a><a class="nav" href="./propeller.html">Propeller</a></nav>
+</header>
+
+<section class="panel"><div class="head"><h2>1. Exhaust system details</h2><span>Water-injected wet exhaust</span></div><div class="body">
+<div class="fields">
+<div class="field wide"><label for="project">Vessel / project name</label><input id="project" placeholder="e.g. 45 ft aft cabin cruiser"></div>
+<div class="field"><label for="diameter">Exhaust hose internal diameter</label><select id="diameter">
+<option value="30">30 mm</option><option value="40">40 mm</option><option value="45">45 mm</option>
+<option value="50" selected>50 mm</option><option value="60">60 mm</option><option value="65">65 mm</option>
+<option value="75">75 mm</option><option value="90">90 mm</option><option value="102">102 mm</option>
+<option value="127">127 mm</option><option value="152">152 mm</option><option value="203">203 mm</option><option value="250">250 mm</option>
+</select><small>Confirm correct size against engine exhaust backpressure requirements.</small></div>
+<div class="field"><label for="length">Hose length: waterlock to gooseneck (m)</label><input id="length" type="number" min=".1" step=".1" value="5"><small>Downstream length to the highest point; not the full exhaust run.</small></div>
+<div class="field"><label for="layout">Preferred waterlock type</label><select id="layout">
+<option value="any">Best capacity match (all)</option><option value="quiet">Quietest / multi-chamber</option>
+<option value="long">Long hose run</option><option value="low">Low / horizontal installation</option>
+<option value="compact">Compact standard type</option><option value="heavy">Large engine / MG range</option>
+</select></div>
+</div>
+<div class="visual" aria-label="Simplified exhaust layout showing the waterlock outlet hose rising to a gooseneck">
+<div class="visualText"><span>Waterlock / low point</span><span>Gooseneck / high point</span></div>
+<div class="pipe"><div class="lock">WATERLOCK</div><div class="linePipe"></div><div class="goose"></div></div>
+<div class="visualText"><span>Inlet from engine</span><span>Measure this outlet hose length</span></div>
+</div>
+<details><summary>Advanced backflow assumptions</summary><div class="fields">
+<div class="field"><label for="waterPct">Water present in hose (%)</label><input id="waterPct" type="number" min="1" max="100" step="1" value="25"><small>VETUS default: 25%</small></div>
+<div class="field"><label for="maxFillPct">Maximum waterlock fill (%)</label><input id="maxFillPct" type="number" min="1" max="100" step="5" value="50"><small>Spreadsheet sizing rule: 50% maximum</small></div>
+<div class="field"><label for="extraBackflow">Additional water allowance (litres)</label><input id="extraBackflow" type="number" min="0" step=".1" value="0"><small>Optional: additional known backflow, not already in measured hose.</small></div>
+</div></details>
+</div></section>
+
+<section class="panel"><div class="head"><h2>2. Installation &amp; engine checks</h2><span>Safety screening</span></div><div class="body">
+<div class="fields">
+<div class="field"><label for="injectionHeight">Cooling water injection above waterline (mm)</label><input id="injectionHeight" type="number" step="10" value="250"><small>Negative value means below waterline.</small></div>
+<div class="field"><label for="transomHeight">Lowest exhaust outlet above waterline (mm)</label><input id="transomHeight" type="number" step="10" value="100"></div>
+<div class="field"><label for="enginePower">Engine rated power (optional)</label><input id="enginePower" type="number" min="0" step="1" placeholder="e.g. 42"></div>
+<div class="field"><label for="powerUnit">Engine power units</label><select id="powerUnit"><option value="kw">kW</option><option value="hp">hp</option></select></div>
+<div class="field"><label for="backPressure">Engine maximum permitted backpressure</label><select id="backPressure"><option value=".1">0.1 bar (100 mbar)</option><option value=".2">0.2 bar (200 mbar)</option><option value=".3">0.3 bar (300 mbar)</option></select><small>Use actual engine manufacturer's limit.</small></div>
+</div>
+<p class="note">Backpressure check: the VETUS catalogue provides a general power-versus-hose-diameter screening table. This app does <b>not</b> calculate actual exhaust pressure loss. Confirm the permitted backpressure against the full installed exhaust and engine data.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>3. Water volume &amp; minimum capacity</h2><span>VETUS backflow formula</span></div><div class="body">
+<div id="error" class="error hidden"></div>
+<div id="figures" class="summaries">
+<div class="kpi hero"><span>Minimum catalogue waterlock capacity</span><strong id="required">—</strong><em>50% maximum fill by default</em></div>
+<div class="kpi"><span>Estimated water flowing back</span><strong id="backflow">—</strong><em>25% of hose volume by default</em></div>
+<div class="kpi"><span>Total hose internal volume</span><strong id="hoseVol">—</strong><em>Full hose capacity</em></div>
+<div class="kpi"><span>Waterlock allowance</span><strong id="safety">—</strong><em>Safety factor on backflow</em></div>
+<div class="kpi"><span>Engine power / hose guide</span><strong id="powerCheck">—</strong><em id="powerDetail">General VETUS catalogue comparison</em></div>
+</div>
+<p class="note">VETUS formula: hose volume = π × (internal diameter ÷ 2)² × downstream hose length; water backflow = 25% × hose volume; minimum catalogue waterlock volume = 2 × backflow. Inputs may be changed in Advanced.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>4. Suitable VETUS waterlocks</h2><span id="candidateCount">Filtered by size and capacity</span></div>
+<div class="body"><div id="recommendations" aria-live="polite"></div></div></section>
+
+<section class="panel"><div class="head"><h2>Project &amp; PDF report</h2><span>Save • Reopen • Export</span></div><div class="body"><div id="projectTools"></div></div></section>
+<section class="panel"><div class="head"><h2>Installation considerations &amp; references</h2><span>Read before specifying</span></div>
+<div class="body"><div id="notes"></div>
+<details><summary>Method &amp; source information</summary>
+<p class="note">The VETUS workbook “Vetus Calculator Book 12-10-2018.xls”, “Flow Back” sheet, contains the 25% backflow allowance and twice-backflow catalog capacity rule. These agree with the 2026–27 VETUS exhaust catalogue, page 115. Waterlock capacity and fittings are checked against catalogue pages 116–119 and current VETUS webshop ranges.</p>
+<p class="note">This calculator does not assess the entire exhaust system, including internal geometry, dynamic heeling, pump delivery during cranking, cooling water anti-siphon routing or actual backpressure. Approval must follow the engine manufacturer's limits and the relevant VETUS installation manual.</p>
+<p class="note"><a style="color:#62dfed" href="https://online.flippingbook.com/view/631212278/115/" target="_blank" rel="noopener">Catalogue calculation &amp; backpressure guidance</a> · <a style="color:#62dfed" href="https://webshop.vetus.com/en/products/exhaust-systems/waterlocks-standard-installations" target="_blank" rel="noopener">VETUS waterlock catalogue</a></p>
+</details>
+</div></section>
+</main>
+<script src="./exhaust-core.js"></script><script src="./reports.js"></script>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const ids=["project","diameter","length","layout","waterPct","maxFillPct","extraBackflow","injectionHeight","transomHeight","enginePower","powerUnit","backPressure"];
+const KEY="indalo-exhaust-working-v1";
+const fmt=(v,d=2)=>Number.isFinite(v)?v.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+function getState(){return{fields:Object.fromEntries(ids.map(k=>[k,$(k).value]))}}
+function setState(data){if(!data||!data.fields)throw Error("Invalid exhaust project");for(const k of ids)if(data.fields[k]!==undefined)$(k).value=String(data.fields[k]);render()}
+function config(){return Object.fromEntries(ids.map(k=>[k,$(k).value]))}
+function calc(){return globalThis.ExhaustCalc.calc(config())}
+function plain(node,t,cls=""){const el=document.createElement("div");el.textContent=t;el.className=cls;node.append(el);return el;}
+function recommendations(r){
+ const host=$("recommendations");host.replaceChildren();
+ $("candidateCount").textContent=r.qualified.length+" models pass volume + power screening";
+ if(!r.best){
+  plain(host,"No VETUS waterlock currently passes both the nominal water capacity and the selected engine-power/diameter screen.","empty");
+  const largest=[...r.candidates].sort((a,b)=>b.capacity-a.capacity).slice(0,3);
+  if(largest.length)plain(host,"Largest connection-compatible catalogue options: "+largest.map(x=>x.sku+" ("+x.capacity+" L)").join(", ")+". These are NOT confirmed suitable.","note");
+  return;
+ }
+ const arr=r.qualified.slice(0,7);
+ arr.forEach((item,index)=>{
+  const card=document.createElement("div");card.className="candidate"+(index===0?" best":"");
+  const line=document.createElement("div");line.className="top";
+  const code=document.createElement("strong");code.textContent=item.sku;line.append(code);
+  const badge=document.createElement("span");badge.className="pill";badge.textContent=index===0?"Best preference match":"Suitable capacity";line.append(badge);
+  card.append(line);plain(card,item.style+" · "+item.family,"note");
+  const chips=document.createElement("div");chips.className="chips";
+  [item.capacity+" L capacity",item.diameter+" mm inlet",item.outlet+" mm outlet",
+    fmt(item.workingFillPct,0)+"% model fill",
+    fmt(item.excess,2)+" L nominal reserve"].forEach(str=>{const c=document.createElement("span");c.className="chip";c.textContent=str;chips.append(c)});
+  card.append(chips);
+  if(item.powerLimitKW!==null&&r.engineKW>0)plain(card,"Catalogue power guide: "+fmt(item.powerLimitKW,0)+" kW at "+fmt(r.backPressure,1)+" bar (not a system pressure-loss calculation).","note");
+  const link=document.createElement("a");link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="VETUS model range details ↗";card.append(link);
+  host.append(card);
+ });
+ if(r.qualified.length>arr.length)plain(host,"+"+(r.qualified.length-arr.length)+" other catalogue models pass the initial filters. Change the preferred waterlock type to refine the shortlist.","note");
+}
+function render(){
+ const r=calc();const issue=$("error");
+ issue.textContent=r.errors.join(" ");issue.classList.toggle("hidden",r.valid);
+ $("figures").classList.toggle("hidden",!r.valid);
+ if(!r.valid){$("recommendations").replaceChildren();$("notes").replaceChildren();return}
+ $("required").textContent=fmt(r.requiredCapacity,2)+" L";
+ $("backflow").textContent=fmt(r.totalBackflow,2)+" L";
+ $("hoseVol").textContent=fmt(r.hoseVolume,2)+" L";
+ $("safety").textContent=fmt(100/r.maxFillPct,1)+"×";
+ if(r.engineKW>0){
+   const g=r.candidates.find(x=>x.powerLimitKW!==null);
+   const lim=g?.powerLimitKW;
+   $("powerCheck").textContent=lim===undefined?"Check separately":r.engineKW<=lim?"Within guide":"Review diameter";
+   $("powerDetail").textContent=lim===undefined?"No matching catalogue entry":fmt(r.engineKW,1)+" kW entered / "+fmt(lim,1)+" kW catalogue limit";
+ }else{$("powerCheck").textContent="Not entered";$("powerDetail").textContent="Optional engine power check"}
+ recommendations(r);
+ const box=$("notes");box.replaceChildren();
+ r.notes.forEach(n=>plain(box,n,"warning"));
+ try{localStorage.setItem(KEY,JSON.stringify(getState()))}catch(e){}
+}
+for(const id of ids){$(id).addEventListener("input",render);$(id).addEventListener("change",render)}
+try{const a=JSON.parse(localStorage.getItem(KEY));if(a?.fields){for(const id of ids)if(a.fields[id]!==undefined)$(id).value=String(a.fields[id]);}}catch(e){}
+render();
+globalThis.MarineReports.init({
+ kind:"exhaust",suggestName:()=>($("project").value.trim()||"Marine exhaust waterlock"),getState,setState,
+ report:()=>{
+  const c=config(),r=calc();if(!r.valid)throw Error(r.errors.join(". "));
+  const f=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):"n/a";
+  const rows=r.qualified.slice(0,8).map((x,i)=>[i===0?"Preferred":"Candidate",x.sku,
+    f(x.capacity,1)+" L",x.diameter+"/"+x.outlet+" mm",f(x.workingFillPct,0)+"%"]);
+  if(!rows.length)rows.push(["No suitable model","Capacity or diameter review needed","—","—","—"]);
+  return{
+   title:"Wet Exhaust Backflow & Waterlock Report",
+   subtitle:(c.project||"Unnamed vessel")+" / Indalo Marine Calculators",
+   filename:(c.project||"marine-exhaust")+"-waterlock",
+   metrics:[["Backflow volume",f(r.totalBackflow)+" L"],["Min. waterlock",f(r.requiredCapacity)+" L"],
+     ["Hose ID",r.diameter+" mm"],["Preferred VETUS",r.best?.sku||"No match"]],
+   sections:[
+     {title:"Installation and engine inputs",rows:[
+       ["Vessel / project",c.project||"Not supplied"],["Wet exhaust hose internal diameter",r.diameter+" mm"],
+       ["Hose from waterlock to gooseneck",f(r.length)+" metres"],
+       ["Water fraction in hose",f(r.waterPct,0)+"%"],["Waterlock maximum fill",f(r.maxFillPct,0)+"%"],
+       ["Additional backflow allowance",f(r.extra,2)+" litres"],["Arrangement preference",c.layout],
+       ["Cooling-water injection height",r.injectedHeight+" mm relative to waterline"],
+       ["Exhaust outlet height",r.transomHeight+" mm relative to waterline"],
+       ["Engine power",r.engineKW>0?f(r.engineKW,1)+" kW":"Not supplied"],
+       ["Manufacturer max permitted backpressure",f(r.backPressure,1)+" bar (entered)"]
+     ]},
+     {title:"Formula and calculated values",rows:[
+       ["Internal hose volume","PI x (ID / 1000)^2 / 4 x length x 1000"],
+       ["Total internal hose volume",f(r.hoseVolume)+" litres"],
+       ["Hose backflow estimate",f(r.backflow)+" litres ("+f(r.waterPct,0)+"% of volume)"],
+       ["Extra backflow allowance",f(r.extra)+" litres"],
+       ["Total estimated backflow",f(r.totalBackflow)+" litres"],
+       ["Minimum catalogue waterlock",f(r.requiredCapacity)+" litres"],
+       ["Waterlock design margin",f(100/r.maxFillPct,2)+" x total backflow"],
+       ["Published VETUS criterion","Waterlock not more than half full at defaults"]
+     ]},
+     {title:"Suitable VETUS waterlocks",table:{columns:[["Selection",83],["Part number",117],["Capacity",85],["Connections",112],["Fill",63]],rows}},
+     {title:"Engineering qualification and installation safety",paragraphs:[
+       ...r.notes,
+       "Capacity data and the power/diameter chart were checked against the VETUS 2026–27 catalogue pages 115–119.",
+       "Reference spreadsheet: Vetus Calculator Book 12-10-2018.xls / Flow Back worksheet, with the same 25% water factor and 2x waterlock capacity factor.",
+       "The comparison does not replace an exhaust system backpressure calculation or actual backpressure measurement. Full exhaust hose sizing, water-injection anti-siphon routing, waterlock height/installation orientation and crank-water accumulation must be verified before ordering."
+     ]}
+   ]
+  };
+ }
+});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script></body></html>
