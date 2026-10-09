@@ -22,6 +22,10 @@ const catalog=[
  ["BOW9512D",95,185,"standard",12,12,0],
  ["BOW9524D",105,185,"standard",24,24,0],
  ["BOW12512D",125,250,"standard",12,12,0],
+ ["BOW12524D",140,250,"standard",24,24,0],
+ ["BOW16024D",160,250,"standard",24,24,0],
+ ["BOW18024D",180,250,"standard",24,24,0],
+ ["BOW22024D",220,300,"standard",24,24,0],
  ["BOWA0301",30,110,"pro",12,12,0],
  ["BOWA0304",30,110,"pro",48,48,0],
  ["BOWA0361",36,125,"pro",12,12,0],
@@ -54,6 +58,7 @@ const catalog=[
  ["BOW5512DI",55,150,"ignition",12,12,0],
  ["BOW5524DI",55,150,"ignition",24,24,0],
  ["BOW7512DI",75,185,"ignition",12,12,0],
+ ["BOW9512DI",95,185,"ignition",12,12,0],
  ["BOW7524DI",75,185,"ignition",24,24,0],
  ["BOW1252DI",125,250,"ignition",12,12,0],
  ["BOW1254DI",125,250,"ignition",24,24,0],
@@ -70,6 +75,8 @@ const officialProducts={
  BOW5512D:"https://webshop.vetus.com/en/product/bow-thruster-55-kgf-12-v-150-mm-tunnel",
  BOW9512D:"https://webshop.vetus.com/en/product/bow-thruster-95-kgf-12-v-185-mm-tunnel",
  BOW12512D:"https://webshop.vetus.com/en/product/bow-thruster-125-kgf-12-v-250-mm-tunnel",
+ BOW16024D:"https://webshop.vetus.com/en/product/bow-thruster-160-kgf-24-v-250-mm-tunnel",
+ BOW22024D:"https://webshop.vetus.com/en/product/bow-thruster-220-kgf-24-v-300-mm-tunnel",
  BOWA0364:"https://webshop.vetus.com/en/product/bow-pro-thruster-36-kgf-48-v-125-mm-tunnel",
  BOWA0421:"https://webshop.vetus.com/en/product/bow-pro-thruster-42-kgf-12-v-125-mm-tunnel",
  BOWA0304:"https://webshop.vetus.com/en/product/bow-pro-thruster-30-kgf-48-v-110-mm-tunnel",
@@ -78,7 +85,8 @@ const officialProducts={
  BOWB076:"https://webshop.vetus.com/en/product/bow-pro-boosted-thruster-76-kgf-12-24-v-185-mm-tunnel",
  BOWB110:"https://webshop.vetus.com/en/product/bow-pro-boosted-thruster-110-kgf-12-24-v-185-mm-tunnel",
  BOW2512EI:"https://webshop.vetus.com/en/product/bow2512ei-bow-thruster-25kgf-12v-tunnel-110mm-ip",
- BOW5512DI:"https://webshop.vetus.com/en/product/bow5512di-bow-thruster-55kgf"
+ BOW5512DI:"https://webshop.vetus.com/en/product/bow5512di-bow-thruster-55kgf",
+ BOW5524DI:"https://webshop.vetus.com/en/product/bow5524di-bow-thruster-55kgf"
 };
 catalog.forEach(m=>{if(officialProducts[m.sku])m.url=officialProducts[m.sku]});
 const pressure={4:{low:20,high:40,typ:30,label:"Moderate breeze"},5:{low:41,high:74,typ:60,label:"Fresh breeze"},6:{low:75,high:123,typ:100,label:"Strong breeze"},7:{low:125,high:189,typ:157,label:"Near gale"},8:{low:191,high:276,typ:234,label:"Gale"}};
