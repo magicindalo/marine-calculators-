@@ -76,3 +76,9 @@ Hull power calculations use the preliminary ITTC-1957 friction + custom wave ter
 Diesel and E-Line rated outputs are not interchangeable by horsepower. Manufacturer verified propeller-load spectra, available torque, duty/thermal limits, gearbox ratio, cooling, physical installation, emissions approvals and BMS/battery design must be established before specification. The allowed diesel duty, E-Line duty, gearbox losses and electric efficiency are user-entered assumptions, not universal product ratings.
 
 © 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved. VETUS trademarks and product information remain the property of their respective owners.
+
+### Engine & E-Line gearbox reference
+
+The Engine calculator includes an optional VETUS installed-engine reference, AHEAD gearbox reduction ratio and observed engine RPM. For a VETUS VD4.140 with 2:1 ahead reduction, manufacturer data from the [VETUS D-Line technical manual](https://vetus.com/wp-content/uploads/360602.01_r05_2025-02_D_Line_EN.pdf) supports 103 kW flywheel / 99 kW prop shaft at 2400 engine rpm (1200 shaft rpm); maximum engine torque 520 Nm at 1600 engine rpm yields about 998 Nm at 800 shaft rpm with a user-assumed 96% transmission efficiency. The engine must not be specified solely from a gearbox torque screen; absorbed propeller torque is not calculated. Unverified propeller diameter or pitch must **not** be assumed or entered.
+
+**Heavy displacement safeguard:** for displacement, semi-displacement and canal boats of 25 tonnes or more, engine shortlists are withheld without a measured shaft-power/speed trial; the independent reference gearbox comparison remains available. This is especially relevant to the Piper Boats Kiwi Wonderer (35 tonnes, VD4.140, believed 2:1 reduction). Its reported 22 × 16 propeller is unverified and intentionally excluded from all benchmark calculations.
