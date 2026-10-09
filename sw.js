@@ -1,5 +1,5 @@
-const CACHE='indalo-marine-calculators-v12';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/indalo-marine-logo.webp','./assets/indalo-app-icon.png','./load.html','./load.webmanifest','./battery.html','./battery.webmanifest','./battery-core.js','./thruster.html','./thruster-core.js','./thruster.webmanifest','./propeller.html','./propeller.webmanifest','./resistance.js','./reports.js'];
+const CACHE='indalo-marine-calculators-v13';
+const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/indalo-marine-logo.webp','./assets/indalo-app-icon.png','./assets/indalo-ocean-scene.svg','./load.html','./load.webmanifest','./battery.html','./battery.webmanifest','./battery-core.js','./thruster.html','./thruster-core.js','./thruster.webmanifest','./propeller.html','./propeller.webmanifest','./resistance.js','./reports.js'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
