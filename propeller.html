@@ -373,6 +373,13 @@ globalThis.MarineReports.init({
          ["Engine full-load curve","Illustrative only; actual engine torque/power curve NOT supplied"],
          ["Validation","Propeller sizing remains preliminary; confirm real installation, clearance and operating duty"]
        ]},
+       {title:"Performance and power curves",newPage:true,
+        charts:globalThis.PropellerGraphs?.getPDFCharts?.()||[],
+        paragraphs:[
+          "Vessel shaft-power versus speed: simplified resistance estimate; not a measured hull powering curve. Where vessel data is insufficient, this chart is omitted.",
+          "Engine RPM versus propeller absorbed power: Wageningen B-series prediction. The dashed full-load engine line is illustrative and is NOT a manufacturer's rated torque or load curve.",
+          "Both curves use the current vessel/propeller inputs and any entered cruise-speed/RPM point. Verify engine, gearbox, propeller and duty ratings independently."
+        ]},
        {title:"Interpretation and limitations",paragraphs:[
          pStatus,
          resultNote,
