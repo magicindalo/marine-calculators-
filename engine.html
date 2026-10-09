@@ -90,7 +90,7 @@ a{color:#7ce6ed}
 <div class="field"><label for="electricDuty">Allowed E-Line rated-power use (%)</label><input id="electricDuty" type="number" min="50" max="100" step="5" value="85"><small>Working assumption; verify thermal continuous duty.</small></div>
 <div class="field"><label for="gearEfficiency">Diesel gearbox efficiency (%)</label><input id="gearEfficiency" type="number" min="70" max="100" step="1" value="96"></div>
 <div class="field"><label for="electricEfficiency">Electric DC-to-shaft efficiency (%)</label><input id="electricEfficiency" type="number" min="60" max="100" step="1" value="88"><small>Motor, inverter/controller and electrical losses.</small></div>
-<div class="field" id="crouchWrap"><label for="crouch">Planing Crouch coefficient (knots formula)</label><input id="crouch" type="number" min="90" max="260" step="5" value="150"><small>Prefer comparable vessel sea-trial data.</small></div>
+<div class="field" id="crouchWrap"><label for="crouch">Planing Crouch coefficient (knots formula)</label><input id="crouch" type="number" min="90" max="260" step="5" value="180"><small>Prefer comparable vessel sea-trial data.</small></div>
 </div></details>
 </div></section>
 
@@ -103,7 +103,7 @@ a{color:#7ce6ed}
 <div class="stat"><span>Froude number Fn</span><strong id="fn">—</strong><em id="fnSub">Target relative to wave-making</em></div>
 <div class="stat"><span>Vessel block coefficient</span><strong id="cb">—</strong><em id="cbSub">From loaded dimensions and displacement</em></div>
 </div>
-<div id="noMatch" class="warn hidden">This speed or hull type is outside the range of the preliminary model. No engine is recommended: obtain measured resistance/sea-trial data or naval architect advice.</div>
+<div id="noMatch" class="warn hidden">Insufficient trustworthy data to recommend an engine for this hull and target. Supply measured shaft-power/sea-trial information or seek a specialist powering assessment.</div>
 <div class="switches"><span class="tag" id="modelSource">Method</span><span class="tag" id="driveCount">1 shaft</span><span class="tag" id="calFactor">Uncalibrated</span></div>
 </div></section>
 
@@ -134,7 +134,7 @@ a{color:#7ce6ed}
 <div id="warnings"></div>
 <details><summary>Calculation approach &amp; official VETUS references</summary>
 <p class="note">Displacement power screening: shared Indalo resistance model uses ITTC-1957 friction coefficient, a wetted-area approximation and a NON-STANDARD wave term. The estimate is low confidence until calibrated to a measured shaft-power trial. Hull shapes and sea state can change actual powering substantially. The energy conversion uses the user-entered overall shaft-to-effective-power efficiency.</p>
-<p class="note">Planing: empirical Crouch formula P(shaft hp) = loaded weight(lb) × [target speed(knots)/C]², C calibrated to comparable vessels. It should not be used for displacement hulls and is unreliable in the hump/transitional region. The target is treated as near-maximum speed.</p>
+<p class="note">Planing: empirical Crouch formula P(shaft hp) = loaded weight(lb) × [target speed(knots)/C]², C calibrated to comparable vessels. It should not be used for displacement hulls and is unreliable in the hump/transitional region. The default coefficient is 180, benchmarked against two published fast-cruiser examples; individual hulls may differ significantly. The target is treated as near-maximum speed.</p>
 <p class="note">Product ratings and listed families are sourced from official <a href="https://webshop.vetus.com/en/products/engines/m-line-engines/" target="_blank" rel="noopener">M-Line</a>, <a href="https://webshop.vetus.com/en/products/engines/h-line-engines" target="_blank" rel="noopener">H-Line</a>, <a href="https://webshop.vetus.com/en/products/engines/d-line-engines" target="_blank" rel="noopener">D-Line</a> and <a href="https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines" target="_blank" rel="noopener">E-Line</a> listings (October 2026).</p>
 </details>
 </div></section>
@@ -166,7 +166,7 @@ function products(kind,r,node){
  const family=buildText(node,kind==="diesel"?"VETUS Diesel Engines (M / H / D-Line)":"VETUS E-Line Inboard Electric Motors","note");
  family.style.fontWeight="800";family.style.fontSize="14px";family.style.marginTop="14px";family.style.color="#bff8ff";
  const matches=kind==="diesel"?r.dieselMatches:r.electricMatches;
- if(!r.canMatch){buildText(node,"No model recommended: the target conditions are outside the supported preliminary powering method.","empty");return}
+ if(!r.canMatch){buildText(node,"No reliable recommendation: the powering model is outside its valid range or requires measured vessel data.","empty");return}
  if(!matches.length){
   buildText(node,kind==="diesel"?"No listed diesel model can satisfy the selected power reserve and duty assumption. Review vessel demand, propulsion count or a larger product range.":"No E-Line shaft motor matches the required power/duty and selected DC supply. Do not treat peak power as continuous capacity.","empty");
   return;
@@ -177,7 +177,7 @@ function products(kind,r,node){
   const item=document.createElement("div");item.className="product";
   const title=document.createElement("div");title.className="prodTop";
   const name=document.createElement("strong");name.textContent=p.name;
-  const tag=document.createElement("span");tag.className="pill";tag.textContent=i===0?"Closest suitable":"Also meets requirement";
+  const tag=document.createElement("span");tag.className="pill";tag.textContent=i===0?"Smallest power-screened candidate":"Also passes power screen";
   title.append(name,tag);item.append(title);
   buildText(item,"VETUS SKU: "+p.sku+" · "+p.family,"note");
   const meta=document.createElement("div");meta.className="productMeta";
