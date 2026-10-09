@@ -130,6 +130,25 @@ function evaluate(input){
  const shaftCruisePer=cruiseTotal/boats;
  const reqDiesel=requiredPerShaft/(dieselDuty*transEff);
  const reqElectric=requiredPerShaft/electricDuty;
+
+ // Screened attainable speed at the selected duty fraction, never a sea-trial promise.
+ function dutySpeed(availableKW){
+   if(!(availableKW>0&&canMatch))return null;
+   if(planing){
+      const pounds=displacement*2204.62262185, hp=availableKW/.745699872;
+      if(trialSpeed>0&&trialPower>0)return trialSpeed*Math.sqrt(availableKW/trialPower);
+      return crouch*Math.sqrt(hp/pounds);
+   }
+   const lib=globalThis.MarineResistance;
+   if(!lib?.metrics||!Number.isFinite(factor))return null;
+   const x={lwl,beam,draft,disp:displacement,rho,cb:CB};
+   const maxSpeed=.42*Math.sqrt(G*lwl)/KNOT;
+   function demand(vKts){const m=lib.metrics(x,vKts);return m?(m.resistanceN*factor*vKts*KNOT/1000/shaftEff):Infinity}
+   if(demand(maxSpeed)<=availableKW)return null; // beyond model's calibrated Froude ceiling
+   let a=0,b=maxSpeed;
+   for(let i=0;i<38;i++){const mid=(a+b)/2;if(demand(mid)<availableKW)a=mid;else b=mid}
+   return(a+b)/2;
+ }
  const lineup=(list,kind)=>list.map(p=>{
    const available=p.kw*(kind==="diesel"?transEff:1)*boats;
    const cruiseLoad=cruiseTotal/available*100;
@@ -142,8 +161,9 @@ function evaluate(input){
    const compatible=voltageOk&&(drive==="shaft"||kind!=="electric");
    const avgElectricDraw=kind==="electric"?cruiseTotal/electricEff:null;
    const runtime=kind==="electric"&&available>0?batteryKWh*usablePct/avgElectricDraw:null;
+   const predictedSpeed=dutySpeed(availableAtDuty);
    return{...p,kind,suitable:suitable&&compatible,undersized,lowLoad,voltageOk,compatible,cruiseLoad,installLoad,availableAtDuty,available,
-     estimatedRuntime:runtime,requirementPerShaft:requiredPerShaft,
+     estimatedRuntime:runtime,predictedSpeed,requirementPerShaft:requiredPerShaft,
      utilizationPct:availableAtDuty>0?requiredTotal/availableAtDuty*100:null};
  });
  const dieselModels=lineup(diesel,"diesel").filter(p=>fuel!=="electric");
@@ -157,7 +177,7 @@ function evaluate(input){
  const electricDraw=powerKW/electricEff;
  const autonomy= batteryKWh*usablePct/electricDraw;
  const batteryNeeded= electricDraw*hours/usablePct;
- const rated48A=requiredPerShaft/electricEff*1000/48;
+ const rated48A=requiredPerShaft/electricEff*1000/eVoltage;
  const dutyAdvice=[];
  if(bestDiesel&&bestDiesel.cruiseLoad<40)dutyAdvice.push("Diesel "+bestDiesel.name+" would operate around "+bestDiesel.cruiseLoad.toFixed(0)+"% of rated power at target cruise; review its manufacturer load spectrum to avoid prolonged underloading.");
  if(fuel!=="diesel"&&!electricMatches.length)dutyAdvice.push("No E-LINE at the selected battery voltage meets the current power/reserve/duty settings. Avoid claiming a suitable electric model.");
@@ -170,7 +190,7 @@ function evaluate(input){
  dutyAdvice.push("Rated kW, torque-versus-speed, gearbox ratio, propeller sizing and installation space must all be checked against actual product data before specification.");
  dutyAdvice.push("Electric system runtime assumes constant target-speed shaft demand and user-entered DC-to-shaft efficiency, with no hotel loads, wind, current, charging or reserve beyond usable capacity.");
  dutyAdvice.push("Diesel and electric ratings are NOT equivalent torque/propeller performance at the same rated power; obtain engine torque curves and match the propeller shaft design.");
- if(planing)dutyAdvice.push("Crouch coefficient depends on hull form; calibration to full-load trials is strongly recommended. Shaft performance and trim are not modelled.");
+ if(planing)dutyAdvice.push("Crouch predicts near-maximum planing power/speed, not efficient partial-throttle cruising. The target speed is treated as a near-WOT design point. Full-load trials and hull-specific C values are recommended; hump, trim and shaft performance are not modelled.");
  else dutyAdvice.push("Displacement screening uses ITTC-1957 friction and a non-standard approximate wave-resistance term, not a validated Holtrop-Mennen/CFD power prediction.");
  if(fuel!=="diesel"&&eVoltage===48)warnings.push("Battery voltage is 48 V class. The propulsion DC bus, peak currents, BMS and cooling arrangement must be verified.");
  const valid=errors.length===0;
