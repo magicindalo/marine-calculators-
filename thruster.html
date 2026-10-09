@@ -83,7 +83,7 @@ button.primary{background:var(--accent);color:#06222b;border:0}button:disabled{o
 <section class="section"><div class="head"><h2>2. VETUS thruster preferences</h2><span>Verified model / tunnel reference data</span></div><div class="body">
 <div class="fields">
 <div class="field"><label for="voltage">DC charging/source supply</label><select id="voltage"><option value="12">12 V</option><option value="24">24 V</option><option value="48">48 V</option></select></div>
-<div class="field"><label for="family">Thruster range</label><select id="family"><option value="all">Show all compatible types</option><option value="standard" selected>Standard DC (on/off)</option><option value="pro">BOW PRO (proportional)</option><option value="boosted">BOW PRO Boosted</option></select></div>
+<div class="field"><label for="family">Thruster range</label><select id="family"><option value="all" selected>Show all compatible types</option><option value="standard">Standard DC (on/off)</option><option value="pro">BOW PRO (proportional)</option><option value="boosted">BOW PRO Boosted</option></select></div>
 <div class="field"><label for="tunnel">Tunnel diameter</label><select id="tunnel"><option value="0">New installation / any size</option><option value="110">110 mm</option><option value="125">125 mm</option><option value="140">140 mm</option><option value="150">150 mm</option><option value="185">185 mm</option><option value="250">250 mm</option><option value="300">300 mm</option><option value="400">400 mm</option></select><small>Existing tunnel: match diameter exactly.</small></div>
 <div class="field"><label for="ignition">Ignition-protected compartment?</label><select id="ignition"><option value="no">No</option><option value="yes">Yes — IP-rated options only</option></select></div>
 </div>
@@ -149,8 +149,10 @@ function renderProducts(r,parent){
     const meta=document.createElement("div");meta.className="meta";
     [m.tunnel+" mm tunnel",m.family==="boosted"?"BOW PRO Boosted":m.family==="pro"?"BOW PRO proportional":m.family==="ignition"?"Ignition protected":"Standard DC on/off",
      m.boosted?m.sourceV+" V source → "+m.motorV+" V bank":m.motorV+" V battery",
+     m.lengthGuide?("VETUS boat-length guide "+(m.lengthGuide[0]||"≤")+"–"+m.lengthGuide[1]+" m"):"Boat-length guide: consult current catalogue",
      fmt(m.kgf/r.requiredKGF*100,0)+"% of required thrust"].forEach(t=>{const e=document.createElement("span");e.textContent=t;meta.append(e)});
     item.append(meta);
+    if(m.lengthGuide&& (last.length<m.lengthGuide[0]||last.length>m.lengthGuide[1]))addText(item,"This vessel lies outside the manufacturer’s approximate length guidance for this model. Thrust still meets the entered wind-load calculation; verify suitability with VETUS.","caution");
     if(m.boosted)addText(item,"Separate higher-voltage thruster battery bank is required; the lower voltage is the DC-DC charging source.","sub");
     const link=document.createElement("a");link.href=m.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="VETUS model / range details ↗";item.append(link);
     section.append(item);
