@@ -26,12 +26,12 @@ const formatPDF = report=>{
     if(row)rows.push(row);return rows.length?rows:[""];
   }
   function header(){rect(0,H-104,W,104,.055,.17,.25);rect(0,H-108,W,4,.11,.72,.78);
-    draw("MARINE CALCULATORS  /  ENGINEERING REPORT",M,H-36,10,true,[.56,.85,.9]);
+    draw("INDALO MARINE CALCULATORS  /  ENGINEERING REPORT",M,H-36,10,true,[.56,.85,.9]);
     draw(report.title||"Engineering Report",M,H-65,19,true,[1,1,1]);
     draw((report.subtitle||"")+"  |  "+new Date().toLocaleDateString("en-GB"),M,H-87,9,false,[.82,.88,.92]);
     y=H-135;
   }
-  function footer(){line(M,44,R,44);draw("PRELIMINARY ENGINEERING ESTIMATE  -  verify data before specification",M,29,7,false,[.42,.49,.56]);draw("Page "+page,R-43,29,7,false,[.42,.49,.56]);}
+  function footer(){line(M,44,R,44);draw("INDALO MARINE  /  PRELIMINARY ENGINEERING ESTIMATE  -  verify before specification",M,29,6.7,false,[.42,.49,.56]);draw("Page "+page,R-43,29,7,false,[.42,.49,.56]);}
   function next(){if(page){footer();pages.push(ops.join("\n"));ops=[]}page++;header();}
   function need(h){if(y-h<63)next();}
   function title(t){need(39);rect(M,y-25,usable,26,.90,.95,.97);draw(t.toUpperCase(),M+9,y-17,10,true,[.07,.26,.38]);y-=37;}
