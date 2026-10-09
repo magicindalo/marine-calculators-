@@ -1,0 +1,18 @@
+{
+  "name": "Indalo Marine — Cable & Voltage Drop",
+  "short_name": "Indalo Cable",
+  "description": "Marine copper cable sizing, DC/AC voltage-drop calculations and provisional fuse or breaker advice",
+  "start_url": "./cable.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071c2b",
+  "theme_color": "#071c2b",
+  "icons": [
+    {
+      "src": "./assets/indalo-app-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
