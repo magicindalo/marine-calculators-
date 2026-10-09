@@ -183,7 +183,7 @@ function evaluate(input){
    const cruiseLoad=cruiseTotal/available*100;
    const installLoad=requiredTotal/(p.kw*(kind==="diesel"?transEff:1)*boats)*100;
    const availableAtDuty=kind==="electric"&&p.sku==="ELINE220S"?Math.min(available*electricDuty,20*boats):available*(kind==="diesel"?dieselDuty:electricDuty);
-   const suitable=canMatch&&availableAtDuty>=requiredTotal-1e-7;
+   const suitable=errors.length===0&&canMatch&&availableAtDuty>=requiredTotal-1e-7;
    const undersized=canMatch&&availableAtDuty<requiredTotal;
    const lowLoad=kind==="diesel"&&cruiseLoad<35;
    const voltageOk=kind==="electric"?p.voltage===eVoltage:true;
