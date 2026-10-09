@@ -127,6 +127,13 @@ function render(prop,x,performance){
    ["Geometric apparent slip (%)",48.2,topSlip,45.6,crSlip],
    ["Vessel power curve (hp)",90,topVesselHp,5,cruiseVesselHp]
   ];
+  const compareStatus=$("photoAgreement");
+  if(compareStatus){
+    const vesselDelta=topVesselHp!==null?(topVesselHp/90-1)*100:NaN;
+    const propDelta=(topProp.P*x.propCount/KW_PER_HP/113-1)*100;
+    compareStatus.textContent="TEST RESULT: Predicted TOP propeller absorption is "+fmt(propDelta,0)+"% versus the reference. Predicted TOP vessel powering is "+fmt(vesselDelta,0)+"% versus the reference. The propeller B-series calculation is broadly comparable, but the hull power model differs substantially and must NOT be used as a validated engine-power curve.";
+    compareStatus.className="warning" + (Math.abs(vesselDelta)>25?"":" good");
+  }
   const body=$("photoComparisonRows");
   if(body){body.replaceChildren();for(const [label,expTop,gotTop,expCruise,gotCruise] of values){
    const tr=document.createElement("tr");for(const t of [label,fmt(expTop,1),fmt(gotTop,1),fmt(expCruise,1),fmt(gotCruise,1)]){
