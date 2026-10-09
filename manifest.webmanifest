@@ -1,7 +1,7 @@
 {
   "name": "Indalo Marine Calculators",
   "short_name": "Indalo Marine",
-  "description": "Indalo Marine engineering calculators: load demand, propeller sizing and speed, battery banks, charging and VETUS thruster selection.",
+  "description": "Indalo Marine engineering calculators: electrical loads, propulsion, batteries, VETUS thrusters and exhaust waterlocks.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
