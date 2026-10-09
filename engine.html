@@ -104,6 +104,27 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 </div></details>
 </div></section>
 
+<section class="panel"><div class="head"><h2>Reference engine &amp; gearbox</h2><span>Existing drivetrain · no assumed propeller</span></div><div class="body">
+<p class="note">For existing installations such as a Piper barge, choose the known VETUS engine and enter the ahead reduction ratio. This calculates engine-to-shaft RPM and available shaft torque from manufacturer data. It does <strong>not</strong> assume propeller diameter, pitch or absorbed load, and does not force the shortlisted engine to match the installed engine.</p>
+<div class="fields">
+<div class="field wide"><label for="referenceEngine">Known engine installed (optional)</label>
+<select id="referenceEngine"><option value="">Not entered / unknown</option>
+<option value="M2.13">VETUS M2.13</option><option value="M2.18">VETUS M2.18</option><option value="M3.29">VETUS M3.29</option><option value="M4.35">VETUS M4.35</option><option value="M4.45">VETUS M4.45</option><option value="M4.56">VETUS M4.56</option>
+<option value="VH4.65">VETUS VH4.65</option><option value="VH4.80">VETUS VH4.80</option>
+<option value="VD4.120">VETUS VD4.120</option><option value="VD4.140">VETUS VD4.140</option><option value="VD6.170">VETUS VD6.170</option><option value="VD6.210">VETUS VD6.210</option></select></div>
+<div class="field"><label for="gearboxRatio">Ahead reduction ratio (engine : shaft)</label><input id="gearboxRatio" type="number" min="1" max="8" step=".05" placeholder="e.g. 2.00 for 2:1"><small>Do not include an unverified reduction ratio.</small></div>
+<div class="field"><label for="observedEngineRPM">Observed engine speed (optional RPM)</label><input id="observedEngineRPM" type="number" min="200" max="8000" step="50" placeholder="Sea trial RPM"></div>
+</div>
+<div id="gearboxMetrics" class="stats hidden">
+<div class="stat hero"><span>Reference propeller-shaft RPM at rated engine speed</span><strong id="gearRatedRPM">—</strong><em>Rated engine rpm ÷ reduction ratio</em></div>
+<div class="stat"><span>Rated shaft power reference</span><strong id="gearShaftKW">—</strong><em>Manufacturer rated output / estimated where unspecified</em></div>
+<div class="stat"><span>Torque at rated engine power</span><strong id="gearRatedNm">—</strong><em>Based on rated shaft kW and shaft rpm</em></div>
+<div class="stat"><span>Peak shaft torque reference</span><strong id="gearPeakNm">—</strong><em id="gearPeakRPM">Not calculated</em></div>
+<div class="stat"><span>Observed shaft RPM</span><strong id="gearObservedRPM">—</strong><em>Engine RPM ÷ ratio</em></div>
+</div>
+<p class="note">D-Line figures taken from VETUS's D-Line operation manual. Peak torque is attained at a different engine speed from maximum power. Propeller absorption cannot be assessed without reliable propeller data or shaft-power measurements.</p>
+</div></section>
+
 <section class="panel"><div class="head"><h2>3. Power demand &amp; hull speed</h2><span id="confidence">Screening estimate</span></div><div class="body">
 <div id="error" class="err hidden" role="alert"></div>
 <div id="summary" class="stats" aria-live="polite">
@@ -154,7 +175,7 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-const IDS=["project","hull","lwl","beam","draft","displacement","cruise","water","engines","trialSpeed","trialPower","fuel","drive","eVoltage","reservePct","propulsiveEfficiency","dieselDuty","electricDuty","gearEfficiency","electricEfficiency","crouch","hours","batteryKWh","usablePercent"];
+const IDS=["project","hull","lwl","beam","draft","displacement","cruise","water","engines","trialSpeed","trialPower","fuel","drive","eVoltage","referenceEngine","gearboxRatio","observedEngineRPM","reservePct","propulsiveEfficiency","dieselDuty","electricDuty","gearEfficiency","electricEfficiency","crouch","hours","batteryKWh","usablePercent"];
 const KEY="indalo-engine-current-v1";
 const format=(n,d=1)=>Number.isFinite(n)?n.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
 let tab="both",last=null;
@@ -230,6 +251,14 @@ function render(){
  $("batteryNeeded").textContent=r.canMatch?format(r.batteryNeeded,1)+" kWh":"—";
  $("electricInput").textContent=r.canMatch?format(r.electricDraw,2)+" kW":"—";
  $("runtime").textContent=r.canMatch?format(r.autonomy,1)+" hours":"—";
+ const g=r.gearbox;
+ show("gearboxMetrics",!!g.name);
+ $("gearRatedRPM").textContent=g.ratedShaftRPM!==null?format(g.ratedShaftRPM,0)+" rpm":"Enter reduction";
+ $("gearShaftKW").textContent=g.ratedShaftKW!==null?format(g.ratedShaftKW,1)+" kW":"—";
+ $("gearRatedNm").textContent=g.ratedShaftNm!==null?format(g.ratedShaftNm,0)+" Nm":"—";
+ $("gearPeakNm").textContent=g.peakShaftNm!==null?format(g.peakShaftNm,0)+" Nm":"—";
+ $("gearPeakRPM").textContent=g.peakShaftRPM!==null?"At "+format(g.peakShaftRPM,0)+" shaft rpm, NOT rated-power rpm":"Peak torque unavailable";
+ $("gearObservedRPM").textContent=g.observedShaftRPM!==null?format(g.observedShaftRPM,0)+" rpm":"—";
  const host=$("recommendations");host.replaceChildren();
  products("diesel",r,host);products("electric",r,host);
  if(!host.children.length)buildText(host,"Select a propulsion range to view compatible candidates.","empty");
@@ -278,6 +307,20 @@ globalThis.MarineReports.init({
       ["E-Line duty assumption",a(r.electricDuty*100,0)+"%"],
       ["Diesel gearbox efficiency",a(r.transEff*100,0)+"%"],
       ["Electric DC-to-shaft efficiency",a(r.electricEff*100,0)+"%"]
+    ]},
+    {title:"Known engine and gearbox reference (no assumed propeller)",rows:[
+      ["Reference installed engine",r.gearbox.name||"Not entered"],
+      ["Ahead reduction ratio",r.gearbox.ratio?r.gearbox.ratio.toFixed(2)+":1":"Not entered"],
+      ["Engine rated power",r.gearbox.engineRatedKW!==null?a(r.gearbox.engineRatedKW,1)+" kW / "+r.gearbox.engineRatedHP+" hp":"Not entered"],
+      ["Engine rated RPM",r.gearbox.engineRatedRPM||"Not entered"],
+      ["Available rated shaft power",r.gearbox.ratedShaftKW!==null?a(r.gearbox.ratedShaftKW,1)+" kW":"Not calculated"],
+      ["Rated shaft speed",r.gearbox.ratedShaftRPM!==null?a(r.gearbox.ratedShaftRPM,0)+" rpm":"Not calculated"],
+      ["Shaft torque at rated power",r.gearbox.ratedShaftNm!==null?a(r.gearbox.ratedShaftNm,0)+" Nm":"Not calculated"],
+      ["Maximum engine torque",r.gearbox.enginePeakNm!==null?a(r.gearbox.enginePeakNm,0)+" Nm":"Not supplied"],
+      ["Estimated shaft torque at maximum engine torque",r.gearbox.peakShaftNm!==null?a(r.gearbox.peakShaftNm,0)+" Nm":"Not calculated"],
+      ["Shaft RPM at engine's peak torque",r.gearbox.peakShaftRPM!==null?a(r.gearbox.peakShaftRPM,0)+" rpm":"Not calculated"],
+      ["Observed shaft RPM",r.gearbox.observedShaftRPM!==null?a(r.gearbox.observedShaftRPM,0)+" rpm":"Not measured"],
+      ["Propeller specification","Not assumed; must be verified"]
     ]},
     {title:"VETUS diesel and E-Line candidates",table:{columns:[["Priority",75],["VETUS model / order code",185],["Rated power",80],["HP / supply",90],["Cruise load",75]],
       rows:variants.length?variants:[["No suitable model","Review hull powering and product availability","—","—","—"]]}},
