@@ -1,6 +1,6 @@
 {
-  "name": "Marine Thruster Selection",
-  "short_name": "Thruster Select",
+  "name": "Indalo Marine — Thruster Selection",
+  "short_name": "Indalo Thrusters",
   "description": "VETUS bow/stern thruster sizing, model comparison and engineering reports",
   "start_url": "./thruster.html",
   "scope": "./",
@@ -9,10 +9,10 @@
   "theme_color": "#071c2b",
   "icons": [
     {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "./assets/indalo-app-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
