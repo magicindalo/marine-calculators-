@@ -119,3 +119,11 @@ The `Load photographed benchmark` button fills **test data only**: 60 ft / assum
 Propeller absorbed power is ~14–15% lower in Indalo and the efficiency/slip agree closely. In contrast, the independently estimated **hull powering curve is ~44% low at the target top speed and ~72% low at cruise** compared to the other software. These two software calculations are **not interchangeable**, nor is either verified against measured shaft-power or full-scale speed/power trials. The engine power envelope in the graph is illustrative, and the photographed reference 90 hp vessel curve and 113 hp propeller-absorption figure represent different methods/quantities. Do not treat an uncalibrated Indalo hull power graph as sufficient for engine selection.
 
 The PDF report includes curve assumptions and the slip-method distinction. The actual responsive graphs are drawn in the browser.
+
+### Propeller graphs embedded in downloadable PDF reports (Version 1.3)
+
+The **Propeller & Speed** report now embeds the **actual live calculated vessel-power/speed and propeller-absorption/RPM curves** as sharp, resolution-independent PDF vector graphics on a dedicated "Performance and power curves" page. This is not a screenshot of the browser charts, and the PDF stays crisp when zoomed or printed. The visual and PDF plots share the same numerical data.
+
+The dashed engine-power envelope remains an **illustrative** shape, not a manufacturer-verified engine torque curve. The vessel-power graph remains a low-confidence resistance estimate without sea-trial measurements. If complete hull dimensions are unavailable, only the propeller-absorption curve is exported, never a blank hull chart. The original Save Project and PDF tools in the other calculators are unchanged.
+
+On iPhone, open the propeller calculator, press Calculate or Check Propeller, then use **Save PDF report**. The embedded plots are created from the current fields at export time; no screenshots, external libraries, downloads or internet connection are required.
