@@ -1,4 +1,4 @@
-const CACHE='indalo-marine-calculators-v15';
+const CACHE='indalo-marine-calculators-v16';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/indalo-marine-logo-colour.svg','./assets/indalo-app-icon.png','./assets/indalo-ocean-scene.svg','./exhaust.html','./exhaust-core.js','./exhaust.webmanifest','./load.html','./load.webmanifest','./battery.html','./battery.webmanifest','./battery-core.js','./thruster.html','./thruster-core.js','./thruster.webmanifest','./propeller.html','./propeller.webmanifest','./resistance.js','./reports.js'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
