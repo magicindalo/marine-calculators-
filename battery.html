@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Battery Systems"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="./battery.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Marine Battery System Calculator</title>
+<meta name="apple-mobile-web-app-title" content="Indalo Marine"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./battery.webmanifest"><link rel="icon" type="image/png" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Battery Systems</title>
 <style>
+.indalo-page-brand{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#25d4e9;font-size:10px;font-weight:850;letter-spacing:.15em;margin-bottom:5px}
+
 :root{--bg:#071c2b;--panel:#0d2b40;--panel2:#103951;--well:#071e2d;--line:#2b5369;--text:#effbff;--muted:#adc5d2;--accent:#21c0d9;--warning:#ffd58e;--danger:#ffd0d0;--good:#8be0b6}
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(#061925,#092b3d 70%,#061825);min-height:100vh;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
@@ -46,10 +48,11 @@ nav{display:flex;flex-wrap:wrap;gap:7px}.nav,.button{display:inline-flex;align-i
 details{margin-top:8px}details summary{cursor:pointer;font-weight:750;font-size:13px;min-height:44px;display:flex;align-items:center}details .inputs{margin-top:7px}
 @media(min-width:680px){.inputs{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}.wide{grid-column:span 2}.detail{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
 </head>
 <body>
 <main>
-<header><div><h1>Battery System Calculator</h1><p>12 V · 24 V · 48 V • Series / Parallel • Charger sizing</p></div>
+<header><div><div class="indalo-page-brand">INDALO MARINE CALCULATORS</div><h1>Battery System Calculator</h1><p>12 V · 24 V · 48 V • Series / Parallel • Charger sizing</p></div>
 <nav><a class="nav" href="./">Home</a><a class="nav" href="./load.html">Load demand</a><a class="nav" href="./propeller.html">Propeller</a></nav></header>
 
 <section class="section"><div class="sectionHead"><h2>1. Build the battery bank</h2><span id="layoutTag">2S2P · 4 batteries</span></div><div class="body">
