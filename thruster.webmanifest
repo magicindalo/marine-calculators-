@@ -1,0 +1,18 @@
+{
+  "name": "Marine Thruster Selection",
+  "short_name": "Thruster Select",
+  "description": "VETUS bow/stern thruster sizing, model comparison and engineering reports",
+  "start_url": "./thruster.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071c2b",
+  "theme_color": "#071c2b",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
