@@ -1,0 +1,43 @@
+/* Indalo Marine Calculators - Diesel / E-Line separate V1.1 screens */
+:root{color-scheme:dark;--bg:#051a2e;--panel:#0b2e49;--border:#286782;--cyan:#23d1e9;--text:#edf9ff;--muted:#a9cad9;--ok:#a1eed4;--warn:#ffe0b2}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 14% 10%,#104c71 0%,transparent 35%),radial-gradient(ellipse at 85% 70%,#07506b 0%,transparent 34%),linear-gradient(165deg,#04172b,#082c47 60%,#041d31);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}a{color:#8ceff6}main{max-width:970px;margin:auto;padding:calc(17px + env(safe-area-inset-top)) 15px calc(40px + env(safe-area-inset-bottom))}
+header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.brand{font-weight:850;letter-spacing:.13em;font-size:10px;color:var(--cyan);margin:0 0 4px}
+h1{font-size:clamp(21px,5vw,27px);line-height:1.15;margin:0;max-width:650px}header p{margin:6px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;flex-wrap:wrap;gap:8px}.nav{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:44px;border:1px solid #3d7893;background:#103e5a;color:#effaff;border-radius:12px;padding:10px 13px;font-size:12px;font-weight:750}
+.card{margin:13px 0 0;border:1px solid var(--border);border-radius:17px;background:linear-gradient(140deg,#103754,#08263f);overflow:hidden}
+.card h2{font-size:16px;margin:0}.top{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:13px 14px;border-bottom:1px solid #26647e}.top span{font-size:11px;color:var(--muted);text-align:right}
+.inner{padding:14px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.field{min-width:0}.wide{grid-column:1/-1}
+label{font-size:12px;display:block;color:#c3dce8;margin-bottom:5px}
+input,select{display:block;width:100%;min-width:0;min-height:46px;padding:10px;background:#061f34;color:var(--text);border:1px solid #346d88;border-radius:10px;font-size:16px}
+.field small{font-size:10.5px;color:#b6ccda;display:block;margin-top:5px;line-height:1.35}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.stat{background:#0b324d;border:1px solid #2b627a;border-radius:14px;padding:12px;min-width:0}
+.stat.hero{grid-column:1/-1;background:linear-gradient(125deg,#10526f,#076984);border-color:#3dabbe}
+.stat span{display:block;font-size:11px;color:#b9d5df}
+.stat strong{display:block;font-size:clamp(20px,5vw,25px);line-height:1.22;overflow-wrap:anywhere;margin:5px 0}
+.stat.hero strong{font-size:clamp(25px,6vw,34px)}
+.stat em{display:block;font-style:normal;color:#bdd5e0;font-size:11px}
+.note{font-size:12px;color:var(--muted);line-height:1.55;margin:11px 0 0}
+.warning{margin:9px 0;background:#322e2a;color:var(--warn);border:1px solid #77613d;padding:11px 12px;border-radius:11px;font-size:12px;line-height:1.5}
+.critical{background:#492a31;border-color:#a16c72;color:#ffe6e1}
+.success{background:#113e3d;border-color:#358780;color:var(--ok)}
+.model{margin-top:11px;border:1px solid #327c91;border-radius:12px;background:#092c44;padding:12px}
+.model:first-child{border-color:#4de0e9}
+.modelTop{display:flex;justify-content:space-between;gap:9px;align-items:center}
+.modelTop strong{font-size:17px}.modelTop .tag{background:#13506a;border:1px solid #36889c;padding:5px 8px;border-radius:30px;font-size:10px;font-weight:750}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}
+.chips span{padding:5px 8px;border-radius:8px;border:1px solid #2c6681;color:#c8e2eb;background:#14415b;font-size:11px}
+.model a{display:inline-block;margin-top:8px;font-size:12px;font-weight:750}
+.empty{border:1px dashed #487d93;border-radius:12px;padding:15px;background:#0a314a;color:#c4dce8;font-size:13px;line-height:1.55}
+details{margin-top:11px;border-top:1px solid #255d76}
+details summary{cursor:pointer;display:flex;align-items:center;min-height:46px;font-size:13px;font-weight:750}
+details .fields{padding:8px 0 0}
+.hide{display:none!important}.disclaimer{color:#a7c5d6;font-size:11px;text-align:center;padding:17px 4px;margin-top:18px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #56eafd;outline-offset:2px}
+@media(min-width:730px){.fields{grid-template-columns:repeat(4,minmax(0,1fr))}.wide{grid-column:span 2}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0s!important;transition:none!important}}
