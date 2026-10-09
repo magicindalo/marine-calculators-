@@ -60,7 +60,8 @@ function engineProfile(frac){
 }
 function render(prop,x,performance){
  last={prop,x,performance};
- const host=$("propGraphs");if(!host)return;
+ const vesselHost=$("vesselPowerGraph"),engineHost=$("engineLoadGraph");
+ if(!vesselHost||!engineHost)return;
  const speedMph=x.speed*MPH_PER_KNOT;
  const cruiseRPM=num($("curveCruiseRPM")?.value,0);
  const cruiseMph=num($("curveCruiseMph")?.value,0);
@@ -90,13 +91,11 @@ function render(prop,x,performance){
   topVesselHp=hullPower(speedMph);
   cruiseVesselHp=hasCruise?hullPower(cruiseMph):null;
  }
- const refPhoto=$("photoComparison")?.dataset.active==="yes";
- const photoVMarks=refPhoto?[{x:9.4,y:90,label:"Photo top: 90 hp",color:"#ffd18d"},{x:3.5,y:5,label:"Photo cruise: 5 hp",color:"#ffd18d"}]:[];
- const vmax=Math.max(15,Math.ceil(Math.max(...vCurve.map(x=>x[1]),90,topVesselHp||0)*1.13/20)*20);
- if(vCurve.length>2)graphSVG($("vesselPowerGraph"),{title:"Estimated vessel shaft power against boat speed",xLabel:"Vessel speed through water (mph)",yLabel:"Estimated shaft horsepower",maxX:maxSpeed,maxY:vmax,
+ const vmax=Math.max(15,Math.ceil(Math.max(5,...vCurve.map(x=>x[1]),topVesselHp||0)*1.13/20)*20);
+ if(vCurve.length>2)graphSVG(vesselHost,{title:"Estimated vessel shaft power against boat speed",xLabel:"Vessel speed through water (mph)",yLabel:"Estimated shaft horsepower",maxX:maxSpeed,maxY:vmax,
   lines:[{label:"Indalo hull resistance screen",color:"#25d4ea",data:vCurve}],
-  marks:[{x:speedMph,y:topVesselHp??NaN,label:"Chosen speed",color:"#8effd0"},...photoVMarks]});
- else $("vesselPowerGraph").textContent="Enter valid LWL, beam, loaded draft and displacement to show this estimated vessel power curve.";
+  marks:[{x:speedMph,y:topVesselHp??NaN,label:"Chosen speed",color:"#8effd0"}]});
+ else vesselHost.textContent="Enter valid LWL, beam, loaded draft and displacement to show this estimated vessel power curve.";
  let absorbed=[],engine=[];
  for(let i=1;i<=95;i++){
   const rpm=x.erpm*i/95,speed=speedAtEngineRPM(rpm);
@@ -110,49 +109,13 @@ function render(prop,x,performance){
  const cruiseProp=hasCruise?performance(prop.D,prop.pd,{...x,srpm:cruiseRPM/x.ratio,speed:cruiseMph/MPH_PER_KNOT}):null;
  const marks=[topProp&&{x:x.erpm,y:topProp.P*x.propCount/KW_PER_HP,label:"Design point",color:"#8effd0"},
   cruiseProp&&{x:cruiseRPM,y:cruiseProp.P*x.propCount/KW_PER_HP,label:"Cruise",color:"#ffd18d"}].filter(Boolean);
- if(refPhoto)marks.push({x:2400,y:113,label:"Photo: 113 hp",color:"#ffb184"},{x:849,y:5,label:"Photo: 5 hp",color:"#ffb184"});
- graphSVG($("engineLoadGraph"),{title:"Engine RPM versus predicted fixed propeller absorption and illustrative diesel full-load curve",xLabel:"Engine / motor RPM",yLabel:"Power (hp)",maxX:x.erpm,maxY:maxPower,
+ graphSVG(engineHost,{title:"Engine RPM versus predicted fixed propeller absorption and illustrative diesel full-load curve",xLabel:"Engine / motor RPM",yLabel:"Power (hp)",maxX:x.erpm,maxY:maxPower,
   lines:[{label:"Wageningen prop absorption",color:"#28dae8",data:absorbed},
          {label:"Illustrative engine envelope",color:"#ffd18d",dashed:true,data:engine}],marks});
  const note=$("curveNote");
  if(note)note.textContent="Solid cyan = B-series power absorbed by this propeller at the assumed speed/RPM relationship. Dashed amber = ILLUSTRATIVE diesel full-load profile derived only from entered rated power and RPM; it is NOT an actual manufacturer torque curve. Hull-power chart uses the separate approximate resistance model and estimated overall propulsive efficiency ("+fmt(eff*100,1)+"%). These are distinct power concepts and will not necessarily match.";
- const snapshot=$("photoComparison");
- if(snapshot&&refPhoto&&topProp&&cruiseProp){
-  const crSlip=(1-(cruiseMph/MPH_PER_KNOT*.514444)/(cruiseRPM/x.ratio/60*prop.pitch))*100;
-  const topSlip=(1-(x.speed*.514444)/(x.srpm/60*prop.pitch))*100;
-  const values=[
-   ["Prop absorbed power (hp)",113,topProp.P*x.propCount/KW_PER_HP,5,cruiseProp.P*x.propCount/KW_PER_HP],
-   ["Open-water prop efficiency (%)",40.1,topProp.eta*100,40.8,cruiseProp.eta*100],
-   ["Delivered thrust (lbf)",1754,topProp.T*x.propCount*.224809,212,cruiseProp.T*x.propCount*.224809],
-   ["Geometric apparent slip (%)",48.2,topSlip,45.6,crSlip],
-   ["Vessel power curve (hp)",90,topVesselHp,5,cruiseVesselHp]
-  ];
-  const compareStatus=$("photoAgreement");
-  if(compareStatus){
-    const vesselDelta=topVesselHp!==null?(topVesselHp/90-1)*100:NaN;
-    const propDelta=(topProp.P*x.propCount/KW_PER_HP/113-1)*100;
-    compareStatus.textContent="TEST RESULT: Predicted TOP propeller absorption is "+fmt(propDelta,0)+"% versus the reference. Predicted TOP vessel powering is "+fmt(vesselDelta,0)+"% versus the reference. The propeller B-series calculation is broadly comparable, but the hull power model differs substantially and must NOT be used as a validated engine-power curve.";
-    compareStatus.className="warning" + (Math.abs(vesselDelta)>25?"":" good");
-  }
-  const body=$("photoComparisonRows");
-  if(body){body.replaceChildren();for(const [label,expTop,gotTop,expCruise,gotCruise] of values){
-   const tr=document.createElement("tr");for(const t of [label,fmt(expTop,1),fmt(gotTop,1),fmt(expCruise,1),fmt(gotCruise,1)]){
-    const td=document.createElement("td");td.textContent=t;tr.append(td);
-   }body.append(tr);
-  }}
- }
  if($("curveReadout"))$("curveReadout").textContent="Design absorbed "+fmt(topProp?.P*x.propCount/KW_PER_HP,1)+" hp at "+fmt(x.erpm,0)+" engine rpm"+
   (cruiseProp?"; cruise absorbed "+fmt(cruiseProp.P*x.propCount/KW_PER_HP,1)+" hp at "+fmt(cruiseRPM,0)+" rpm":"")+".";
 }
-function benchmark(){
- const values={vesselName:"Screenshot comparison • 60 ft 36 t (test only)",lwl:18.29,beam:4.22,draft:.95,disp:36,propCount:1,resistance:"",
-  trialSpeed:"",trialPower:"",drive:"diesel",power:129.98,powerUnit:"hp",rpm:2400,ratio:2,speed:9.4/MPH_PER_KNOT,
-  hull:"auto",wake:.25,blades:4,ear:.69,water:1025,existingD:22,existingP:16,curveCruiseRPM:849,curveCruiseMph:3.5,thrustDeduct:15};
- for(const [id,value] of Object.entries(values)){const el=$(id);if(el)el.value=String(value)}
- const comp=$("photoComparison");if(comp){comp.dataset.active="yes";comp.classList.remove("hidden")}
- $("checkTab")?.click();
- $("calculate")?.click();
- document.getElementById("curveReview")?.scrollIntoView?.({behavior:"smooth",block:"start"});
-}
-root.PropellerGraphs={render,benchmark};
+root.PropellerGraphs={render};
 })(globalThis);
