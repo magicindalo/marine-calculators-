@@ -139,6 +139,17 @@ main{padding-left:13px;padding-right:13px}
   <p class="tileMeta" id="thrusterSaved">VETUS bow / stern model matching</p>
   <div class="tileFoot"><span class="go">›</span></div>
 </a>
+<a class="tile" href="./exhaust.html" aria-label="Open Exhaust Backflow and VETUS Waterlock Selection calculator">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#a7f5ff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 30h12V17h11c9 0 9-10 17-10M27 17v15h15" stroke="#9be6fc"/>
+  <path d="M7 35q5-5 10 0t10 0t10 0" stroke="#20cfe7"/>
+  <rect x="6" y="29" width="21" height="12" rx="5" fill="#0e5e7b" stroke="#2ee1f1"/>
+  <path d="M10 35h13" stroke="#68e0f1"/>
+  </svg></div>
+  <h2>Exhaust &amp; Waterlocks</h2>
+  <p class="tileMeta" id="exhaustSaved">Water backflow • VETUS waterlock sizing</p>
+  <div class="tileFoot"><span class="go">›</span></div>
+</a>
 </section>
 <section class="next"><h3>More calculators on the way</h3><p>Indalo Marine Calculators is designed to expand without changing the existing tools.</p>
 <div class="future"><span>Cable sizing &amp; voltage drop</span><span>Generator sizing</span><span>Hybrid propulsion</span></div></section>
@@ -150,7 +161,7 @@ main{padding-left:13px;padding-right:13px}
 try{
  const p=JSON.parse(localStorage.getItem("marine-calculators.saved-projects.v1"))||[];
  if(Array.isArray(p)){
-   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved"};
+   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved",exhaust:"exhaustSaved"};
    Object.keys(counts).forEach(k=>{const n=p.filter(x=>x.kind===k).length;if(n)document.getElementById(counts[k]).textContent=n+" saved "+(n===1?"project":"projects")});
  }
 }catch(e){}
