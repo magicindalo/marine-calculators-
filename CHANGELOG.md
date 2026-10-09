@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 1.1 — Diesel and E-Line selection split (9 October 2026)
+
+- Split one combined home-menu tool into two focused calculators: Diesel Engine Sizing and E-Line Electric Selection.
+- Diesel screen: traditional displacement hull speed, power-to-target and power-to-theoretical-hull-speed estimates, VETUS diesel model screening and optional known-engine gearbox RPM/torque.
+- E-Line screen: 24/48 V motor selection, domestic load, nominal/usable battery capacity, retained reserve, indicative current, estimated runtime and battery for desired passage.
+- Added safeguarding for extrapolating a measured shaft-power sea trial more than 25% above observed speed; do not infer guaranteed peak power from hull speed alone.
+- Suppressed E-Line runtime if no listed motor can meet expected power and duty.
+- Retained `engine.html` and local `engine` project data for compatibility; new `diesel` and `eline` projects save separately.
+- Updated main navigation, PWA manifests, offline cache, Indalo report headings and navigation.
+- Preserved J. Spaven ownership statement and third-party VETUS attribution.
+
+
 ## Version 1.0 — 9 October 2026
 
 - Seven marine calculation tools organised on one iPhone-friendly Indalo Marine home screen.
