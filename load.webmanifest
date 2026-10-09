@@ -1,6 +1,6 @@
 {
-  "name": "Marine Electrical Load Demand",
-  "short_name": "Load Demand",
+  "name": "Indalo Marine — Load Demand",
+  "short_name": "Indalo Load",
   "start_url": "./load.html",
   "scope": "./",
   "display": "standalone",
@@ -8,10 +8,10 @@
   "theme_color": "#071c2b",
   "icons": [
     {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "./assets/indalo-app-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
