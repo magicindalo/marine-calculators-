@@ -27,7 +27,10 @@ function diesel(raw){
  if(speed>theoretical*1.001)warnings.push("Selected cruise speed exceeds traditional displacement hull speed. The powering curve becomes especially uncertain; no guarantee of speed or maximum power is possible.");
  if(x.trialPower&&x.trialSpeed)warnings.push("Sea-trial calibration assumes the shaft power entered is measured delivered power for the loaded vessel, not the engine's advertised maximum rating.");
  // Do not nominate a candidate if either speed exceeds model domain or data invalid.
- const suitable=valid&&hull.canMatch&&target.canMatch&&speed<=theoretical*1.001&&!((x.hull||"")==="canal"&&!NUM(x.trialPower,0));
+ const trialKts=NUM(x.trialSpeed,0);
+ const extrapolationTooFar=trialKts>0&&theoretical>trialKts*1.25;
+ if(extrapolationTooFar)warnings.push("The theoretical hull-speed demand is more than 25% above the measured sea-trial speed. Powering extrapolation is too uncertain to select an engine; repeat a safely conducted trial nearer the intended operating speed or obtain a naval architect's resistance curve.");
+ const suitable=valid&&hull.canMatch&&target.canMatch&&!extrapolationTooFar&&speed<=theoretical*1.001&&!((x.hull||"")==="canal"&&!NUM(x.trialPower,0));
  return {kind:"diesel",valid,errors:[...new Set([...target.errors,...hull.errors])],warnings:[...warnings,...target.warnings],
    theoreticalSpeed:theoretical,targetSpeed:speed,atTarget:target,atHull:hull,
    unverifiedHullKW:Number.isFinite(hull.shaftCruiseKW)?hull.shaftCruiseKW:null,
@@ -51,10 +54,11 @@ function electric(raw){
  const motionKW=Number.isFinite(model.electricDraw)?model.electricDraw:NaN;
  const demandKW=motionKW+hotelW/1000;
  const availableKWh=bank*usable/100*(1-reserve/100);
- const runtime=valid&&model.canMatch&&demandKW>0?availableKWh/demandKW:null;
- const requiredKWh=valid&&model.canMatch&&demandKW>0?demandKW*hours/(usable/100)/(1-reserve/100):null;
- const dcCurrent=valid&&model.canMatch&&demandKW>0?demandKW*1000/voltage:null;
- const energyForHours=valid&&model.canMatch&&demandKW>0?demandKW*hours:null;
+ const haveSuitableMotor=valid&&model.canMatch&&model.electricMatches.length>0&&cruise<=hullSpeed(NUM(x.lwl,NaN))*1.001;
+ const runtime=haveSuitableMotor&&demandKW>0?availableKWh/demandKW:null;
+ const requiredKWh=haveSuitableMotor&&demandKW>0?demandKW*hours/(usable/100)/(1-reserve/100):null;
+ const dcCurrent=haveSuitableMotor&&demandKW>0?demandKW*1000/voltage:null;
+ const energyForHours=haveSuitableMotor&&demandKW>0?demandKW*hours:null;
  const motorList=valid&&model.canMatch?model.electricMatches:[];
  const warnings=[
  "Runtime assumes continuous speed through water, steady propulsion power, fixed drivetrain efficiency, the entered constant house load and no charging contribution.",
@@ -65,6 +69,7 @@ function electric(raw){
  ];
  if(NUM(x.displacement,0)>=25&&!NUM(x.trialPower,0))warnings.push("At 25 t or more, E-Line matching and battery runtime are withheld without measured shaft-power trial data.");
  if(voltage===24)warnings.push("Only the 24 V E-AIR 5 kW option is screened for 24 V bank voltage in the current product table.");
+ if(valid&&model.canMatch&&model.electricMatches.length===0)warnings.push("No listed E-Line can meet the selected shaft duty / reserve. Runtime and required battery figures are withheld because there is no viable system to base them on.");
  const hullKnots=hullSpeed(NUM(x.lwl,NaN));
  if(cruise>hullKnots*1.001)warnings.push("Requested speed exceeds the traditional displacement hull-speed benchmark. Expected power and autonomy become especially uncertain.");
  return{kind:"eline",valid,errors,warnings:[...warnings,...model.warnings],model,
@@ -73,7 +78,7 @@ function electric(raw){
    motorKW:motionKW,hotelW,totalKW:demandKW,availableKWh,
    runtime,requiredKWh,dcCurrent,energyForHours,
    batteryKWh:bank,usablePct:usable,reservePct:reserve,hours,voltage,
-   reliable:valid&&model.canMatch&&cruise<=hullKnots*1.001};
+   reliable:haveSuitableMotor};
 }
 root.PropulsionSplit={diesel,electric,hullSpeed};
 })(globalThis);
