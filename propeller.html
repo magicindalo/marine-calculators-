@@ -6,19 +6,22 @@
 <meta name="theme-color" content="#071c2b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Prop Calculator">
+<meta name="apple-mobile-web-app-title" content="Indalo Marine">
 <link rel="manifest" href="./propeller.webmanifest">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Marine Propeller Calculator</title>
+<link rel="icon" type="image/png" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Propeller & Vessel Speed</title>
 <style>
+.indalo-page-brand{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#25d4e9;font-size:10px;font-weight:850;letter-spacing:.15em;margin-bottom:5px}
+
 :root{--bg:#071c2b;--p:#0c2a3d;--p2:#10354c;--f:#061c2a;--t:#eff8ff;--m:#9eb8c9;--l:#1e4962;--a:#21c0d9;--g:#66d9a6;--w:#ffd166;--d:#ff7b7b}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#061925,#0a2536 55%,#071c2b);color:var(--t);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}button,input,select,summary{font:inherit}.app{max-width:900px;margin:auto;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 36px)}header{display:flex;gap:10px;align-items:center;justify-content:space-between}h1{font-size:22px;margin:0}header p{font-size:12px;color:var(--m);margin:3px 0}.btn,.seg{min-height:44px;border-radius:12px;border:1px solid var(--l);background:var(--p2);color:var(--t);padding:0 13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--a);color:#03212a;border:0}.modebar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.seg.active{background:var(--a);color:#03212a;border-color:transparent}.section,.card{background:rgba(12,42,61,.95);border:1px solid var(--l);border-radius:16px}.section{margin:12px 0;overflow:hidden}.head{padding:12px 13px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between;align-items:center;gap:8px}.head h2{font-size:16px;margin:0}.head span{font-size:11px;color:var(--m)}.body{padding:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field{min-width:0}.field label{display:block;font-size:11px;color:var(--m);margin-bottom:4px}.field input,.field select{width:100%;min-height:46px;border:1px solid var(--l);border-radius:10px;background:var(--f);color:var(--t);padding:8px 10px;font-size:16px}.field small{display:block;color:var(--m);font-size:10px;margin-top:3px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;margin-top:12px}.actions .btn{flex:1}.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}.card{padding:12px}.lab{font-size:11px;color:var(--m)}.val{font-size:22px;font-weight:800;margin-top:4px}.sub{font-size:11px;color:var(--m);margin-top:2px}.hero{grid-column:1/-1;background:linear-gradient(145deg,#0b3349,#0d4057);border-color:#2a6078}.hero .val{font-size:30px}.good{color:var(--g)}.warn{color:var(--w)}.bad{color:var(--d)}.note{font-size:12px;color:var(--m)}.message{padding:11px 12px;border-radius:12px;border:1px solid var(--l);background:var(--f);font-size:13px;margin-top:10px}.message strong{display:block;margin-bottom:3px}.details{margin:10px 0}.details summary{cursor:pointer;color:var(--t);font-weight:700;min-height:44px;display:flex;align-items:center}.method{font-size:12px;color:var(--m);line-height:1.5}.method b{color:var(--t)}.hidden{display:none!important}.mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mini div{background:var(--f);border:1px solid var(--l);border-radius:11px;padding:9px}.mini span{display:block;color:var(--m);font-size:10px}.mini strong{font-size:14px}.badge{display:inline-block;font-size:11px;border-radius:999px;padding:4px 8px;background:#123a50;border:1px solid var(--l);color:var(--m)}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.hero{grid-column:span 2}.wide{grid-column:span 2}.mini{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Marine Propeller Calculator</h1><p>Wageningen B-series preliminary matching • diesel & electric</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><a class="btn" href="./">Home</a><a class="btn" href="./load.html">Load calculator</a></div></header>
+<header><div><div class="indalo-page-brand">INDALO MARINE CALCULATORS</div><h1>Marine Propeller Calculator</h1><p>Wageningen B-series preliminary matching • diesel & electric</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><a class="btn" href="./">Home</a><a class="btn" href="./load.html">Load calculator</a></div></header>
 <div class="modebar"><button class="seg active" id="sizeTab" type="button">Size a propeller</button><button class="seg" id="checkTab" type="button">Check existing prop</button></div>
 
 <section class="section"><div class="head"><h2>Vessel details</h2><span>Improves the vessel-specific checks</span></div><div class="body">
