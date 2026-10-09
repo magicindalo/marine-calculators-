@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 const num=(v,d=0)=>Number.isFinite(Number(v))&&String(v).trim()!==""?Number(v):d;
 const fmt=(v,d=1)=>Number.isFinite(v)?Number(v).toFixed(d):"—";
 let last=null;
+let pdfCharts=[];
 function node(tag,attributes,text){
  const e=document.createElementNS(NS,tag);
  for(const [k,v] of Object.entries(attributes||{}))e.setAttribute(k,String(v));
@@ -14,6 +15,15 @@ function node(tag,attributes,text){
 }
 function graphSVG(host,config){
  host.replaceChildren();
+ // Retain numerical series for sharp, native-vector plotting in the A4 PDF.
+ // Only graphs actually generated for the current calculation are exported.
+ pdfCharts.push({
+   title:config.title,xLabel:config.xLabel,yLabel:config.yLabel,
+   maxX:config.maxX,maxY:config.maxY,
+   lines:config.lines.map(l=>({label:l.label,color:l.color,dashed:!!l.dashed,
+     data:l.data.filter(pt=>Array.isArray(pt)&&pt.length===2&&pt.every(Number.isFinite)).map(pt=>[pt[0],pt[1]])})),
+   marks:(config.marks||[]).filter(m=>Number.isFinite(m.x)&&Number.isFinite(m.y)).map(m=>({x:m.x,y:m.y,label:m.label,color:m.color}))
+ });
  const W=740,H=330,L=72,R=24,T=28,B=55;
  const pw=W-L-R,ph=H-T-B,maxX=config.maxX,maxY=config.maxY;
  const xx=x=>L+x/maxX*pw, yy=y=>H-B-y/maxY*ph;
@@ -59,6 +69,8 @@ function engineProfile(frac){
  return 1;
 }
 function render(prop,x,performance){
+ // Reset before each run to avoid exporting plots from a different vessel.
+ pdfCharts=[];
  last={prop,x,performance};
  const vesselHost=$("vesselPowerGraph"),engineHost=$("engineLoadGraph");
  if(!vesselHost||!engineHost)return;
@@ -117,5 +129,11 @@ function render(prop,x,performance){
  if($("curveReadout"))$("curveReadout").textContent="Design absorbed "+fmt(topProp?.P*x.propCount/KW_PER_HP,1)+" hp at "+fmt(x.erpm,0)+" engine rpm"+
   (cruiseProp?"; cruise absorbed "+fmt(cruiseProp.P*x.propCount/KW_PER_HP,1)+" hp at "+fmt(cruiseRPM,0)+" rpm":"")+".";
 }
-root.PropellerGraphs={render};
+root.PropellerGraphs={
+ render,
+ getPDFCharts:()=>pdfCharts.map(c=>({...c,
+   lines:c.lines.map(l=>({...l,data:l.data.map(pt=>[...pt])})),
+   marks:c.marks.map(m=>({...m}))
+ }))
+};
 })(globalThis);
