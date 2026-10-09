@@ -1,0 +1,275 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Indalo Marine">
+<link rel="manifest" href="./cable.webmanifest"><link rel="icon" href="./assets/indalo-app-icon.png" type="image/png"><link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Cable Size &amp; Voltage Drop</title>
+<style>
+:root{--navy:#061e32;--panel:#0d314b;--border:#2b6480;--muted:#afcedd;--cyan:#26d0e6;--light:#effaff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 8%,#104772,transparent 37%),radial-gradient(ellipse at 88% 70%,#063e63,transparent 33%),linear-gradient(#04182c,#0a2c46 67%,#061b31);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--light)}
+button,input,select{font:inherit}
+main{max-width:1000px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:11px}
+.brand{font-size:10px;letter-spacing:.17em;color:var(--cyan);font-weight:850;margin-bottom:5px}
+h1{font-size:clamp(20px,4.9vw,25px);line-height:1.18;margin:0}
+header p{margin:4px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+.nav{color:#eafaff;background:#10425b;border:1px solid var(--border);border-radius:10px;padding:9px 12px;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-weight:730;font-size:12px}
+.panel{border:1px solid var(--border);background:linear-gradient(140deg,#103650,#0a2943);border-radius:17px;overflow:hidden;margin-top:13px}
+.head{border-bottom:1px solid #326780;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+.head h2{font-size:16px;margin:0}.head span{color:var(--muted);font-size:11px;text-align:right}
+.body{padding:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{min-width:0}.wide{grid-column:1/-1}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select{display:block;width:100%;min-height:45px;border-radius:9px;border:1px solid var(--border);background:#051f36;color:var(--light);padding:10px;font-size:16px}
+.field small{display:block;color:var(--muted);font-size:10.5px;line-height:1.35;margin-top:4px}
+.note{color:var(--muted);font-size:12px;line-height:1.52;margin:10px 0 0}
+.diagram{display:flex;align-items:center;gap:9px;margin:13px 0 0;padding:15px 11px;background:#082439;border:1px solid #2f7188;border-radius:13px}
+.node{font-size:12px;font-weight:770;text-align:center;background:#10455f;border:1px solid #3092ae;padding:10px 9px;border-radius:11px;min-width:72px}
+.conductor{flex:1;min-width:35px;border-top:4px solid #24d6e8;border-bottom:4px solid #1590c1;height:19px;position:relative}
+.conductor::after{position:absolute;content:"";right:0;top:-8px;border-left:11px solid #5ce1f3;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.results{margin-top:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.kpi{background:#0b324d;border:1px solid #29647d;border-radius:13px;padding:12px;min-width:0}
+.kpi.hero{grid-column:1/-1;background:linear-gradient(125deg,#10516b,#086a83);border-color:#36a0b3}
+.kpi span{display:block;font-size:11px;color:#b7d9e4}.kpi strong{font-size:25px;display:block;margin:4px 0;overflow-wrap:anywhere;line-height:1.16}.kpi.hero strong{font-size:31px}
+.kpi em{font-size:11px;font-style:normal;color:#b4d3dd}
+.bar{height:12px;border:1px solid #2f728a;background:#07243c;border-radius:50px;overflow:hidden;margin:13px 0 4px}
+.bar>div{height:100%;width:10%;background:linear-gradient(90deg,#25d7c6,#27bdea);border-radius:50px;transition:width .16s}
+.statrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
+.statrow div{padding:9px;background:#0b344e;border:1px solid #1e5775;border-radius:9px}
+.statrow span{display:block;color:var(--muted);font-size:11px}.statrow strong{font-size:15px;display:block;margin-top:4px}
+.message{padding:11px;border:1px solid #755d3b;background:#2f2e2d;color:#ffdeb4;border-radius:10px;font-size:12px;line-height:1.5;margin-top:9px}
+.message.good{background:#103e3b;border-color:#2d8e8a;color:#b9f4d9}
+.message.error{background:#482432;border-color:#a05b69;color:#ffe3e9}
+.chip{background:#16465b;border:1px solid #33758c;padding:5px 8px;font-size:11px;border-radius:999px;color:#c8eff6;display:inline-block;margin:5px 4px 0 0}
+.hidden{display:none!important}
+details{margin-top:12px;border-top:1px solid #245978}
+details summary{display:flex;align-items:center;min-height:45px;cursor:pointer;font-size:13px;font-weight:750}
+details .grid{padding:9px 0}
+a{color:#79ecf2}
+@media(min-width:730px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.wide{grid-column:span 2}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.kpi.hero{grid-column:span 2}.statrow{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.bar>div{transition:none}}
+</style>
+</head><body><main>
+<header><div><div class="brand">INDALO MARINE CALCULATORS</div><h1>Cable Size &amp; Voltage Drop</h1><p>Marine wiring • copper conductors • preliminary fuse advice</p></div>
+<nav><a class="nav" href="./">Home</a><a class="nav" href="./battery.html">Battery Systems</a><a class="nav" href="./load.html">Load Demand</a></nav>
+</header>
+
+<section class="panel"><div class="head"><h2>1. Circuit details</h2><span>DC / AC one- and three-phase</span></div>
+<div class="body"><div class="grid">
+<div class="field wide"><label for="project">Vessel / project name</label><input id="project" placeholder="e.g. Safehaven T2000 bow-thruster feed"></div>
+<div class="field"><label for="scheme">Electrical system</label><select id="scheme">
+<option value="dc">DC (12 / 24 / 48 V)</option><option value="ac1">230 V AC single-phase</option><option value="ac3">400 V AC three-phase (screening only)</option></select></div>
+<div class="field"><label for="volts">System voltage</label><select id="volts"><option value="12" selected>12 V</option><option value="24">24 V</option><option value="48">48 V</option></select></div>
+<div class="field"><label for="load">Electrical load</label><input id="load" type="number" min=".01" step="any" value="20"></div>
+<div class="field"><label for="loadUnit">Load units</label><select id="loadUnit"><option value="a">Amps (A)</option><option value="w">Watts (W)</option><option value="kw">Kilowatts (kW)</option></select></div>
+<div class="field"><label for="length">One-way cable length (m)</label><input id="length" type="number" min=".1" step=".1" value="10"><small>Battery/supply to load. DC and 1φ AC double this for return conductors.</small></div>
+<div class="field"><label for="circuitType">Circuit importance</label><select id="circuitType"><option value="critical" selected>Safety-critical / sensitive (3%)</option><option value="normal">General equipment (10%)</option><option value="custom">Custom drop target</option></select></div>
+<div class="field"><label for="dropTarget">Maximum voltage drop (%)</label><input id="dropTarget" type="number" min=".1" max="20" step=".5" value="3"><small>3% for sensitive DC; 10% general DC, subject to equipment limits.</small></div>
+<div class="field"><label for="loadType">Circuit / equipment type</label><select id="loadType">
+<option value="normal">General continuous load</option><option value="motor">Motor / pump / windlass</option><option value="propulsion">Thruster / electric propulsion / high inrush</option>
+</select></div>
+<div class="field" id="pfWrap"><label for="powerFactor">AC power factor (cos φ)</label><input id="powerFactor" type="number" min=".1" max="1" step=".05" value=".9"><small>Used when power (W / kW) is entered.</small></div>
+</div>
+<div class="diagram" role="img" aria-label="Diagram of source connected by cable to load">
+<div class="node" id="sourceLabel">12 V<br>Supply</div><div class="conductor"></div><div class="node">LOAD</div></div>
+<p class="note">For a 10 m one-way 12 V cable run, the electrical round-trip is normally 20 m (positive plus negative). For 3-phase AC, the voltage-drop calculation uses the approximate √3 line factor.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>2. Cable installation assumptions</h2><span>ISO 13297 ampacity screening</span></div><div class="body">
+<div class="grid">
+<div class="field"><label for="insulation">Cable insulation rating</label><select id="insulation"><option value="70">70°C</option><option value="90" selected>85–90°C</option><option value="105">105°C</option></select><small>Check actual cable datasheet.</small></div>
+<div class="field"><label for="conductorTemp">Assumed copper temperature</label><select id="conductorTemp"><option value="20">20°C</option><option value="40">40°C</option><option value="60">60°C</option><option value="70" selected>70°C</option><option value="90">90°C</option><option value="105">105°C</option></select><small>Used for resistance / volt drop.</small></div>
+<div class="field"><label for="engineRoom">Engine-room / high ambient</label><select id="engineRoom"><option value="no">No — normal space</option><option value="yes">Yes — derate</option></select></div>
+<div class="field"><label for="bundle">Current-carrying conductors bundled</label><select id="bundle"><option value="1">1–3 (no bundle derating)</option><option value="4">4–6</option><option value="7">7–24</option><option value="25">25 or more</option></select></div>
+<div class="field"><label for="parallel">Equal cables per conductor / phase</label><select id="parallel"><option value="1">1 (standard)</option><option value="2">2 parallel</option><option value="3">3 parallel</option><option value="4">4 parallel</option></select><small>Parallel circuits require specialist fuse coordination.</small></div>
+<div class="field"><label for="checkSize">Check an existing conductor</label><select id="checkSize"><option value="0">Automatic minimum selection</option>
+<option value="1">1 mm²</option><option value="1.5">1.5 mm²</option><option value="2.5">2.5 mm²</option>
+<option value="4">4 mm²</option><option value="6">6 mm²</option><option value="10">10 mm²</option>
+<option value="16">16 mm²</option><option value="25">25 mm²</option><option value="35">35 mm²</option>
+<option value="50">50 mm²</option><option value="70">70 mm²</option><option value="95">95 mm²</option>
+<option value="120">120 mm²</option><option value="150">150 mm²</option></select></div>
+</div>
+<details><summary>Advanced manufacturer &amp; fuse limits</summary><div class="grid">
+<div class="field"><label for="makerAmpacity">Verified conductor rated current (A, optional)</label><input id="makerAmpacity" type="number" min="0" step="1" placeholder="Per cable from datasheet"><small>Conservative cap on each conductor before derating.</small></div>
+<div class="field"><label for="manufacturerFuseMax">Maximum allowed equipment fuse (A, optional)</label><input id="manufacturerFuseMax" type="number" min="0" step="1" placeholder="Manufacturer value"><small>Upper limit for provisional fuse selection.</small></div>
+<div class="field"><label for="duty">Load duration</label><select id="duty"><option value="continuous">Continuous / normal</option><option value="intermittent">Intermittent, non-motor</option></select><small>Does not replace manufacturer peak-current instructions.</small></div>
+</div></details>
+</div></section>
+
+<section class="panel"><div class="head"><h2>3. Recommended cable &amp; voltage drop</h2><span id="calcStatus">Live results</span></div><div class="body">
+<div id="error" class="message error hidden" role="alert"></div>
+<div id="results" class="results" aria-live="polite">
+<div class="kpi hero"><span>Minimum recommended copper cross-section</span><strong id="recommendedSize">—</strong><em id="sizeSub">per conductor / phase</em></div>
+<div class="kpi"><span>Calculated voltage drop</span><strong id="drop">—</strong><em id="dropSub">—</em></div>
+<div class="kpi"><span>Voltage at the load</span><strong id="loadVoltage">—</strong><em>Before connection/contact losses</em></div>
+<div class="kpi"><span>Continuous current</span><strong id="amps">—</strong><em id="powerSub">—</em></div>
+<div class="kpi"><span>Derated cable ampacity</span><strong id="ampacity">—</strong><em id="ampacitySub">—</em></div>
+</div>
+<div class="bar"><div id="dropBar"></div></div>
+<div class="statrow">
+<div><span>Voltage-drop cable minimum</span><strong id="dropSize">—</strong></div>
+<div><span>Current-carrying cable minimum</span><strong id="ampacitySize">—</strong></div>
+<div><span>Resistance / circuit</span><strong id="resistance">—</strong></div>
+<div><span>Power lost as heat</span><strong id="heat">—</strong></div>
+</div>
+<div id="checkStatus" class="message good">Enter or check a cable cross-section.</div>
+</div></section>
+
+<section class="panel"><div class="head"><h2>4. Fuse / breaker advice</h2><span>Provisional — protect the cable</span></div><div class="body">
+<div class="results" style="margin-top:0"><div class="kpi hero"><span>Provisional protective-device rating</span><strong id="fuse">—</strong><em id="fuseSub">Subject to manufacturer and cable verification</em></div>
+<div class="kpi"><span>Load current design margin</span><strong id="fuseLoad">—</strong><em>125% of continuous load (planning)</em></div>
+<div class="kpi"><span>Maximum derated cable current</span><strong id="fuseCap">—</strong><em>Upper cable protection reference</em></div></div>
+<div id="fuseReason" class="message">Check device voltage, interrupt rating and actual fault current.</div>
+<p class="note">A fuse or breaker must protect the smallest conductor and withstand available fault current. The nominal rating alone is not sufficient: the time-current curve, breaking capacity, cable terminations, battery source location and equipment manufacturer’s protection requirements all matter. The app does not design motor/propulsion inrush protection.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>Project &amp; PDF report</h2><span>Save • Reopen • Export</span></div><div class="body"><div id="projectTools"></div></div></section>
+<section class="panel"><div class="head"><h2>Engineering cautions &amp; sources</h2><span>Before installation</span></div><div class="body"><div id="notes"></div>
+<details><summary>Formulas and standards reference</summary>
+<p class="note">Copper resistance at conductor temperature θ: ρθ = (1/58) × [1 + 0.00393(θ−20)] Ω·mm²/m. For DC and 1-phase AC, ΔV ≈ I × 2L × ρθ/(S×n). For 3-phase AC, ΔV ≈ √3 × I × L × ρθ/(S×n), with cable reactance ignored.</p>
+<p class="note">Ampacity references: ISO 13297:2020 Annex A Tables A.1/A.2 (metric stranded copper 70/90/105°C and engine-space/bundle correction), via EN ISO 13297:2021. ISO 13297 covers ordinary DC systems up to 50 V nominal and single-phase AC up to 250 V. Electric propulsion and three-phase installations are covered by other standards. For the full installation, consult the published standard and cable manufacturer's datasheet.</p>
+<p class="note">Further details: <a href="https://www.iso.org/standard/69551.html" target="_blank" rel="noopener">ISO 13297:2020</a> · <a href="https://www.bluesea.com/resources/95" target="_blank" rel="noopener">Blue Sea: choosing circuit protection</a> · <a href="https://www.victronenergy.com/media/pg/The_Wiring_Unlimited_book/en/dc-wiring.html" target="_blank" rel="noopener">Victron Wiring Unlimited</a>.</p>
+</details></div></section>
+</main>
+<script src="./cable-core.js"></script><script src="./reports.js"></script>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const ids=["project","scheme","volts","load","loadUnit","length","circuitType","dropTarget","loadType","powerFactor","insulation","conductorTemp","engineRoom","bundle","parallel","checkSize","makerAmpacity","manufacturerFuseMax","duty"];
+const KEY="indalo-cable-working-v1";
+const fmt=(v,d=2)=>Number.isFinite(v)?v.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+function config(){return Object.fromEntries(ids.map(id=>[id,$(id).value]))}
+function result(){return globalThis.CableCalc.compute(config())}
+function getState(){return{fields:config()}}
+function setState(payload){if(!payload?.fields)throw Error("Invalid cable project");for(const id of ids)if(payload.fields[id]!==undefined)$(id).value=String(payload.fields[id]);syncUI();render()}
+function text(el,txt){const d=document.createElement("div");d.className="message";d.textContent=txt;el.append(d)}
+function syncUI(){
+ const scheme=$("scheme").value,dc=scheme==="dc";
+ const v=$("volts"),old=Number(v.value);
+ v.replaceChildren();(dc?[12,24,48]:scheme==="ac1"?[230]:[400]).forEach(x=>{const opt=document.createElement("option");opt.value=x;opt.textContent=x+" V";v.append(opt)});
+ v.value=dc&&[12,24,48].includes(old)?old:dc?"12":scheme==="ac1"?"230":"400";
+ $("pfWrap").classList.toggle("hidden",dc);
+ $("sourceLabel").textContent=v.value+" V Supply";
+ if($("circuitType").value!=="custom")$("dropTarget").value=$("circuitType").value==="critical"?"3":"10";
+}
+function render(){
+ const r=result(),bad=$("error");bad.textContent=r.errors.join(" ");bad.classList.toggle("hidden",r.valid);
+ $("results").classList.toggle("hidden",!r.valid);
+ $("calcStatus").textContent=r.valid?"Calculated with live inputs":"Correct inputs";
+ $("sourceLabel").textContent=(r.volts||"—")+" V Supply";
+ if(!r.valid){$("notes").replaceChildren();$("checkStatus").textContent="No valid calculation.";$("fuse").textContent="—";return}
+ const selected=r.chosen;
+ $("recommendedSize").textContent=r.recommended?(r.parallel>1?r.parallel+" × ":"")+fmt(r.recommended.size,r.recommended.size%1?2:0)+" mm²":"No valid size";
+ $("sizeSub").textContent=r.recommended?"per active path (including parallel cables)":"Increase cable section / check installation";
+ $("drop").textContent=selected?fmt(selected.dropV,3)+" V":"—";
+ $("dropSub").textContent=selected?fmt(selected.dropPercent,2)+"% of nominal "+fmt(r.volts,0)+" V":"";
+ $("loadVoltage").textContent=selected?fmt(selected.receivedV,2)+" V":"—";
+ $("amps").textContent=fmt(r.amps,1)+" A";
+ $("powerSub").textContent=fmt(r.watts/1000,2)+" kW at "+fmt(r.volts,0)+" V";
+ $("ampacity").textContent=selected?fmt(selected.ampacity,1)+" A":"—";
+ $("ampacitySub").textContent="Temperature / installation derated";
+ $("dropSize").textContent=r.sizeByDrop?fmt(r.sizeByDrop.size,r.sizeByDrop.size%1?2:0)+" mm²":"Beyond table";
+ $("ampacitySize").textContent=r.sizeByAmpacity?fmt(r.sizeByAmpacity.size,r.sizeByAmpacity.size%1?2:0)+" mm²":"Beyond table";
+ $("resistance").textContent=selected?fmt(selected.resistanceOhms,5)+" Ω":"—";
+ $("heat").textContent=selected?fmt(selected.lossW,1)+" W":"—";
+ const used=selected?selected.dropPercent/r.voltageTarget*100:0;
+ $("dropBar").style.width=Math.max(0,Math.min(100,used))+"%";
+ $("dropBar").style.background=used>100?"#ed6c7a":used>85?"#f0cb77":"linear-gradient(90deg,#20d1ad,#20bfe0)";
+ const status=$("checkStatus");status.className="message "+(selected?.allowed?"good":"error");
+ status.textContent=!selected?"No cable passes both checks within the available size range.":
+ (r.checked?"Existing cable "+fmt(r.checked.size,1)+" mm²: ":"Minimum cable: ")+
+ (selected.allowed?"PASSES":"FAILS")+
+ "  •  Voltage drop "+fmt(selected.dropPercent,2)+"% ("+(selected.dropPass?"pass":"too high")+")"+
+ "  •  Ampacity "+fmt(selected.ampacity,1)+" A ("+(selected.ampacityPass?"pass":"too low")+").";
+ $("fuse").textContent=r.fuse!==null?fmt(r.fuse,r.fuse%1?1:0)+" A":"Manual design";
+ $("fuseSub").textContent=r.fuse!==null?"Nominal candidate; verify fuse class & equipment":"No generic rating available";
+ $("fuseLoad").textContent=fmt(r.fuseMin,1)+" A";
+ $("fuseCap").textContent=selected?fmt(selected.ampacity,1)+" A":"—";
+ const reason=$("fuseReason");reason.className="message "+(r.fuse!==null?"good":"");
+ reason.textContent=r.fuse!==null?
+ "Preliminary "+fmt(r.fuse,r.fuse%1?1:0)+" A candidate for a non-motor "+(r.dc?"DC":"single-phase AC")+" circuit. Confirm device voltage rating, trip curve, fault-current interruption capacity and equipment limits before installation.":
+ r.fuseReason||"Fuse coordination requires further design.";
+ const notes=$("notes");notes.replaceChildren();r.warnings.forEach(t=>text(notes,t));
+ try{localStorage.setItem(KEY,JSON.stringify(getState()))}catch(e){}
+}
+$("scheme").addEventListener("change",()=>{syncUI();render()});
+$("circuitType").addEventListener("change",()=>{if($("circuitType").value!=="custom")$("dropTarget").value=$("circuitType").value==="critical"?"3":"10";render()});
+$("dropTarget").addEventListener("input",()=>{$("circuitType").value="custom";render()});
+ids.forEach(id=>{if(["scheme","circuitType","dropTarget"].includes(id))return;$(id).addEventListener("input",render);$(id).addEventListener("change",render)});
+let stored=null;
+try{stored=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+if(stored?.fields)for(const id of ids)if(stored.fields[id]!==undefined)$(id).value=String(stored.fields[id]);
+syncUI();render();
+globalThis.MarineReports.init({
+ kind:"cable",
+ suggestName:()=>($("project").value.trim()||"Marine Cable and Voltage Drop"),
+ getState,
+ setState,
+ report:()=>{
+  const c=config(),r=result();if(!r.valid)throw Error(r.errors.join(". "));
+  const n=(x,d=2)=>Number.isFinite(x)?Number(x).toFixed(d):"Not calculated";
+  const row=r.chosen,rec=r.recommended;
+  const typename=r.dc?"DC":r.ac1?"AC single-phase":"AC three-phase (screen only)";
+  return{
+   title:"Marine Cable Sizing & Voltage Drop",
+   subtitle:(c.project||"Unnamed vessel")+" / "+typename,
+   filename:(c.project||"Indalo-Cable")+"-cable-sizing",
+   metrics:[["Recommended cable",rec?(r.parallel>1?r.parallel+" x ":"")+n(rec.size,rec.size%1?1:0)+" mm2":"None"],
+    ["Voltage drop",row?n(row.dropPercent,2)+"%":"n/a"],
+    ["Circuit current",n(r.amps,1)+" A"],
+    ["Fuse guidance",r.fuse!==null?n(r.fuse,1)+" A":"Refer to maker"]],
+   sections:[
+    {title:"Circuit details",rows:[
+     ["Vessel / project",c.project||"Not entered"],["Circuit",typename],
+     ["Nominal voltage",n(r.volts,0)+" V"],["Load entered",c.load+" "+c.loadUnit],
+     ["Calculated current",n(r.amps,2)+" A"],["Derived electrical power",n(r.watts/1000,2)+" kW"],
+     ["AC power factor",r.dc?"Not applicable":n(r.powerFactor,2)],
+     ["Equipment category",c.loadType],
+     ["One-way run",n(r.length,2)+" m"],["Drop limit",n(r.voltageTarget,1)+"%"]
+    ]},
+    {title:"Installation data & conductor ratings",rows:[
+     ["Conductor material","Stranded copper"],["Cable insulation rating",r.insulation+" deg C"],
+     ["Copper assumed temperature",r.conductorTemp+" deg C"],
+     ["Engine compartment",r.hot?"Yes (temperature derated)":"No"],
+     ["Grouped current-carrying conductors",r.bundle===1?"1-3":r.bundle===4?"4-6":r.bundle===7?"7-24":"25+"],
+     ["Parallel runs per phase or pole",String(r.parallel)],
+     ["Manufacturer conductor rating entered",r.makerAmpacity?r.makerAmpacity+" A per conductor":"Not supplied"],
+     ["Manufacturer maximum fuse entered",r.manufacturerFuseMax?r.manufacturerFuseMax+" A":"Not supplied"],
+     ["Copper resistivity model",n(r.rho,6)+" ohm mm2/m"]
+    ]},
+    {title:"Calculation and selected conductor",rows:[
+     ["Voltage-drop-only minimum",r.sizeByDrop?n(r.sizeByDrop.size,1)+" mm2":"Beyond 150 mm2"],
+     ["Ampacity-only minimum",r.sizeByAmpacity?n(r.sizeByAmpacity.size,1)+" mm2":"Beyond 150 mm2"],
+     ["Minimum section satisfying both",rec?n(rec.size,1)+" mm2 per conductor":"Not found"],
+     ["Checked conductor",r.checked?n(r.checked.size,1)+" mm2":"Minimum computed"],
+     ["Checked conductor status",row?(row.allowed?"Pass":"FAIL — installation not acceptable"):"No matching conductor"],
+     ["Cable total length estimate",n(r.cableMetres,2)+" m (all current-carrying runs)"],
+     ["Derated continuous cable current",row?n(row.ampacity,1)+" A":"Not calculated"],
+     ["Circuit resistance",row?n(row.resistanceOhms,6)+" ohm":"Not calculated"],
+     ["Predicted conductor voltage drop",row?n(row.dropV,3)+" V / "+n(row.dropPercent,2)+"%":"Not calculated"],
+     ["Predicted load terminal voltage",row?n(row.receivedV,2)+" V":"Not calculated"],
+     ["Calculated copper losses",row?n(row.lossW,2)+" W":"Not calculated"]
+    ]},
+    {title:"Fuse / overcurrent protection",rows:[
+     ["Provisional fuse / breaker",r.fuse!==null?n(r.fuse,1)+" A":"Not offered — specialised review needed"],
+     ["Load current design reference",n(r.fuseMin,1)+" A"],
+     ["Derated conductor ampacity",row?n(row.ampacity,1)+" A":"Not calculated"],
+     ["Fuse recommendation status",r.fuseReason||"Candidate only; final design required"]
+    ]},
+    {title:"Engineering limitations and references",paragraphs:[
+      ...r.warnings,
+      "Voltage-drop model: Ohm's law with 20 C copper resistivity (1/58 ohm mm2/m), temperature coefficient 0.00393/K. Both outgoing and returning runs are included for DC and single-phase. Three-phase uses a resistance-only approximation with sqrt(3); reactance and contact losses are excluded.",
+      "Ampacity and grouping: ISO 13297:2020 Annex A for stranded copper, using the rated cable insulation and engine-room/bundling factors. This is not a compliance certificate. AC three-phase is a preliminary calculation only (IEC 60092-507).",
+      "Fuse advice is withheld on motor, propulsion, high-current and parallel-conductor circuits. A proposed nominal rating never replaces fault-current/breaking-capacity, protective-device time-current, RCD/earth-leakage and manufacturer protection coordination."
+    ]}
+   ]
+  };
+ }
+});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script></body></html>
