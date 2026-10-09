@@ -15,7 +15,7 @@ const LINKS={
   d:"https://webshop.vetus.com/en/products/engines/d-line-engines",
   e:"https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines"
 };
-const DLINE={ "VD4.120":{kw:90,shaftKW:86,torqueNm:449},"VD4.140":{kw:103,shaftKW:98.9,torqueNm:520},"VD6.170":{kw:125,shaftKW:120,torqueNm:680},"VD6.210":{kw:155,shaftKW:149,torqueNm:810}};
+const DLINE={ "VD4.120":{kw:90,shaftKW:86,torqueNm:449},"VD4.140":{kw:103,shaftKW:99,torqueNm:520},"VD6.170":{kw:125,shaftKW:120,torqueNm:680},"VD6.210":{kw:155,shaftKW:149,torqueNm:810}};
 const diesel=[
  ["M2.13","M213A---A",12,"M-Line",3000],
  ["M2.18","M218A---A",16,"M-Line",3600],
@@ -53,6 +53,12 @@ function evaluate(input){
  const batteryKWh=n(f.batteryKWh,20),usablePct=n(f.usablePercent,80)/100;
  const hours=n(f.hours,4),eVoltage=n(f.eVoltage,48),crouch=n(f.crouch,180);
  const fuel=f.fuel||"both",drive=f.drive||"shaft";
+ const gearboxRatio=n(f.gearboxRatio,0),referenceEngine=f.referenceEngine||"";
+ const observedEngineRPM=n(f.observedEngineRPM,0);
+ const reference=diesel.find(p=>p.name===referenceEngine)||null;
+ if(referenceEngine&&!reference)errors.push("Select a listed reference engine.");
+ if(gearboxRatio!==0&&!(gearboxRatio>=1&&gearboxRatio<=8))errors.push("Gearbox reduction ratio must be between 1:1 and 8:1.");
+ if(observedEngineRPM!==0&&!(observedEngineRPM>=200&&observedEngineRPM<=8000))errors.push("Measured engine speed must be between 200 and 8,000 rpm.");
  const rho=water==="sea"?1025:1000;
  const CB=displacement/rho*1000/(lwl*beam*draft);
  if(!(lwl>=3&&lwl<=80))errors.push("Waterline length must be between 3 and 80 metres.");
@@ -130,6 +136,23 @@ function evaluate(input){
    }
  }
  if(!(powerKW>0&&Number.isFinite(powerKW)))canMatch=false;
+ // Existing engine/gearbox comparison ONLY. Propeller dimensions and absorbed torque
+ // are intentionally not assumed. Reduction decreases shaft speed while increasing
+ // torque; gear reduction does not create power.
+ const referenceShaftPowerKW=reference?(reference.shaftKW??reference.kw*transEff):null;
+ const referenceShaftRPM=reference?.rpm&&gearboxRatio>0?reference.rpm/gearboxRatio:null;
+ const referenceShaftNm=referenceShaftRPM?9550*referenceShaftPowerKW/referenceShaftRPM:null;
+ const peakShaftNm=reference?.torqueNm&&gearboxRatio>0?reference.torqueNm*gearboxRatio*transEff:null;
+ const peakShaftRPM=reference?.torqueRpm&&gearboxRatio>0?reference.torqueRpm/gearboxRatio:null;
+ const observedShaftRPM=observedEngineRPM>0&&gearboxRatio>0?observedEngineRPM/gearboxRatio:null;
+ const gearbox={name:reference?.name||null,engineRatedKW:reference?.kw??null,
+  engineRatedHP:reference?.hp??null,engineRatedRPM:reference?.rpm??null,ratio:gearboxRatio||null,
+  ratedShaftKW:referenceShaftPowerKW,ratedShaftRPM:referenceShaftRPM,
+  ratedShaftNm:referenceShaftNm,enginePeakNm:reference?.torqueNm??null,
+  enginePeakRPM:reference?.torqueRpm??null,peakShaftNm,peakShaftRPM,
+  observedEngineRPM:observedEngineRPM||null,observedShaftRPM};
+ if(reference&&gearboxRatio===0)warnings.push("Enter the actual AHEAD gearbox reduction ratio to calculate propeller-shaft speed and torque.");
+ if(reference&&gearboxRatio>0)warnings.push("Gearbox ratio converts engine RPM into shaft RPM and multiplies torque by ratio × gearbox efficiency. Rated-power torque and peak torque occur at different engine speeds. The actual installed propeller load is not computed.");
  const cruiseTotal=powerKW;
  const requiredTotal=cruiseTotal*(1+reserve/100);
  const requiredPerShaft=requiredTotal/boats;
@@ -208,7 +231,7 @@ function evaluate(input){
   ratedRequiredKW:requiredTotal,perShaftCruise:shaftCruisePer,requiredPerShaft,reqDiesel,reqElectric,
   reserve,boats,trialSpeed,trialPower,trialSource,calibrationFactor:factor,shaftEff,
   dieselDuty,electricDuty,transEff,electricEff,
-  batteryKWh,usablePct,hours,eVoltage,electricDraw,autonomy,batteryNeeded,rated48A,
+  batteryKWh,usablePct,hours,eVoltage,electricDraw,autonomy,batteryNeeded,rated48A,gearbox,
   dieselModels,electricModels,dieselMatches,electricMatches,bestDiesel,bestElectric,
   avgEnergyToCruise:electricDraw*hours,drive,fuel,crouch,metrics:modelMetrics};
 }
