@@ -96,12 +96,12 @@ function calculate(i){
  const v=i||{},length=n(v.length,0),area=n(v.area,0),bft=String(v.beaufort||"5"),windMode=v.windMode||"beaufort";
  const pressureN=windMode==="speed"?.64*n(v.windMS,0)**2:windMode==="pressure"?n(v.pressureN,0):(pressure[bft]?.typ||0);
  const shape=safe(n(v.shape,0.75),.25,1);
- const margin=safe(n(v.margin,0),0,1);
+ const margin=safe(n(v.margin,0)/100,0,1);
  const center=n(v.centerArm,0)>0?n(v.centerArm):length*.5;
  const bowLever=n(v.bowLever,0)>0?n(v.bowLever):length*.95;
  const sternLever=n(v.sternLever,0)>0?n(v.sternLever):length*.95;
  const side=v.side||"bow";
- const currentFactor=1+safe(n(v.currentAllowance,0),0,1);
+ const currentFactor=1+safe(n(v.currentAllowance,0)/100,0,1);
  const moment=pressureN*area*shape*center;
  const windForce=pressureN*area*shape;
  const designFactor=(1+margin)*currentFactor;
