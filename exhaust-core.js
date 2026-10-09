@@ -49,7 +49,9 @@ function finite(v){return Number.isFinite(v)}
 function calc(form){
  const f=form||{};const diameter=n(f.diameter,50),length=n(f.length,5),waterFraction=n(f.waterPct,25)/100,
   maxFill=n(f.maxFillPct,50)/100,extra=n(f.extraBackflow,0),
-  injectedHeight=n(f.injectionHeight,250),transomHeight=n(f.transomHeight,100),
+  hasInjection=f.injectionHeight!==undefined&&f.injectionHeight!==null&&String(f.injectionHeight).trim()!=="",
+  hasTransom=f.transomHeight!==undefined&&f.transomHeight!==null&&String(f.transomHeight).trim()!=="",
+  injectedHeight=hasInjection?n(f.injectionHeight,NaN):null,transomHeight=hasTransom?n(f.transomHeight,NaN):null,
   engineKW=(f.powerUnit==="hp"?n(f.enginePower,0)*0.745699872:n(f.enginePower,0)),
   backPressure=Number(f.backPressure||.1),layout=f.layout||"any";
  const faults=[];
@@ -60,7 +62,7 @@ function calc(form){
  if(!(extra>=0&&extra<=1000))faults.push("Additional backflow water must be non-negative.");
  if(!(engineKW>=0&&engineKW<=50000))faults.push("Engine power must be positive or blank.");
  if(![.1,.2,.3].includes(backPressure))faults.push("Choose 0.1, 0.2 or 0.3 bar.");
- if(!finite(injectedHeight)||!finite(transomHeight))faults.push("Enter a valid installation height or leave it blank.");
+ if((hasInjection&&!finite(injectedHeight))||(hasTransom&&!finite(transomHeight)))faults.push("Enter a valid installation height or leave it blank.");
  const pipeLitres=Math.PI*Math.pow(diameter/1000,2)/4*length*1000;
  const returnLitres=pipeLitres*waterFraction;
  const totalBackflow=returnLitres+extra;
@@ -85,8 +87,10 @@ function calc(form){
  const passing=compat.filter(p=>p.meetsCapacity&&p.powerPass);
  const selected=passing[0]||null;
  const notes=[];
- if(injectedHeight<150)notes.push("CRITICAL: Cooling-water injection is less than 150 mm above the waterline or below it. VETUS warns of seawater siphoning; an appropriate air vent/anti-siphon arrangement must be assessed. A larger waterlock cannot prevent continuous siphoning.");
- if(transomHeight<50)notes.push("VETUS advises the exhaust transom outlet should be at least 50 mm above the waterline. Confirm the arrangement with the current installation manual.");
+ if(injectedHeight===null)notes.push("Water-injection height was not entered. Anti-siphon risk cannot be assessed; measure the injection point relative to the loaded waterline before final specification.");
+ if(injectedHeight!==null&&injectedHeight<150)notes.push("CRITICAL: Cooling-water injection is less than 150 mm above the waterline or below it. VETUS warns of seawater siphoning; an appropriate air vent/anti-siphon arrangement must be assessed. A larger waterlock cannot prevent continuous siphoning.");
+ if(transomHeight===null)notes.push("Exhaust outlet height was not entered. Confirm the transom discharge is above the waterline before final selection.");
+ if(transomHeight!==null&&transomHeight<50)notes.push("VETUS advises the exhaust transom outlet should be at least 50 mm above the waterline. Confirm the arrangement with the current installation manual.");
  if(!selected&&compat.some(x=>x.meetsCapacity))notes.push("Volume is sufficient on some models, but the general engine-power/diameter guide is exceeded. Check actual exhaust backpressure, permitted engine limit and hose sizing.");
  if(!compat.some(x=>x.meetsCapacity))notes.push("No catalogued unit matching this inlet diameter meets the capacity criterion. Reconsider the exhaust configuration or request a manufacturer-designed solution. Do not select an undersized waterlock.");
  if(length>=4)notes.push("Long exhaust run: examine LSS/LSL/LSG, larger NLP3 or MG where suitable.");
