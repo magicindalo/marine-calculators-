@@ -11,7 +11,9 @@ Review the [Version 1 validation record](docs/V1_VALIDATION.md) before using the
 - **VETUS Thruster Selection:** https://magicindalo.github.io/marine-calculators-/thruster.html
 - **Exhaust Backflow & Waterlock:** https://magicindalo.github.io/marine-calculators-/exhaust.html
 - **Cable Sizing & Voltage Drop:** https://magicindalo.github.io/marine-calculators-/cable.html
-- **Engine & E-Line Selection:** https://magicindalo.github.io/marine-calculators-/engine.html
+- **Diesel Engine & Hull Speed:** https://magicindalo.github.io/marine-calculators-/diesel.html
+- **E-Line Electric & Battery Runtime:** https://magicindalo.github.io/marine-calculators-/eline.html
+- **Legacy combined Engine & E-Line:** https://magicindalo.github.io/marine-calculators-/engine.html (existing saved projects remain supported)
 
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
@@ -82,3 +84,13 @@ Diesel and E-Line rated outputs are not interchangeable by horsepower. Manufactu
 The Engine calculator includes an optional VETUS installed-engine reference, AHEAD gearbox reduction ratio and observed engine RPM. For a VETUS VD4.140 with 2:1 ahead reduction, manufacturer data from the [VETUS D-Line technical manual](https://vetus.com/wp-content/uploads/360602.01_r05_2025-02_D_Line_EN.pdf) supports 103 kW flywheel / 99 kW prop shaft at 2400 engine rpm (1200 shaft rpm); maximum engine torque 520 Nm at 1600 engine rpm yields about 998 Nm at 800 shaft rpm with a user-assumed 96% transmission efficiency. The engine must not be specified solely from a gearbox torque screen; absorbed propeller torque is not calculated. Unverified propeller diameter or pitch must **not** be assumed or entered.
 
 **Heavy displacement safeguard:** for displacement, semi-displacement and canal boats of 25 tonnes or more, engine shortlists are withheld without a measured shaft-power/speed trial; the independent reference gearbox comparison remains available. This is especially relevant to the Piper Boats Kiwi Wonderer (35 tonnes, VD4.140, believed 2:1 reduction). Its reported 22 × 16 propeller is unverified and intentionally excluded from all benchmark calculations.
+
+### Version 1.1 propulsion split (9 October 2026)
+
+The home screen now displays **Diesel Engine Sizing** and **E-Line Electric Selection** as separate tools. The earlier combined `engine.html` remains accessible for previously saved `kind:"engine"` projects.
+
+**Diesel:** computes theoretical displacement hull speed from LWL using `1.34 × √(LWL in feet)`. It separately evaluates the selected cruise-speed and theoretical hull-speed shaft power using the existing simplified resistance model and optional measured total delivered shaft power. It only shows a provisional diesel model shortlist if both speed points are within the screen's supported calculation range; for 25 t or heavier displacement craft, it requires measured shaft-power trials, and refuses extrapolation more than 25% above measured trial speed. Inland-waterway hull-speed powering requires trial data. The existing VETUS D-Line gearbox reference remains independent: no unverified propeller diameter or pitch is assumed. **Theoretical hull speed does not uniquely determine maximum required horsepower.**
+
+**E-Line:** screens VETUS E-AIR/E-Line shaft-drive motors against the target speed, expected shaft power, 24/48 V bank class, propulsion sizing margin and allowable duty. It calculates propulsion and constant domestic DC demand, available usable bank kWh after a separate retained reserve, cruising duration, indicative current and nominal battery for desired hours. Battery-life figures are withheld where no compatible motor passes the selection criteria, or hull powering is insufficiently supported. Manufacturer torque, thermal, BMS, DC fault-protection, cable and propeller verification is mandatory.
+
+For current work, use the two separate menus. Saved projects on the original combined page are not transferred or deleted.
