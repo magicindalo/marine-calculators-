@@ -50,7 +50,7 @@ function evaluate(input){
  const transEff=n(f.gearEfficiency,96)/100,electricEff=n(f.electricEfficiency,88)/100;
  const trialSpeed=n(f.trialSpeed,0),trialPower=n(f.trialPower,0);
  const batteryKWh=n(f.batteryKWh,20),usablePct=n(f.usablePercent,80)/100;
- const hours=n(f.hours,4),eVoltage=n(f.eVoltage,48),crouch=n(f.crouch,150);
+ const hours=n(f.hours,4),eVoltage=n(f.eVoltage,48),crouch=n(f.crouch,180);
  const fuel=f.fuel||"both",drive=f.drive||"shaft";
  const rho=water==="sea"?1025:1000;
  const CB=displacement/rho*1000/(lwl*beam*draft);
@@ -77,6 +77,7 @@ function evaluate(input){
  const hullSpeed=1.34*Math.sqrt(lwl*3.280839895);
  const densityClass=hull==="planing"?"planing":"displacement";
  let model="resistance-screening",canMatch=true,resistanceN=null,effPowerKW=null;
+ if(hull==="sail"&&CB<.2&&!(trialSpeed>0&&trialPower>0)){canMatch=false;warnings.push("Sailing yacht with deep fin keel: the simple displacement model cannot represent keel/rudder wetted area and hull draft correctly. Supply measured shaft power at a measured speed before accepting engine or E-Line candidates.");}
  let powerKW=null,factor=1,trialSource="uncalibrated",modelMetrics=null;
  const planing=hull==="planing";
  if(planing){
@@ -184,13 +185,13 @@ function evaluate(input){
  if(fuel!=="electric"&&!dieselMatches.length)dutyAdvice.push("No single VETUS diesel model in the stored catalogue meets the preliminary per-line requirement.");
  if(eVoltage===24)dutyAdvice.push("The currently catalogued 24 V shaft-drive E-Line option is EAIR05024 (5 kW). Higher-output E-Line motors in this selector require a 48 V-class propulsion bank.");
  if(boats===2)dutyAdvice.push("Twin-engine output assumes two independent propulsion lines. Shaft diameter, propeller clearances, thrust, rudder handling and installation requirements must be evaluated separately.");
- if(trialSource==="uncalibrated")dutyAdvice.push("Uncalibrated hull resistance is low-confidence. Use recorded boat speed and actual total delivered shaft power to improve the estimate.");
+ if(trialSource==="uncalibrated")dutyAdvice.push("UNVERIFIED SCREENING ONLY: Uncalibrated hull resistance is low confidence. The shortlisted engine is a minimum calm-water power-capacity match, not an approval or replacement recommendation. Use measured delivered shaft power, assess sea margin, stern gear and manoeuvring performance.");
  if(trialSource==="sea-trial"&&(factor>3||factor<.33))dutyAdvice.push("Sea-trial calibration is "+factor.toFixed(2)+"× the uncalibrated resistance estimate. Review the shaft-power measurement and propulsion efficiency assumption.");
  if(boats===1&&reqElectric>22)dutyAdvice.push("The largest catalogued single E-LINE shaft-drive motor in this selection is 22 kW. A different propulsion architecture may be necessary.");
  dutyAdvice.push("Rated kW, torque-versus-speed, gearbox ratio, propeller sizing and installation space must all be checked against actual product data before specification.");
  dutyAdvice.push("Electric system runtime assumes constant target-speed shaft demand and user-entered DC-to-shaft efficiency, with no hotel loads, wind, current, charging or reserve beyond usable capacity.");
  dutyAdvice.push("Diesel and electric ratings are NOT equivalent torque/propeller performance at the same rated power; obtain engine torque curves and match the propeller shaft design.");
- if(planing)dutyAdvice.push("Crouch predicts near-maximum planing power/speed, not efficient partial-throttle cruising. The target speed is treated as a near-WOT design point. Full-load trials and hull-specific C values are recommended; hump, trim and shaft performance are not modelled.");
+ if(planing)dutyAdvice.push("Crouch 180 is a default planning coefficient derived from comparable fast-cruiser examples, not a universal hull constant. Crouch predicts near-maximum planing power/speed, not efficient partial-throttle cruising. The target speed is treated as a near-WOT design point. Full-load trials and hull-specific C values are recommended; hump, trim and shaft performance are not modelled.");
  else dutyAdvice.push("Displacement screening uses ITTC-1957 friction and a non-standard approximate wave-resistance term, not a validated Holtrop-Mennen/CFD power prediction.");
  if(fuel!=="diesel"&&eVoltage===48)warnings.push("Battery voltage is 48 V class. The propulsion DC bus, peak currents, BMS and cooling arrangement must be verified.");
  const valid=errors.length===0;
