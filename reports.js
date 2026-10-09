@@ -58,9 +58,79 @@ const formatPDF = report=>{
       line(M,y-h,R,y-h,.86,.90,.92);y-=h;
     });
     y-=13;}
+  // Native-vector chart rendering, intentionally not canvas screenshots or SVG data
+  // URLs. Works in Safari's built-in PDF download and keeps axes/curves sharp at zoom.
+  function rgb(hex){
+    if(typeof hex!=="string"||!/^#[0-9a-f]{6}$/i.test(hex))return [.08,.51,.64];
+    return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);
+  }
+  function chartPlot(c){
+    if(!c||!Array.isArray(c.lines)||!c.lines.length)return;
+    const maxX=Number(c.maxX),maxY=Number(c.maxY);
+    if(!(maxX>0&&maxY>0&&Number.isFinite(maxX)&&Number.isFinite(maxY)))return;
+    const ch=260,pL=M+55,pR=R-13,pW=pR-pL;
+    need(ch+12);
+    const top=y,plotTop=top-55,plotBottom=top-ch+43,plotH=plotTop-plotBottom;
+    const xPos=x=>pL+x/maxX*pW,yPos=v=>plotBottom+v/maxY*plotH;
+    rect(M,top-ch,usable,ch,.96,.98,.99);
+    line(M,top-ch,R,top-ch,.77,.84,.87);
+    draw(text(c.title||"Engineering power curve",73),M+12,top-17,9.6,true,[.06,.27,.38]);
+    // Separate legends are not inferred from graph text: use the actual line series.
+    const names=c.lines.slice(0,2);
+    names.forEach((s,i)=>{
+      const lx=pL+i*223,ly=top-36,ink=rgb(s.color);
+      ops.push(fmt(ink[0])+" "+fmt(ink[1])+" "+fmt(ink[2])+" RG 2.1 w");
+      if(s.dashed)ops.push("[5 4] 0 d");
+      ops.push(fmt(lx)+" "+fmt(ly)+" m "+fmt(lx+20)+" "+fmt(ly)+" l S");
+      if(s.dashed)ops.push("[] 0 d");
+      draw(text(s.label||"Series",33),lx+25,ly-3,7.1,false,[.15,.28,.35]);
+    });
+    for(let i=0;i<=4;i++){
+      const xv=maxX*i/4,yp=plotBottom+plotH*i/4;
+      const xp=pL+pW*i/4,yv=maxY*i/4;
+      line(xp,plotBottom,xp,plotTop,.83,.89,.93);
+      line(pL,yp,pR,yp,.83,.89,.93);
+      draw((maxX<=30?xv.toFixed(1):xv.toFixed(0)),xp-8,plotBottom-15,7.5,false,[.24,.34,.42]);
+      draw((maxY<=20?yv.toFixed(1):yv.toFixed(0)),pL-37,yp-3,7.3,false,[.24,.34,.42]);
+    }
+    draw(text(c.xLabel||"Horizontal axis",58),pL+pW*.34,top-ch+10,8,false,[.13,.30,.40]);
+    // Vertical axis title, rotated 90 degrees in native PDF text graphics.
+    const ylabel=literal(text(c.yLabel||"Vertical axis",50));
+    fill(.13,.30,.40);
+    ops.push("BT /F1 7.4 Tf 0 1 -1 0 "+fmt(M+17)+" "+fmt(plotBottom+26)+" Tm "+ylabel+" Tj ET");
+    // Clip line series to the chart drawing area, including curves beyond axes limits.
+    for(const series of c.lines){
+      const pts=Array.isArray(series.data)?series.data.filter(p=>Array.isArray(p)&&p.length>=2&&
+        Number.isFinite(p[0])&&Number.isFinite(p[1])):[];
+      if(pts.length<2)continue;
+      const ink=rgb(series.color),cmd=[];
+      for(const [xVal,yVal] of pts)cmd.push(fmt(xPos(xVal))+" "+fmt(yPos(yVal))+" "+(cmd.length?"l":"m"));
+      ops.push("q "+fmt(pL)+" "+fmt(plotBottom)+" "+fmt(pW)+" "+fmt(plotH)+" re W n");
+      ops.push(fmt(ink[0])+" "+fmt(ink[1])+" "+fmt(ink[2])+" RG 2.1 w");
+      if(series.dashed)ops.push("[6 5] 0 d");
+      ops.push(cmd.join(" ")+" S");
+      ops.push("Q");
+    }
+    // Chart annotations are tied to computed design/cruise points.
+    for(const pt of (Array.isArray(c.marks)?c.marks:[])){
+      if(!Number.isFinite(pt.x)||!Number.isFinite(pt.y)||pt.x<0||pt.y<0||pt.x>maxX||pt.y>maxY)continue;
+      const px=xPos(pt.x),py=yPos(pt.y),ink=rgb(pt.color||"#108aaa");
+      rect(px-2.5,py-2.5,5,5,...ink);
+      const caption=text(pt.label||"Operating point",22);
+      if(caption)draw(caption,Math.min(pR-104,Math.max(pL+6,px-32)),Math.min(plotTop-8,py+10),7.2,true,[.18,.31,.38]);
+    }
+    y-=ch+11;
+  }
   next();
   if(report.metrics&&report.metrics.length)metrics(report.metrics);
-  for(const sec of report.sections||[]){title(sec.title);if(sec.rows)kvRows(sec.rows);if(sec.table)table(sec.table.columns,sec.table.rows);if(sec.paragraphs)prose(sec.paragraphs);}
+  for(const sec of report.sections||[]){
+    if(sec.newPage && y<H-137)next();
+    title(sec.title);
+    if(sec.rows)kvRows(sec.rows);
+    if(sec.table)table(sec.table.columns,sec.table.rows);
+    if(sec.charts&&Array.isArray(sec.charts))for(const c of sec.charts)chartPlot(c);
+    if(sec.paragraphs)prose(sec.paragraphs);
+  }
   footer();pages.push(ops.join("\n"));
   const objects=[""];
   const add=o=>{objects.push(o);return objects.length-1};
