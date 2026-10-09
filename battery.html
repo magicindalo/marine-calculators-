@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Battery Systems"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./battery.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Marine Battery System Calculator</title>
+<style>
+:root{--bg:#071c2b;--panel:#0d2b40;--panel2:#103951;--well:#071e2d;--line:#2b5369;--text:#effbff;--muted:#adc5d2;--accent:#21c0d9;--warning:#ffd58e;--danger:#ffd0d0;--good:#8be0b6}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#061925,#092b3d 70%,#061825);min-height:100vh;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+main{max-width:920px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+button,input,select{font:inherit}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}h1{font-size:22px;margin:0}header p{font-size:12px;color:var(--muted);margin:4px 0 0}
+nav{display:flex;flex-wrap:wrap;gap:7px}.nav,.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:#133b51;color:#f2fdff;border:1px solid var(--line);border-radius:11px;padding:8px 12px;text-decoration:none;font-weight:700;font-size:13px}
+.button.primary{background:var(--accent);color:#06212b;border:none}
+.section{background:var(--panel);border:1px solid var(--line);border-radius:17px;overflow:hidden;margin-top:13px}
+.sectionHead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px;border-bottom:1px solid var(--line)}
+.sectionHead h2{font-size:16px;margin:0}.sectionHead span{font-size:11px;color:var(--muted);text-align:right}.body{padding:13px}
+.inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field{min-width:0}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select{display:block;min-height:46px;width:100%;min-width:0;background:var(--well);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-size:16px}
+.field small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.wide{grid-column:1/-1}.note{font-size:12px;line-height:1.55;color:var(--muted);margin:8px 0 0}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}
+.stat{background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:15px;min-width:0}
+.stat strong{display:block;font-size:23px;line-height:1.18;overflow-wrap:anywhere;margin:5px 0}
+.stat span{font-size:11px;color:var(--muted)}.stat em{font-style:normal;font-size:11px;color:var(--muted)}
+.stat.hero{grid-column:span 2;border-color:#39768a;background:linear-gradient(125deg,#0c3850,#12536a)}.stat.hero strong{font-size:32px}
+.chip{font-size:12px;color:#b0d6e6;border:1px solid #37657b;background:#0a3147;padding:4px 8px;border-radius:999px}
+.group{background:var(--well);border:1px solid var(--line);border-radius:13px;padding:10px;margin:9px 0}
+.group .lbl{font-size:12px;font-weight:700;color:#afd1dc;margin-bottom:8px}
+.chains{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-height:44px}
+.cell{border:1px solid #43829c;border-radius:8px;padding:8px 9px;color:#f6fdff;background:#16506a;font-size:12px;font-weight:800;white-space:nowrap}
+.seriesLink{color:var(--accent);font-size:21px;font-weight:800}
+.warningList{display:grid;gap:8px;margin-top:12px}
+.warning{background:#282d2b;border:1px solid #635a43;border-radius:10px;padding:9px 11px;font-size:12px;color:#f2dfba;line-height:1.5}
+.error{background:#3b2428;border:1px solid #8a4955;padding:13px;border-radius:12px;color:var(--danger);font-size:14px}
+.hidden{display:none!important}
+.toggle{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.toggle button{min-height:37px;border:1px solid var(--line);border-radius:9px;background:#11344a;color:var(--text);padding:5px 12px;font-weight:700}
+.toggle button.active{background:#21c0d9;color:#06212b}
+.detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.detail .lab{font-size:11px;color:var(--muted)}.detail strong{display:block;font-size:15px;margin-top:3px}
+details{margin-top:8px}details summary{cursor:pointer;font-weight:750;font-size:13px;min-height:44px;display:flex;align-items:center}details .inputs{margin-top:7px}
+@media(min-width:680px){.inputs{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}.wide{grid-column:span 2}.detail{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Battery System Calculator</h1><p>12 V · 24 V · 48 V • Series / Parallel • Charger sizing</p></div>
+<nav><a class="nav" href="./">Home</a><a class="nav" href="./load.html">Load demand</a><a class="nav" href="./propeller.html">Propeller</a></nav></header>
+
+<section class="section"><div class="sectionHead"><h2>1. Build the battery bank</h2><span id="layoutTag">2S2P · 4 batteries</span></div><div class="body">
+<div class="inputs">
+<div class="field wide"><label for="projectName">Vessel / project (optional)</label><input id="projectName" type="text" placeholder="e.g. 48V narrowboat propulsion bank"></div>
+<div class="field"><label for="systemVoltage">System voltage</label><select id="systemVoltage"><option value="12">12 V</option><option value="24" selected>24 V</option><option value="48">48 V</option></select></div>
+<div class="field"><label for="chemistry">Battery chemistry</label><select id="chemistry"><option value="flooded">Flooded lead-acid</option><option value="agm" selected>AGM</option><option value="lfp">Lithium LiFePO₄</option></select></div>
+<div class="field"><label for="moduleVoltage">Voltage of each battery</label><select id="moduleVoltage"><option value="12" selected>12 V battery</option><option value="24">24 V battery</option><option value="48">48 V battery</option></select><small>LiFePO₄ nominal: 12.8 / 25.6 / 51.2 V</small></div>
+<div class="field"><label for="connection">Battery connections</label><select id="connection"><option value="single">Single battery</option><option value="series">Series</option><option value="parallel">Parallel</option><option value="series-parallel" selected>Series + parallel</option></select></div>
+<div class="field" id="stringsField"><label for="strings">Parallel strings</label><select id="strings"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option></select></div>
+<div class="field"><label for="capacityValue">Capacity of ONE battery</label><input id="capacityValue" type="number" min=".01" step="any" value="100"></div>
+<div class="field"><label for="capacityUnit">Battery rating entered as</label><select id="capacityUnit"><option value="ah">Ah (amp-hours)</option><option value="kwh">kWh</option></select></div>
+</div>
+<p class="note">Series raises voltage; parallel raises capacity. This calculator automatically chooses how many batteries are needed in each series string for the system voltage. All battery modules are assumed identical.</p>
+<div id="inputError" class="error hidden" role="alert"></div>
+<div id="diagram" aria-label="Battery connection diagram" style="margin-top:10px"></div>
+<details><summary>Advanced bank settings</summary><div class="inputs">
+<div class="field"><label for="usablePercent">Usable depth of discharge (%)</label><input id="usablePercent" type="number" min="1" max="100" step="1" value="50"><small>Adjust for battery life and usable capacity.</small></div>
+<div class="field"><label for="maxChargePerBattery">Max charging current per battery (A)</label><input id="maxChargePerBattery" type="number" min="0" step="1" placeholder="From battery manual"><small>Optional; manufacturer limit.</small></div>
+<div class="field"><label for="preferredC">Preferred battery charge rate (C)</label><input id="preferredC" type="number" min=".01" max="2" step=".05" value=".20"><small>AGM default: 0.20C, illustrative.</small></div>
+<div class="field"><label for="chargeEfficiency">Charge efficiency (%)</label><input id="chargeEfficiency" type="number" min="50" max="100" step="1" value="90"><small>Time planning assumption.</small></div>
+<div class="field"><label for="taperFactor">Charge-time taper factor</label><input id="taperFactor" type="number" min="1" max="2" step=".01" value="1.22"><small>Higher for longer absorption phase.</small></div>
+</div></details>
+</div></section>
+
+<section id="resultSection" aria-live="polite">
+<div class="results">
+<div class="stat hero"><span id="energyTitle">Total nominal storage</span><strong id="headlineEnergy">4.80 kWh</strong><em id="headlineSub">24 V bank • 200 Ah</em></div>
+<div class="stat"><span>Usable storage</span><strong id="usableEnergy">2.40 kWh</strong><em id="usableSub">50% available</em></div>
+<div class="stat"><span>Bank voltage (actual nominal)</span><strong id="bankVoltage">24.0 V</strong><em id="voltageNote">24 V system class</em></div>
+<div class="stat"><span>Total batteries</span><strong id="totalBatteries">4</strong><em id="countSub">2S2P configuration</em></div>
+<div class="stat"><span>Total bank capacity</span><strong id="totalAh">200 Ah</strong><em id="ampNote">Ah is capacity, A is current</em></div>
+</div>
+<div class="toggle" style="margin-bottom:14px"><span style="font-size:12px;color:var(--muted)">Main capacity display:</span><button id="showKWh" type="button" class="active">kWh</button><button id="showAh" type="button">Ah</button></div>
+</section>
+
+<section class="section"><div class="sectionHead"><h2>2. Power demand & runtime</h2><span>Optional</span></div><div class="body">
+<div class="inputs">
+<div class="field"><label for="loadValue">Continuous electrical load</label><input id="loadValue" type="number" min="0" step="any" value="500"></div>
+<div class="field"><label for="loadUnit">Enter load as</label><select id="loadUnit"><option value="w">Watts (W)</option><option value="a">Amps (A)</option></select></div>
+<div class="field"><label for="loadType">Load supplied from</label><select id="loadType"><option value="dc">Direct DC system</option><option value="ac">AC via inverter</option></select></div>
+<div class="field"><label for="inverterEfficiency">Inverter efficiency (%)</label><input id="inverterEfficiency" type="number" min="50" max="100" step="1" value="90"><small>Used for AC loads only.</small></div>
+</div>
+<div class="detail">
+<div><span class="lab">Estimated usable operating time</span><strong id="runtime">4.8 hours</strong></div>
+<div><span class="lab">DC current drawn from bank</span><strong id="loadCurrent">20.8 A</strong></div>
+<div><span class="lab">Battery power draw</span><strong id="batteryLoad">500 W</strong></div>
+<div><span class="lab">Usable energy</span><strong id="runtimeEnergy">2.4 kWh</strong></div>
+</div>
+<p class="note">Constant-load runtime is a guide, not a guarantee. Lead-acid battery capacity varies with discharge rate, temperature and age; inverter losses are only included when selected.</p>
+</div></section>
+
+<section class="section"><div class="sectionHead"><h2>3. Suggested battery charger</h2><span>Charger output (DC)</span></div><div class="body">
+<div class="inputs">
+<div class="field"><label for="startSOC">Starting charge / SOC (%)</label><input id="startSOC" type="number" min="0" max="99" value="50"></div>
+<div class="field"><label for="endSOC">Charge to (%)</label><input id="endSOC" type="number" min="1" max="100" value="100"></div>
+<div class="field"><label for="chargeHours">Time available to charge (hours)</label><input id="chargeHours" type="number" min=".5" max="168" step=".5" value="8"></div>
+<div class="field"><label for="chargeHouseW">Loads running while charging (W)</label><input id="chargeHouseW" type="number" min="0" step="10" value="0"><small>Additional DC charger load allowance.</small></div>
+</div>
+<div class="results" style="margin-bottom:0">
+<div class="stat hero"><span>Suggested charger output</span><strong id="chargerCurrent">40 A</strong><em id="chargerText">24 V compatible smart charger</em></div>
+<div class="stat"><span>Approximate charger DC output power</span><strong id="chargerKW">1.10 kW</strong><em>Approximate charging-voltage allowance</em></div>
+<div class="stat"><span>Estimated recharge time</span><strong id="achievableTime">~ 4 h</strong><em id="chargeSummary">50% to 100% under model assumptions</em></div>
+</div>
+<div class="detail">
+<div><span class="lab">Charge rate guideline</span><strong id="cRate">0.20C</strong></div>
+<div><span class="lab">Current required for requested time</span><strong id="neededA">—</strong></div>
+<div><span class="lab">Current charging batteries</span><strong id="batteryChargeA">—</strong></div>
+<div><span class="lab">Auxiliary loads allowance</span><strong id="houseA">—</strong></div>
+</div>
+<p class="note">This is a recommended current rating, not a particular charger model. Select a charger with the right voltage range, battery chemistry profile, BMS controls (if fitted), temperature requirements and shore/gen supply capacity. Battery charging often tapers as it nears full.</p>
+</div></section>
+
+<section class="section"><div class="sectionHead"><h2>Project & report</h2><span>Save • Open • PDF</span></div><div class="body"><div id="projectTools"></div></div></section>
+<section class="section"><div class="sectionHead"><h2>Engineering checks</h2><span>Important before installation</span></div><div class="body"><div id="checks" class="warningList"></div>
+<details><summary>How the calculation works</summary><p class="note">One series string contains the selected number of modules needed to reach the chosen 12/24/48 V system voltage. Parallel strings increase total Ah; total nominal energy is the sum of all battery energies. For LiFePO₄, a 12 V-class module uses 12.8 V nominal, a 24 V module uses 25.6 V and a 48 V module uses 51.2 V.</p><p class="note">Charger rating uses the requested SOC increase, charging time, assumed charge efficiency and absorption taper allowance, checked against a preferred chemistry-specific charge C-rate. Charger output also allows for the entered loads operating during charging. It is constrained by a manufacturer current limit if supplied. Always use the battery manufacturer's charging and wiring instructions for final equipment selection.</p></details>
+</div></section>
+</main>
+
+<script src="./battery-core.js"></script><script src="./reports.js"></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id),KEY="marine-battery-current-v1";
+const ids=["projectName","systemVoltage","chemistry","moduleVoltage","connection","strings","capacityValue","capacityUnit","usablePercent","maxChargePerBattery","preferredC","chargeEfficiency","taperFactor","loadValue","loadUnit","loadType","inverterEfficiency","startSOC","endSOC","chargeHours","chargeHouseW"];
+let displayMode="kwh";
+const fmt=(v,d=1)=>Number.isFinite(v)?v.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(getState()))}catch(e){}};
+function getState(){return {fields:Object.fromEntries(ids.map(k=>[k,$(k).value])),displayMode}}
+function setState(obj){if(!obj||!obj.fields)throw Error("Not a battery project");for(const id of ids)if(Object.prototype.hasOwnProperty.call(obj.fields,id))$(id).value=String(obj.fields[id]);displayMode=obj.displayMode==="ah"?"ah":"kwh";syncChemText();render();}
+function config(){return {projectName:$("projectName").value.trim(),chemistry:$("chemistry").value,systemVoltage:$("systemVoltage").value,moduleVoltage:$("moduleVoltage").value,connection:$("connection").value,strings:$("strings").value,capacityValue:$("capacityValue").value,capacityUnit:$("capacityUnit").value,usablePercent:$("usablePercent").value,maxChargePerBattery:$("maxChargePerBattery").value,preferredC:$("preferredC").value,chargeEfficiency:$("chargeEfficiency").value,taperFactor:$("taperFactor").value,loadValue:$("loadValue").value,loadUnit:$("loadUnit").value,loadType:$("loadType").value,inverterEfficiency:$("inverterEfficiency").value,startSOC:$("startSOC").value,endSOC:$("endSOC").value,chargeHours:$("chargeHours").value,chargeHouseW:$("chargeHouseW").value}}
+function compute(){return globalThis.BatteryCalc.calculate(config())}
+function syncChemText(){const chem=globalThis.BatteryCalc.chemistries[$("chemistry").value];$("preferredC").parentElement.querySelector("small").textContent="Starting guideline: "+chem.chargeC.toFixed(2)+"C (manufacturer data overrides).";}
+function configWarning(show,msg){$("inputError").classList.toggle("hidden",!show);$("inputError").textContent=msg;$("resultSection").classList.toggle("hidden",show)}
+function diagram(r){
+ const container=$("diagram");container.replaceChildren();
+ const info=document.createElement("div");info.className="note";info.textContent="Configuration "+r.label+" · "+r.series+" in series per string · "+r.parallel+" parallel "+(r.parallel===1?"string":"strings")+" · "+r.totalCount+" batteries";
+ container.append(info);
+ const maxDisplay=Math.min(r.parallel,8);
+ for(let i=0;i<maxDisplay;i++){
+   const grp=document.createElement("div");grp.className="group";
+   const label=document.createElement("div");label.className="lbl";label.textContent="String "+(i+1)+" / "+r.parallel;grp.append(label);
+   const chain=document.createElement("div");chain.className="chains";
+   const terminal=document.createElement("span");terminal.textContent="−";terminal.className="chip";chain.append(terminal);
+   for(let j=0;j<r.series;j++){
+     const cell=document.createElement("span");cell.className="cell";cell.textContent=fmt(r.batteryVoltage,1)+" V";
+     chain.append(cell);
+     if(j<r.series-1){const plus=document.createElement("span");plus.textContent="→";plus.className="seriesLink";chain.append(plus);}
+   }
+   const end=document.createElement("span");end.textContent="+";end.className="chip";chain.append(end);
+   grp.append(chain);container.append(grp);
+ }
+ if(r.parallel>maxDisplay){const note=document.createElement("p");note.className="note";note.textContent="+"+(r.parallel-maxDisplay)+" additional identical parallel strings";container.append(note)}
+ const foot=document.createElement("p");foot.className="note";foot.textContent="Illustration shows connection grouping, not a wiring schematic. Cables, busbars, fuses, disconnects and BMS control are not shown.";container.append(foot);
+}
+let last=null;
+function render(){
+ const r=compute();last=r;
+ const needsStrings=["parallel","series-parallel"].includes($("connection").value);
+ $("stringsField").classList.toggle("hidden",!needsStrings);
+ $("layoutTag").textContent=r.valid?r.label+" · "+r.totalCount+" batteries":"Review configuration";
+ if(!r.valid){configWarning(true,r.errors.join("  "));$("diagram").replaceChildren();$("checks").replaceChildren();save();return}
+ configWarning(false,"");diagram(r);
+ $("showKWh").classList.toggle("active",displayMode==="kwh");$("showAh").classList.toggle("active",displayMode==="ah");
+ $("energyTitle").textContent=displayMode==="kwh"?"Total nominal storage":"Total bank capacity";
+ $("headlineEnergy").textContent=displayMode==="kwh"?fmt(r.nominalKWh,2)+" kWh":fmt(r.bankAh,0)+" Ah";
+ $("headlineSub").textContent=displayMode==="kwh"?fmt(r.bankNominalV,1)+" V nominal • "+fmt(r.bankAh,0)+" Ah":fmt(r.nominalKWh,2)+" kWh nominal";
+ $("usableEnergy").textContent=displayMode==="kwh"?fmt(r.usableKWh,2)+" kWh":fmt(r.usableAh,0)+" Ah";
+ $("usableSub").textContent=fmt(r.usablePercent,0)+"% usable";
+ $("bankVoltage").textContent=fmt(r.bankNominalV,1)+" V";
+ $("voltageNote").textContent=fmt(r.systemVoltage,0)+" V system class";
+ $("totalBatteries").textContent=String(r.totalCount);
+ $("countSub").textContent=r.label+" configuration";
+ $("totalAh").textContent=fmt(r.bankAh,0)+" Ah";
+ $("runtime").textContent=r.runtimeHours===null?"Set a load":fmt(r.runtimeHours,1)+" hours";
+ $("loadCurrent").textContent=fmt(r.loadA,1)+" A";
+ $("batteryLoad").textContent=fmt(r.loadA*r.bankNominalV,0)+" W";
+ $("runtimeEnergy").textContent=fmt(r.usableKWh,2)+" kWh";
+ $("chargerCurrent").textContent=fmt(r.chargerA,0)+" A";
+ $("chargerKW").textContent=fmt(r.chargerKW,2)+" kW";
+ $("chargerText").textContent=r.systemVoltage+" V-class "+(r.chemistry==="lfp"?"BMS-compatible LiFePO4 charger":"smart "+r.name.toLowerCase()+" charger");
+ $("achievableTime").textContent=r.achievableHours===null?"Not feasible":"~ "+fmt(r.achievableHours,1)+" h";
+ $("chargeSummary").textContent=fmt(r.socStart,0)+"% → "+fmt(r.socEnd,0)+"% SOC estimate";
+ $("cRate").textContent=fmt(r.chargeRateC,2)+"C";
+ $("neededA").textContent=fmt(r.neededBatteryA,1)+" A";
+ $("batteryChargeA").textContent=fmt(r.chargeBatteryA,1)+" A";
+ $("houseA").textContent=fmt(r.houseA,1)+" A";
+ const list=$("checks");list.replaceChildren();
+ for(const message of r.warnings){const n=document.createElement("div");n.className="warning";n.textContent=message;list.append(n)}
+ save();
+}
+function changeChem(){const chem=globalThis.BatteryCalc.chemistries[$("chemistry").value];$("usablePercent").value=Math.round(chem.dod*100);$("preferredC").value=chem.chargeC;$("chargeEfficiency").value=Math.round(chem.eff*100);$("taperFactor").value=chem.taper;syncChemText();render()}
+$("chemistry").addEventListener("change",changeChem);
+$("capacityUnit").addEventListener("focus",e=>{e.target.dataset.previous=e.target.value});
+$("capacityUnit").addEventListener("change",e=>{
+ const previous=e.target.dataset.previous||"ah";const newUnit=e.target.value;if(previous!==newUnit){
+ const val=Number($("capacityValue").value)||0,chem=globalThis.BatteryCalc.chemistries[$("chemistry").value],v=Number($("moduleVoltage").value)*chem.voltageScale;
+ $("capacityValue").value=(previous==="ah"?val*v/1000:val*1000/v).toFixed(previous==="ah"?3:1);
+ }e.target.dataset.previous=newUnit;render();
+});
+$("loadUnit").addEventListener("focus",e=>{e.target.dataset.previous=e.target.value});
+$("loadUnit").addEventListener("change",e=>{
+ const previous=e.target.dataset.previous||"w";const newUnit=e.target.value;
+ if(previous!==newUnit){const val=Number($("loadValue").value)||0,r=compute();const v=r.bankNominalV||24;
+ $("loadValue").value=(previous==="w"?val/v:val*v).toFixed(previous==="w"?2:1)}
+ e.target.dataset.previous=newUnit;render();
+});
+for(const id of ids){
+ if(["chemistry","capacityUnit","loadUnit"].includes(id))continue;
+ $(id).addEventListener("change",render);
+ $(id).addEventListener("input",render);
+}
+$("showKWh").addEventListener("click",()=>{displayMode="kwh";render()});
+$("showAh").addEventListener("click",()=>{displayMode="ah";render()});
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&saved.fields)for(const id of ids)if(saved.fields[id]!==undefined)$(id).value=String(saved.fields[id]);if(saved?.displayMode==="ah")displayMode="ah"}catch(e){}
+syncChemText();render();
+globalThis.MarineReports.init({
+ kind:"battery",
+ suggestName:()=>($("projectName").value.trim()||"Marine Battery System"),
+ getState,
+ setState,
+ report:()=>{
+  const r=compute();if(!r.valid)throw Error(r.errors.join(". "));
+  const c=config(),f=(v,d=1)=>Number(v).toFixed(d),A=v=>f(v,1)+" A",V=v=>f(v,1)+" V";
+  return{
+   title:"Marine Battery System Report",
+   subtitle:(c.projectName||"Unnamed vessel")+" / "+r.name+" / "+r.label,
+   filename:(c.projectName||"Marine Battery")+"-battery",
+   metrics:[["Nominal energy",f(r.nominalKWh,2)+" kWh"],["Usable energy",f(r.usableKWh,2)+" kWh"],["Bank capacity",f(r.bankAh,0)+" Ah"],["Charger output",A(r.chargerA)]],
+   sections:[
+    {title:"Bank configuration",rows:[
+      ["Vessel / project",c.projectName||"Not entered"],["Battery chemistry",r.name],
+      ["System class",c.systemVoltage+" V"],["Battery nominal module voltage",V(r.batteryVoltage)],
+      ["Battery capacity per module",f(r.capacityPerBatteryAh,1)+" Ah / "+f(r.capacityPerBatteryKWh,2)+" kWh"],
+      ["Connection",c.connection],["Arrangement",r.label],
+      ["Series per string",r.series],["Number of parallel strings",r.parallel],
+      ["Total number of batteries",r.totalCount],
+      ["Actual nominal bank voltage",V(r.bankNominalV)],
+      ["Nominal bank Ah",f(r.bankAh,1)+" Ah"],
+      ["Nominal energy",f(r.nominalKWh,2)+" kWh"],
+      ["Selected usable DoD",f(r.usablePercent,0)+"%"],
+      ["Usable energy",f(r.usableKWh,2)+" kWh / "+f(r.usableAh,1)+" Ah"]
+    ]},
+    {title:"Load and estimated runtime",rows:[
+      ["Load input",c.loadValue+" "+(c.loadUnit==="a"?"A":"W")],
+      ["Load supply method",c.loadType==="ac"?"AC via inverter":"DC direct"],
+      ["Inverter efficiency",c.loadType==="ac"?c.inverterEfficiency+"%":"Not used"],
+      ["Battery power demand",f(r.loadA*r.bankNominalV,0)+" W"],
+      ["DC current draw",A(r.loadA)],
+      ["Estimated steady-load runtime",r.runtimeHours===null?"Not calculated":f(r.runtimeHours,2)+" h"]
+    ]},
+    {title:"Charger selection",rows:[
+      ["Starting / target state of charge",f(r.socStart,0)+"% to "+f(r.socEnd,0)+"%"],
+      ["Desired charge duration",f(r.plannedHours,1)+" h"],
+      ["Preferred charge C-rate",f(r.chargeRateC,2)+" C"],
+      ["Charging efficiency assumption",f(r.eff*100,0)+"%"],
+      ["Absorption/taper time allowance",f(r.taper,2)+"x"],
+      ["Additional DC house loads",f(r.houseW,0)+" W / "+A(r.houseA)],
+      ["Charge current required for desired time",A(r.neededBatteryA)],
+      ["Suggested charger output",A(r.chargerA)+" at "+c.systemVoltage+" V-class"],
+      ["Approximate DC charger power",f(r.chargerKW,2)+" kW"],
+      ["Battery charging current after loads",A(r.chargeBatteryA)],
+      ["Battery manufacturer current limit",r.maxBankChargeA===null?"Not entered":A(r.maxBankChargeA)+" total"],
+      ["Planning recharge time",r.achievableHours===null?"Not possible under current constraints":f(r.achievableHours,1)+" h"]
+    ]},
+    {title:"Engineering checks and limitations",paragraphs:[
+       ...r.warnings,
+       "All energy values use nominal battery voltage. Lithium 12V / 24V / 48V-class batteries are modelled at nominal 12.8 / 25.6 / 51.2 volts; confirm the actual model voltage and approved series/parallel topology.",
+       "The charger estimate is a current-sizing guide, not a substitute for a manufacturer's charging profile. Maximum series/parallel counts, BMS, charging temperature, charge voltage, alternator protection, overload protection, cable sizing and shore capacity all require separate verification."
+    ]}
+   ]
+  };
+ }
+});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body></html>
