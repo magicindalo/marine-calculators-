@@ -182,7 +182,7 @@ function products(kind,r,node){
   buildText(item,"VETUS SKU: "+p.sku+" · "+p.family,"note");
   const meta=document.createElement("div");meta.className="productMeta";
   const values=[
-   p.kw.toFixed(1)+" kW rated"+(kind==="diesel"?" / "+p.hp.toFixed(0)+" hp":""),
+   p.kw.toFixed(1)+(p.sku==="ELINE220S"?" kW maximum":" kW rated")+(kind==="diesel"?" / "+p.hp.toFixed(0)+" hp":""),
    r.boats===2?"2 × units":"1 × unit",
    "Target cruise load "+format(p.cruiseLoad,0)+"%",
    "Duty-allowed shaft capacity "+format(p.availableAtDuty,1)+" kW"
@@ -193,6 +193,7 @@ function products(kind,r,node){
   for(const x of values){const chip=document.createElement("span");chip.textContent=x;meta.append(chip)}
   item.append(meta);
   if(p.lowLoad)buildText(item,"Cruise demand is less than 35% of rated power; verify acceptable diesel load spectrum and propeller match.","warn");
+  if(p.installationGuideExceeded)buildText(item,"Beyond E-LINE 22 indicative vessel size guidance (15 m / 20 tonnes). Confirm suitability with VETUS engineering.","warn");
   if(kind==="electric")buildText(item,"Verify manufacturer continuous torque/power, battery discharge capability, E-Line controls, cooling and propeller torque.","note");
   const link=document.createElement("a");link.href=p.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Official VETUS "+p.family+" range ↗";item.append(link);
   node.append(item);
