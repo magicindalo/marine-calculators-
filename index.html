@@ -150,9 +150,19 @@ main{padding-left:13px;padding-right:13px}
   <p class="tileMeta" id="exhaustSaved">Water backflow • VETUS waterlock sizing</p>
   <div class="tileFoot"><span class="go">›</span></div>
 </a>
+<a class="tile" href="./cable.html" aria-label="Open Marine Cable Sizing and Voltage Drop Calculator">
+ <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#b6f9ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M3 14h8v20H3zM37 14h8v20h-8z" fill="#0b4264"/>
+ <path d="M11 18c12 0 14 11 26 11M11 27c12 0 14-10 26-10" stroke="#25d4ee"/>
+ <path d="M7 20v9M41 20v9" stroke="#f2feff"/>
+ </svg></div>
+ <h2>Cable &amp; Voltage Drop</h2>
+ <p class="tileMeta" id="cableSaved">DC / AC • Cable sizing • Fuse advice</p>
+ <div class="tileFoot"><span class="go">›</span></div>
+</a>
 </section>
 <section class="next"><h3>More calculators on the way</h3><p>Indalo Marine Calculators is designed to expand without changing the existing tools.</p>
-<div class="future"><span>Cable sizing &amp; voltage drop</span><span>Generator sizing</span><span>Hybrid propulsion</span></div></section>
+<div class="future"><span>Generator sizing</span><span>Hybrid propulsion</span></div></section>
 <div class="footerWave" aria-hidden="true"></div>
 <footer class="disclaimer">Engineering calculation aids. Review assumptions and manufacturer requirements before final specification. Saved projects remain local to your device; PDF reports can be shared separately.</footer>
 </main>
@@ -161,7 +171,7 @@ main{padding-left:13px;padding-right:13px}
 try{
  const p=JSON.parse(localStorage.getItem("marine-calculators.saved-projects.v1"))||[];
  if(Array.isArray(p)){
-   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved",exhaust:"exhaustSaved"};
+   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved",exhaust:"exhaustSaved",cable:"cableSaved"};
    Object.keys(counts).forEach(k=>{const n=p.filter(x=>x.kind===k).length;if(n)document.getElementById(counts[k]).textContent=n+" saved "+(n===1?"project":"projects")});
  }
 }catch(e){}
