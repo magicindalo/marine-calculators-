@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Indalo Marine"><link rel="apple-touch-icon" href="./assets/indalo-app-icon.png"><link rel="icon" href="./assets/indalo-app-icon.png" type="image/png"><link rel="manifest" href="./eline.webmanifest"><link rel="stylesheet" href="./propulsion.css"><title>Indalo Marine Calculators — E-Line Electric Selection</title></head><body data-mode="eline"><main><header><div><div class="brand">INDALO MARINE CALCULATORS</div><h1>E-Line Electric Selection</h1><p>VETUS electric motor selection • battery capacity • cruising life</p></div><nav><a href="./" class="nav">Home</a><a href="./diesel.html" class="nav">Diesel Sizing</a></nav></header>
+<section class="card"><div class="top"><h2>1. Vessel and desired speed</h2><span>Loaded hull measurements</span></div><div class="inner"><div class="fields">
+<div class="field wide"><label for="project">Vessel / project</label><input data-field id="project" placeholder="Customer and vessel reference" type="text"></div>
+<div class="field"><label for="hull">Vessel type</label><select data-field id="hull"><option value="displacement" selected>Displacement cruiser / barge</option><option value="canal">Canal / narrowboat</option><option value="semi">Semi-displacement</option><option value="sail">Auxiliary sailing yacht</option></select></div>
+<div class="field"><label for="water">Water type</label><select data-field id="water"><option value="fresh" selected>Freshwater</option><option value="sea">Seawater</option></select></div>
+<div class="field"><label for="lwl">Length at loaded waterline (m)</label><input data-field id="lwl" type="number" min="3" max="80" step="0.1" value="18"><small>Use waterline length, not overall length.</small></div>
+<div class="field"><label for="beam">Waterline beam (m)</label><input data-field id="beam" type="number" min="0.8" max="16" step="0.1" value="3.3"></div>
+<div class="field"><label for="draft">Loaded hull draft (m)</label><input data-field id="draft" type="number" min="0.1" max="7" step="0.05" value="0.8"><small>For deep keels, the simplified resistance model is not reliable.</small></div>
+<div class="field"><label for="displacement">Loaded displacement (tonnes)</label><input data-field id="displacement" type="number" min="0.3" max="1500" step="0.5" value="16"><small>Total loaded weight, not gross tonnage.</small></div>
+<div class="field"><label for="cruise">Desired boat speed (knots)</label><input data-field id="cruise" type="number" min="0.1" max="60" step="0.1" value="5"><small>Through water, not GPS speed over ground.</small></div>
+<div class="field"><label for="engines">Propulsion lines</label><select data-field id="engines"><option value="1" selected>Single engine / shaft</option><option value="2">Twin engine / shafts</option></select></div>
+</div>
+<details><summary>Optional measured sea-trial calibration</summary><div class="fields">
+<div class="field"><label for="trialSpeed">Measured through-water speed (kn)</label><input data-field id="trialSpeed" type="number" min="0" max="40" step="0.1" value=""><small>Enter together with measured TOTAL shaft kW.</small></div>
+<div class="field"><label for="trialPower">Measured delivered TOTAL shaft power (kW)</label><input data-field id="trialPower" type="number" min="0" max="2000" step="0.1" value=""><small>Not nameplate engine power. Engine ECU percent load alone is not a shaft measurement.</small></div>
+</div><p class="note">Both trial entries are required to calibrate the resistance estimate. An uncalibrated estimate is not adequate for a final engine order.</p></details></div></section>
+<section class="card"><div class="top"><h2>2. Electric propulsion assumptions</h2><span>24 / 48 V-class VETUS models</span></div><div class="inner">
+<div class="fields">
+<div class="field"><label for="eVoltage">Electric propulsion bank</label><select data-field id="eVoltage"><option value="48" selected>48 V-class E-Line</option><option value="24">24 V-class E-AIR 5 kW</option></select></div>
+<div class="field"><label for="reservePct">Propulsion sizing margin (%)</label><input data-field id="reservePct" type="number" min="0" max="100" step="5" value="25"></div>
+<div class="field"><label for="electricDuty">Allowed normal motor duty (%)</label><input data-field id="electricDuty" type="number" min="50" max="100" step="5" value="85"><small>Planning assumption only; confirm each model's continuous curve.</small></div>
+<div class="field"><label for="electricEfficiency">DC-to-shaft efficiency (%)</label><input data-field id="electricEfficiency" type="number" min="60" max="100" step="1" value="88"></div>
+<div class="field"><label for="propulsiveEfficiency">Propulsive efficiency (%)</label><input data-field id="propulsiveEfficiency" type="number" min="25" max="85" step="5" value="55"></div>
+</div></div></section>
+<section class="card"><div class="top"><h2>3. Electric motor sizing</h2><span>Live calculation</span></div><div class="inner">
+<div id="error" class="warning critical hide" role="alert"></div>
+<div id="powerResults"><div class="stats">
+ <div class="stat hero"><span>Estimated propulsion shaft demand at chosen speed</span><strong id="cruisePower">—</strong><em>Not a manufacturer torque-curve match</em></div>
+ <div class="stat"><span>Traditional displacement hull speed</span><strong id="hullSpeed">—</strong><em>Length-at-waterline speed benchmark</em></div>
+ <div class="stat"><span>Estimated motor supply demand</span><strong id="motorPower">—</strong><em>At chosen duty margin and speed</em></div>
+ <div class="stat"><span>Suitable listed E-Line models</span><strong id="motorCount">—</strong><em>Only where the powering estimate is sufficiently supported</em></div>
+</div><p class="note">Low-confidence resistance estimates are not sufficient to approve an E-Line system. Motor output, continuous thermal loading, shaft RPM/torque and vessel installation require verification.</p>
+</div></div></section>
+<section class="card"><div class="top"><h2>4. VETUS E-Line candidate list</h2><span>Published VETUS model families</span></div><div class="inner"><div id="candidates" aria-live="polite"></div></div></section>
+<section class="card"><div class="top"><h2>5. Battery endurance and charging allowance</h2><span>Cruising life and energy required</span></div><div class="inner">
+<div class="fields">
+<div class="field"><label for="batteryKWh">Nominal propulsion battery (kWh)</label><input data-field id="batteryKWh" type="number" min="0.1" max="2000" step="0.5" value="20"><small>Total installed nominal energy at the propulsion voltage.</small></div>
+<div class="field"><label for="usablePercent">Usable battery capacity (%)</label><input data-field id="usablePercent" type="number" min="5" max="100" step="5" value="80"><small>Battery chemistry / BMS usable fraction.</small></div>
+<div class="field"><label for="energyReservePercent">Retain a battery reserve (%)</label><input data-field id="energyReservePercent" type="number" min="0" max="94" step="5" value="10"><small>Additional unused reserve from usable capacity.</small></div>
+<div class="field"><label for="hotelWatts">Continuous domestic / hotel demand (W)</label><input data-field id="hotelWatts" type="number" min="0" max="100000" step="50" value="300"><small>Navigation, pumps and other concurrent electrical load.</small></div>
+<div class="field"><label for="hours">Desired cruising duration (hours)</label><input data-field id="hours" type="number" min="0.25" max="72" step="0.5" value="4"></div>
+</div>
+<div class="stats" style="margin-top:12px">
+ <div class="stat hero"><span>Estimated runtime at selected speed</span><strong id="runtime">—</strong><em>Steady speed, no charge input, including domestic load</em></div>
+ <div class="stat"><span>Nominal battery capacity for journey</span><strong id="neededKWh">—</strong><em>Includes usable % and retained battery reserve</em></div>
+ <div class="stat"><span>Estimated DC input power</span><strong id="inputKw">—</strong><em>Propulsion and domestic consumption</em></div>
+ <div class="stat"><span>Indicative DC current</span><strong id="currentA">—</strong><em>Nominal bank voltage only; voltage sag not included</em></div>
+</div></div></section>
+<section class="card"><div class="top"><h2>Save vessel & PDF report</h2><span>Same local project library</span></div><div class="inner"><div id="projectTools"></div><p class="note">Saved projects stay on this iPhone/browser. Existing combined Engine &amp; E-Line saved projects remain accessible through the <a href="./engine.html">legacy combined calculator</a>.</p></div></section>
+<section class="card"><div class="top"><h2>Engineering cautions & sources</h2><span>Read before ordering</span></div><div class="inner"><div id="notices"></div><details><summary>Calculation notes and references</summary>
+<p class="note">Displacement hull speed = 1.34 × √(LWL in feet), in knots. The powering estimate uses the existing Indalo friction and simplified residual resistance model. Sea-trial measured total shaft power can calibrate the model.</p>
+<p class="note">Diesel ratings / E-Line product models are from the <a href="https://webshop.vetus.com/en/products/engines/m-line-engines/" target="_blank" rel="noopener noreferrer">VETUS diesel engine catalogue</a> and <a href="https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines" target="_blank" rel="noopener noreferrer">VETUS E-Line catalogue</a>. Installation and torque/duty curves must be checked for each model.</p>
+</details></div></section>
+<footer class="disclaimer">Version 1.1 · © 2026 J. Spaven · Engineering estimate only · VETUS trademarks belong to their respective owners</footer></main><script src="./resistance.js"></script><script src="./engine-core.js"></script><script src="./propulsion-split.js"></script><script src="./reports.js"></script><script src="./propulsion-ui.js"></script></body></html>
