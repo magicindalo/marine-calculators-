@@ -6,6 +6,7 @@ A responsive, installable marine engineering toolkit for iPhone, iPad and deskto
 - **Main menu:** https://magicindalo.github.io/marine-calculators-/
 - **Electrical Load Demand:** https://magicindalo.github.io/marine-calculators-/load.html
 - **Propeller & Vessel Speed:** https://magicindalo.github.io/marine-calculators-/propeller.html
+- **Battery Systems & Charging:** https://magicindalo.github.io/marine-calculators-/battery.html
 
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
@@ -26,6 +27,7 @@ The file is generated directly on-device using `reports.js` and requires no PDF 
 ### Included calculators
 - **Electrical:** AC single-phase / three-phase / DC, demand factors, surge loading, daily energy, generator/inverter demand and battery Ah sizing.
 - **Propulsion:** preliminary Wageningen B-series propeller sizing and checking, resistance screening, predicted calm-water vessel speed, diesel and electric options.
+- **Battery Systems:** 12 / 24 / 48 V battery banks, series/parallel/series-parallel combinations, flooded lead-acid / AGM / LiFePO4, total kWh / Ah, usable capacity, constant-load runtime, charger current and approximate charging time. Includes BMS/manufacturer-limit cautions.
 
 ## Engineering limitations
 All results are preliminary estimates. The resistance model includes a non-standard wave/residuary resistance heuristic, not a verified Holtrop–Mennen method. Sea-trial and known resistance data improve the calibration, but professional verification remains necessary before installation, cable/protection selection or propeller manufacture.
