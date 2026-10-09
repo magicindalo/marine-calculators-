@@ -92,12 +92,24 @@ main{padding-left:13px;padding-right:13px}
 .next{margin-top:26px}
 }
 @media(prefers-reduced-transparency:reduce){.next{backdrop-filter:none}}
+
+/* True transparent full-colour Indalo logo — do not invert or desaturate */
+.brandFull {
+  display:block;
+  width:min(590px,100%);
+  height:auto;
+  max-height:258px;
+  object-fit:contain;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+  background:transparent;
+}
 </style>
 </head>
 <body>
 <main>
 <header class="brand">
-  <img class="brandFull" src="./assets/indalo-marine-logo.webp" alt="Indalo Marine logo" width="500" height="229">
+  <img class="brandFull" src="./assets/indalo-marine-logo-colour.svg" alt="Indalo Marine logo with cyan waves" width="950" height="422">
   <h1>CALCULATORS</h1>
   <div class="brandLine">Marine engineering tools</div>
   <p class="brandHint">Indalo Marine Calculators — engineering tools for electrical design, propulsion and marine systems.</p>
