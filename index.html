@@ -19,13 +19,13 @@ main{max-width:850px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 28px)
 h1{font-size:clamp(30px,6vw,44px);margin:7px 0 9px;line-height:1.05;letter-spacing:-1px}p{color:var(--muted);margin:0;line-height:1.55}.intro{margin-top:25px;max-width:600px}.grid{margin:24px 0;display:grid;gap:13px;grid-template-columns:1fr}
 .tile{display:block;text-decoration:none;color:inherit;background:linear-gradient(145deg,#10364b,#0b2b3f);border:1px solid #28556c;border-radius:20px;padding:22px;min-width:0}
 .tile:focus-visible{outline:3px solid var(--bright);outline-offset:3px}.tile h2{font-size:21px;margin:14px 0 8px}.tile p{font-size:14px;min-height:48px}.symbol{font-size:30px;width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:#174e63;color:#72e5e5}.bottom{margin-top:22px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:#a5c3d2;font-size:13px}.go{color:var(--bright);font-size:15px;font-weight:800}.tag{border:1px solid #3c6679;border-radius:999px;padding:5px 9px;color:#bbd8e2;font-size:11px}.upcoming{border:1px dashed #376178;border-radius:17px;padding:17px;margin-top:28px}.upcoming h3{font-size:16px;margin:0 0 6px}.future{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.future span{border:1px solid #2f566b;border-radius:9px;padding:7px 9px;font-size:12px;color:#a6c0cd}.saveNote{font-size:12px;border-top:1px solid #254b5e;margin-top:27px;padding-top:19px}.count{color:#7cd6cc;font-size:12px}
-@media(min-width:650px){.grid{grid-template-columns:1fr 1fr}.tile{min-height:278px}}
+@media(min-width:650px){.grid{grid-template-columns:1fr 1fr}.tile{min-height:278px}}@media(min-width:830px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 <main>
 <div style="display:flex;align-items:center;gap:13px"><div class="logo">⚓</div><div><div class="eyebrow">Mobile Engineering Toolkit</div><div style="font-size:13px;color:#bbd4e2;margin-top:4px">Independent marine applications calculators</div></div></div>
-<div class="intro"><h1>Marine Calculators</h1><p>Fast, clear marine engineering tools for onboard surveys, propulsion selection and electrical load planning. Choose a calculator to start.</p></div>
+<div class="intro"><h1>Marine Calculators</h1><p>Fast, clear marine engineering tools for onboard surveys, electrical systems, battery-bank design and propulsion selection. Choose a calculator to start.</p></div>
 <div class="grid">
 <a class="tile" href="./load.html" aria-label="Open Electrical Load Demand calculator">
   <div class="symbol">⚡</div><h2>Electrical Load Demand</h2>
@@ -37,10 +37,15 @@ h1{font-size:clamp(30px,6vw,44px);margin:7px 0 9px;line-height:1.05;letter-spaci
   <p>Size or check a propeller using hull data, shaft power, RPM and B-series curves; estimate resistance and vessel speed.</p>
   <div class="bottom"><span class="count" id="propSaved">Diesel + electric</span><span class="go">Open calculator →</span></div>
 </a>
+<a class="tile" href="./battery.html" aria-label="Open Marine Battery System Calculator">
+  <div class="symbol">🔋</div><h2>Battery Systems & Charging</h2>
+  <p>Design 12, 24 or 48 V battery banks, compare lead-acid, AGM and LiFePO₄, view series/parallel connections, energy and charger output.</p>
+  <div class="bottom"><span class="count" id="batterySaved">Ah · kWh · chargers</span><span class="go">Open calculator →</span></div>
+</a>
 </div>
 <section class="upcoming"><h3>More calculators are coming</h3>
   <p style="font-size:13px">The home screen is built to accept new engineering calculators without changing how you access the existing ones.</p>
-  <div class="future"><span>Cable sizing & voltage drop</span><span>Battery systems</span><span>Thruster selection</span><span>Generator sizing</span><span>Hybrid propulsion</span></div>
+  <div class="future"><span>Cable sizing & voltage drop</span><span>Thruster selection</span><span>Generator sizing</span><span>Hybrid propulsion</span></div>
 </section>
 <p class="saveNote">Project saves are stored on this iPhone/browser. Use <b>Save PDF report</b> inside either calculator to create a shareable A4 PDF. Browser data may be lost if the website data is cleared; your downloaded PDFs remain separate files.</p>
 </main>
@@ -50,9 +55,9 @@ try{
  const p=JSON.parse(localStorage.getItem('marine-calculators.saved-projects.v1'))||[];
  if(!Array.isArray(p))return;
  const n=k=>p.filter(x=>x.kind===k).length;
- const a=n('load'),b=n('propeller');
+ const a=n('load'),b=n('propeller'),c=n('battery');
  if(a)document.getElementById('loadSaved').textContent=a+' saved '+(a===1?'project':'projects');
- if(b)document.getElementById('propSaved').textContent=b+' saved '+(b===1?'vessel':'vessels');
+ if(b)document.getElementById('propSaved').textContent=b+' saved '+(b===1?'vessel':'vessels');if(c)document.getElementById('batterySaved').textContent=c+' saved '+(c===1?'system':'systems');
 }catch(e){}
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
