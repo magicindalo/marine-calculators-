@@ -10,6 +10,7 @@ Indalo Marine branded, responsive, installable marine engineering toolkit for iP
 - **VETUS Thruster Selection:** https://magicindalo.github.io/marine-calculators-/thruster.html
 - **Exhaust Backflow & Waterlock:** https://magicindalo.github.io/marine-calculators-/exhaust.html
 - **Cable Sizing & Voltage Drop:** https://magicindalo.github.io/marine-calculators-/cable.html
+- **Engine & E-Line Selection:** https://magicindalo.github.io/marine-calculators-/engine.html
 
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
@@ -38,7 +39,7 @@ Reports are branded **Indalo Marine Calculators** and generated directly on-devi
 - **Battery Systems:** 12 / 24 / 48 V battery banks, series/parallel/series-parallel combinations, flooded lead-acid / AGM / LiFePO4, total kWh / Ah, usable capacity, constant-load runtime, charger current and approximate charging time. Includes BMS/manufacturer-limit cautions.
 - **VETUS Thruster Selection:** Beaufort/custom wind-pressure sizing, estimated required bow/stern kgf, tunnel size and 12/24/48 V source filters; suitable product model numbers, PDF report and saved vessel records.
 - **Exhaust Backflow & Waterlock:** 25% VETUS hose-water return rule and 2x capacity selection (from `Vetus Calculator Book 12-10-2018.xls` Flow Back worksheet and VETUS 2026–27 catalogue), model shortlist by capacity and hose diameter; optional engine power/backpressure screen, anti-siphon warnings, A4 report and saved project.
-- **Cable Sizing & Voltage Drop:** 12/24/48 V DC; 230 V AC single-phase and 400 V AC three-phase screening; ampacity/voltage-drop sizing in mm², engine-room and bundling derating, existing-conductor checks and carefully limited nominal fuse/breaker advice. Saves vessel projects and exports Indalo-branded A4 PDFs.
+- **Engine & E-Line Selection:** Vessel power screening using LWL, beam, draft, loaded displacement, speed, engine count and hull type; trial-power calibration; compares VETUS M-Line, H-Line, D-Line and E-Air/E-Line shaft-drive models. Includes 24/48V electric limits, battery endurance, saved vessel projects and A4 reports.\n- **Cable Sizing & Voltage Drop:** 12/24/48 V DC; 230 V AC single-phase and 400 V AC three-phase screening; ampacity/voltage-drop sizing in mm², engine-room and bundling derating, existing-conductor checks and carefully limited nominal fuse/breaker advice. Saves vessel projects and exports Indalo-branded A4 PDFs.
 
 ## Engineering limitations
 All results are preliminary estimates. The resistance model includes a non-standard wave/residuary resistance heuristic, not a verified Holtrop–Mennen method. Sea-trial and known resistance data improve the calibration, but professional verification remains necessary before installation, cable/protection selection or propeller manufacture.
@@ -58,3 +59,17 @@ The cable tool uses ISO 13297:2020 Annex A metric copper 70°C, 85–90°C and 1
 The fuse/breaker figure is explicitly **provisional** and offered only for single-conductor non-motor circuits up to 150 A where a standard nominal rating fits the selected cable's derated ampacity, load allowance and optional equipment limit. The selection does **not** check available short-circuit current, fuse interrupt rating, breaker curve, cable termination temperature, or equipment manufacturer protection. Fuse output is withheld for electric propulsion, motors, thrusters, parallel-conductor runs and three-phase AC.
 
 Three-phase circuit voltage drop is a resistance-only screening estimate; IEC 60092-507 and manufacturer-specific specifications must be checked for marine AC three-phase installations. Electric propulsion follows ISO 16315 rather than the ordinary small-craft wiring scope. Reports are design working papers, not a certified electrical installation design.
+
+## Engine selection sources and limitations
+
+Engine ratings and currently listed models verified in October 2026 against official VETUS webshop range pages:
+- M-Line: https://webshop.vetus.com/en/products/engines/m-line-engines/
+- H-Line: https://webshop.vetus.com/en/products/engines/h-line-engines
+- D-Line: https://webshop.vetus.com/en/products/engines/d-line-engines
+- E-Line/E-Air: https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines
+
+A 24 V-class propulsion bank is matched only to EAIR05024; all other listed E-Air/E-Line models are 48 V class. This is only a DC-supply screening, not an electrical system design.
+
+Hull power calculations use the preliminary ITTC-1957 friction + custom wave term from `resistance.js` for displacement craft with Fn ≤ 0.42. Sea-trial power can calibrate this. Planing craft use a Crouch empirical power-versus-weight method, with a hull-dependent coefficient and near-maximum target speed. These are **screening models only**, not a validated powering/propeller prediction and not a marine engine suitability certificate.
+
+Diesel and E-Line rated outputs are not interchangeable by horsepower. Manufacturer verified propeller-load spectra, available torque, duty/thermal limits, gearbox ratio, cooling, physical installation, emissions approvals and BMS/battery design must be established before specification. The allowed diesel duty, E-Line duty, gearbox losses and electric efficiency are user-entered assumptions, not universal product ratings.
