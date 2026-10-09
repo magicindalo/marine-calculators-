@@ -160,6 +160,15 @@ main{padding-left:13px;padding-right:13px}
  <p class="tileMeta" id="cableSaved">DC / AC • Cable sizing • Fuse advice</p>
  <div class="tileFoot"><span class="go">›</span></div>
 </a>
+<a class="tile" href="./engine.html" aria-label="Open VETUS Diesel Engine and E-Line Electric Propulsion Selection">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#baf7ff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 17h29v20H10z" fill="#0d4a67"/><path d="M18 10h13v7H18zM4 24h6M4 33h6M39 23h5M39 31h5" stroke="#23d3ec"/>
+    <path d="M25 21l-6 9h5l-1 5 8-10h-6l2-4" fill="#27d6ed" stroke="#c6fbff" stroke-width="1"/>
+  </svg></div>
+  <h2>Engine &amp; E-Line</h2>
+  <p class="tileMeta" id="engineSaved">VETUS Diesel • Electric • Sizing</p>
+  <div class="tileFoot"><span class="go">›</span></div>
+</a>
 </section>
 <section class="next"><h3>More calculators on the way</h3><p>Indalo Marine Calculators is designed to expand without changing the existing tools.</p>
 <div class="future"><span>Generator sizing</span><span>Hybrid propulsion</span></div></section>
@@ -171,7 +180,7 @@ main{padding-left:13px;padding-right:13px}
 try{
  const p=JSON.parse(localStorage.getItem("marine-calculators.saved-projects.v1"))||[];
  if(Array.isArray(p)){
-   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved",exhaust:"exhaustSaved",cable:"cableSaved"};
+   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved",exhaust:"exhaustSaved",cable:"cableSaved",engine:"engineSaved"};
    Object.keys(counts).forEach(k=>{const n=p.filter(x=>x.kind===k).length;if(n)document.getElementById(counts[k]).textContent=n+" saved "+(n===1?"project":"projects")});
  }
 }catch(e){}
