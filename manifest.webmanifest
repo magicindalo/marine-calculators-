@@ -1,7 +1,7 @@
 {
   "name": "Marine Calculators",
   "short_name": "Marine Calc",
-  "description": "Marine engineering tools — electrical load demand and propeller / vessel speed",
+  "description": "Marine engineering calculators: electrical loads, vessel and propeller sizing, 12/24/48 V battery systems and charger sizing",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
