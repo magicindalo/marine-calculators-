@@ -102,6 +102,8 @@ function evaluate(input){
      warnings.push("Target Froude number is outside the recommended displacement model range (Fn > 0.42). Semi-displacement powering needs design offsets/CFD/trials; no model recommendation issued.");
    }else if(Fn>0.35)warnings.push("Target is close to the wave-resistance hump; uncalibrated estimates are very sensitive to hull form.");
    if(hull==="canal")warnings.push("Shallow water, canal banks and propeller aperture losses can add significant resistance not represented by the calm-water model.");
+   if(hull==="canal"&&lwl>=16&&!trialSpeed)warnings.push("REAL-BOAT COMPARISON: Published 60 ft canal boats include 42 hp diesel installations and VETUS E-LINE 11 kW electric systems. The calm-water power calculation can suggest markedly smaller units. Treat engine suggestions as unverified minimum-power screens, not final engine or E-Line specifications.");
+
    if(hull==="sail")warnings.push("Deep keel and appendage wetted area are not separately represented; resistance may be underestimated.");
    if(hull==="semi")warnings.push("Semi-displacement hump/resistance is strongly hull dependent; prefer actual sea-trial data.");
    const res=globalThis.MarineResistance;
