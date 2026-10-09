@@ -78,8 +78,8 @@ details summary{font-size:13px;font-weight:760;min-height:44px;display:flex;alig
 
 <section class="panel"><div class="head"><h2>2. Installation &amp; engine checks</h2><span>Safety screening</span></div><div class="body">
 <div class="fields">
-<div class="field"><label for="injectionHeight">Cooling water injection above waterline (mm)</label><input id="injectionHeight" type="number" step="10" value="250"><small>Negative value means below waterline.</small></div>
-<div class="field"><label for="transomHeight">Lowest exhaust outlet above waterline (mm)</label><input id="transomHeight" type="number" step="10" value="100"></div>
+<div class="field"><label for="injectionHeight">Cooling water injection above waterline (mm)</label><input id="injectionHeight" type="number" step="10" placeholder="Measure (mm)"><small>Negative value means below waterline.</small></div>
+<div class="field"><label for="transomHeight">Lowest exhaust outlet above waterline (mm)</label><input id="transomHeight" type="number" step="10" placeholder="Measure (mm)"></div>
 <div class="field"><label for="enginePower">Engine rated power (optional)</label><input id="enginePower" type="number" min="0" step="1" placeholder="e.g. 42"></div>
 <div class="field"><label for="powerUnit">Engine power units</label><select id="powerUnit"><option value="kw">kW</option><option value="hp">hp</option></select></div>
 <div class="field"><label for="backPressure">Engine maximum permitted backpressure</label><select id="backPressure"><option value=".1">0.1 bar (100 mbar)</option><option value=".2">0.2 bar (200 mbar)</option><option value=".3">0.3 bar (300 mbar)</option></select><small>Use actual engine manufacturer's limit.</small></div>
@@ -195,8 +195,8 @@ globalThis.MarineReports.init({
        ["Hose from waterlock to gooseneck",f(r.length)+" metres"],
        ["Water fraction in hose",f(r.waterPct,0)+"%"],["Waterlock maximum fill",f(r.maxFillPct,0)+"%"],
        ["Additional backflow allowance",f(r.extra,2)+" litres"],["Arrangement preference",c.layout],
-       ["Cooling-water injection height",r.injectedHeight+" mm relative to waterline"],
-       ["Exhaust outlet height",r.transomHeight+" mm relative to waterline"],
+       ["Cooling-water injection height",r.injectedHeight===null?"Not measured":r.injectedHeight+" mm relative to waterline"],
+       ["Exhaust outlet height",r.transomHeight===null?"Not measured":r.transomHeight+" mm relative to waterline"],
        ["Engine power",r.engineKW>0?f(r.engineKW,1)+" kW":"Not supplied"],
        ["Manufacturer max permitted backpressure",f(r.backPressure,1)+" bar (entered)"]
      ]},
