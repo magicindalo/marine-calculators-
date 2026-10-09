@@ -107,6 +107,18 @@ main{padding-left:13px;padding-right:13px}
 .ownership{font-size:11px;letter-spacing:.01em;color:#d6e8f2;margin:16px auto 0;max-width:660px}
 .thirdParty{font-size:10px;color:#8cb0c6;margin:6px auto 0;max-width:650px}
 .footerWave{margin-top:16px}
+
+/* Version 1 launch polish: crisp transparent vector branding & centred odd tile */
+.brandFull{
+  image-rendering:auto;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+  background:transparent !important;
+  object-fit:contain;
+  transform:translateZ(0);
+}
+.tile:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 6px);justify-self:center}
+@media(max-width:390px){.tile:last-child:nth-child(odd){width:calc(50% - 5px)}}
 </style>
 </head>
 <body>
@@ -174,7 +186,7 @@ main{padding-left:13px;padding-right:13px}
 </a>
 </section>
 <div class="footerWave" aria-hidden="true"></div>
-<footer class="disclaimer"><div>Engineering calculation aids. Check assumptions and manufacturer requirements before final specification. Projects are stored on your device.</div><div class="ownership">© 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved.</div><div class="thirdParty">VETUS product names and trademarks belong to their respective owners. Independent calculation tool.</div></footer>
+<footer class="disclaimer"><div>Engineering calculation aids. Check assumptions and manufacturer requirements before final specification. Projects are stored on your device.</div><div class="ownership">Version 1.0 · © 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved.</div><div class="thirdParty">VETUS product names and trademarks belong to their respective owners. Independent calculation tool.</div></footer>
 </main>
 <script>
 (function(){
