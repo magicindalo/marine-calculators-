@@ -160,11 +160,12 @@ function evaluate(input){
    const lowLoad=kind==="diesel"&&cruiseLoad<35;
    const voltageOk=kind==="electric"?p.voltage===eVoltage:true;
    const compatible=voltageOk&&(drive==="shaft"||kind!=="electric");
+   const installationGuideExceeded=kind==="electric"&&p.sku==="ELINE220S"&&(lwl>15||displacement>20);
    const avgElectricDraw=kind==="electric"?cruiseTotal/electricEff:null;
    const runtime=kind==="electric"&&available>0?batteryKWh*usablePct/avgElectricDraw:null;
    const predictedSpeed=dutySpeed(availableAtDuty);
    return{...p,kind,suitable:suitable&&compatible,undersized,lowLoad,voltageOk,compatible,cruiseLoad,installLoad,availableAtDuty,available,
-     estimatedRuntime:runtime,predictedSpeed,requirementPerShaft:requiredPerShaft,
+     estimatedRuntime:runtime,predictedSpeed,installationGuideExceeded,requirementPerShaft:requiredPerShaft,
      utilizationPct:availableAtDuty>0?requiredTotal/availableAtDuty*100:null};
  });
  const dieselModels=lineup(diesel,"diesel").filter(p=>fuel!=="electric");
@@ -184,6 +185,7 @@ function evaluate(input){
  if(fuel!=="diesel"&&!electricMatches.length)dutyAdvice.push("No E-LINE at the selected battery voltage meets the current power/reserve/duty settings. Avoid claiming a suitable electric model.");
  if(fuel!=="electric"&&!dieselMatches.length)dutyAdvice.push("No single VETUS diesel model in the stored catalogue meets the preliminary per-line requirement.");
  if(eVoltage===24)dutyAdvice.push("The currently catalogued 24 V shaft-drive E-Line option is EAIR05024 (5 kW). Higher-output E-Line motors in this selector require a 48 V-class propulsion bank.");
+ if(electricMatches.some(p=>p.installationGuideExceeded))dutyAdvice.push("E-LINE 22 reference guidance is approximately 15 m vessel length or 20 tonnes. This vessel exceeds at least one of those indicative limits; contact VETUS engineering before accepting the electrical selection.");
  if(boats===2)dutyAdvice.push("Twin-engine output assumes two independent propulsion lines. Shaft diameter, propeller clearances, thrust, rudder handling and installation requirements must be evaluated separately.");
  if(trialSource==="uncalibrated")dutyAdvice.push("UNVERIFIED SCREENING ONLY: Uncalibrated hull resistance is low confidence. The shortlisted engine is a minimum calm-water power-capacity match, not an approval or replacement recommendation. Use measured delivered shaft power, assess sea margin, stern gear and manoeuvring performance.");
  if(trialSource==="sea-trial"&&(factor>3||factor<.33))dutyAdvice.push("Sea-trial calibration is "+factor.toFixed(2)+"× the uncalibrated resistance estimate. Review the shaft-power measurement and propulsion efficiency assumption.");
