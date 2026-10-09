@@ -77,7 +77,7 @@
     const totalChargeA=recommendedBatteryA+houseA;
     // Select a non-excessive commercial current recommendation. Do not round above maker battery limit.
     let chargerA=Math.max(1,Math.ceil(totalChargeA/5)*5);
-    if(maxBankChargeA!==null&&chargerA-houseA>maxBankChargeA+.001)chargerA=Math.max(1,Math.floor((maxBankChargeA+houseA)*10)/10);
+    if(maxBankChargeA!==null&&chargerA-houseA>maxBankChargeA+.001)chargerA=Math.min(maxBankChargeA+houseA,Math.max(0.01,Math.floor((maxBankChargeA+houseA)*10)/10));
     const actualBatteryA=Math.max(0,chargerA-houseA);
     const achievableHours=actualBatteryA>0?removedAh/(actualBatteryA*eff)*taper:null;
     if(actualBatteryA<neededBatteryA-.1)warnings.push("This charger may not meet the requested charging time. Increase the available charge time or confirm a higher allowable battery charge rate.");
