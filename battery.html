@@ -47,6 +47,16 @@ nav{display:flex;flex-wrap:wrap;gap:7px}.nav,.button{display:inline-flex;align-i
 .detail .lab{font-size:11px;color:var(--muted)}.detail strong{display:block;font-size:15px;margin-top:3px}
 details{margin-top:8px}details summary{cursor:pointer;font-weight:750;font-size:13px;min-height:44px;display:flex;align-items:center}details .inputs{margin-top:7px}
 @media(min-width:680px){.inputs{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}.wide{grid-column:span 2}.detail{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Indalo Marine Calculators v1.0 shared accessibility and iPhone finish */
+:root { color-scheme: dark; }
+html { -webkit-text-size-adjust: 100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #38e0f5; outline-offset: 2px;
+}
+h1,h2,h3,strong { overflow-wrap: break-word; }
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:0s!important}}
 </style>
 <link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
 </head>
