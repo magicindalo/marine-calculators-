@@ -152,6 +152,7 @@ function renderProducts(r,parent){
      m.lengthGuide?("VETUS boat-length guide "+(m.lengthGuide[0]||"≤")+"–"+m.lengthGuide[1]+" m"):"Boat-length guide: consult current catalogue",
      fmt(m.kgf/r.requiredKGF*100,0)+"% of required thrust"].forEach(t=>{const e=document.createElement("span");e.textContent=t;meta.append(e)});
     item.append(meta);
+    if(m.ratingNote)addText(item,m.ratingNote,"caution");
     if(m.lengthGuide&& (last.length<m.lengthGuide[0]||last.length>m.lengthGuide[1]))addText(item,"This vessel lies outside the manufacturer’s approximate length guidance for this model. Thrust still meets the entered wind-load calculation; verify suitability with VETUS.","caution");
     if(m.boosted)addText(item,"Separate higher-voltage thruster battery bank is required; the lower voltage is the DC-DC charging source.","sub");
     const link=document.createElement("a");link.href=m.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="VETUS model / range details ↗";item.append(link);
@@ -201,9 +202,11 @@ report:()=>{
  if(!r.valid)throw Error(r.errors.join(" "));
  const num=(v,d=1)=>Number(v).toFixed(d);
  const recommendationRows=[];
+ const ratingWarnings=[];
  for(const rr of r.recommendations){
   if(!rr.models.length){recommendationRows.push([rr.side.toUpperCase(),"NO SUITABLE MODEL","—","—","Revisit supply / tunnel"]);continue;}
   rr.models.forEach((m,i)=>{
+   if(m.ratingNote&&!ratingWarnings.includes(m.ratingNote))ratingWarnings.push(m.ratingNote);
    recommendationRows.push([rr.side.toUpperCase(),m.sku,m.kgf+" kgf",m.tunnel+" mm",
    m.boosted?m.sourceV+"V → "+m.motorV+"V bank":m.motorV+" V"]);
   });
@@ -235,7 +238,7 @@ report:()=>{
    ])},
    {title:"Suitable VETUS candidates",table:{columns:[["Position",70],["VETUS model",125],["Rated thrust",90],["Tunnel",75],["Supply/bank",125]],rows:recommendationRows}},
    {title:"Selection notes and important limits",paragraphs:[
-    ...r.notes,
+    ...r.notes,...ratingWarnings,
     "Catalogue wind-pressure bands: Bft 4 = 20–40 N/m2; Bft 5 = 41–74; Bft 6 = 75–123; Bft 7 = 125–189; Bft 8 = 191–276. The mid-range design pressure selected by the calculator is a simplification.",
     "Sources: VETUS catalogue pages 220–221 supplied by the user, and VETUS official webshop model listings (October 2026). Always confirm final current data sheets and installation requirements.",
     "Model ranking uses rated thrust and input filters. It does not determine mounting feasibility, electric current, duty cycle, propeller immersion, cable voltage drop or the effect of underwater cross-current."
