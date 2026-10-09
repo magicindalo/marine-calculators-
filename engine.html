@@ -122,7 +122,7 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 <div class="stat"><span>Peak shaft torque reference</span><strong id="gearPeakNm">—</strong><em id="gearPeakRPM">Not calculated</em></div>
 <div class="stat"><span>Observed shaft RPM</span><strong id="gearObservedRPM">—</strong><em>Engine RPM ÷ ratio</em></div>
 </div>
-<p class="note">D-Line figures taken from VETUS's D-Line operation manual. Peak torque is attained at a different engine speed from maximum power. Propeller absorption cannot be assessed without reliable propeller data or shaft-power measurements.</p>
+<p class="note">D-Line figures taken from the <a href="https://vetus.com/wp-content/uploads/360602.01_r05_2025-02_D_Line_EN.pdf" target="_blank" rel="noopener noreferrer">VETUS D-Line technical manual</a>. Peak torque is attained at a different engine speed from maximum power. Propeller absorption cannot be assessed without reliable propeller data or shaft-power measurements.</p>
 </div></section>
 
 <section class="panel"><div class="head"><h2>3. Power demand &amp; hull speed</h2><span id="confidence">Screening estimate</span></div><div class="body">
@@ -234,7 +234,7 @@ function render(){
  const r=evaluate();last=r;sync();
  show("error",!r.valid);$("error").textContent=r.errors.join(" ");
  show("summary",r.valid);
- if(!r.valid){$("recommendations").replaceChildren();$("warnings").replaceChildren();return}
+ if(!r.valid){show("gearboxMetrics",false);$("recommendations").replaceChildren();$("warnings").replaceChildren();return}
  $("shaft").textContent=r.canMatch?format(r.shaftCruiseKW,2)+" kW":"Outside model";
  $("shaftSub").textContent=r.planing?"Estimated near-WOT propeller shaft demand":"Estimated total propeller-shaft demand at target speed";
  $("required").textContent=r.canMatch?format(r.ratedRequiredKW,2)+" kW":"—";
