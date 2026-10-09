@@ -9,6 +9,7 @@ Indalo Marine branded, responsive, installable marine engineering toolkit for iP
 - **Battery Systems & Charging:** https://magicindalo.github.io/marine-calculators-/battery.html
 - **VETUS Thruster Selection:** https://magicindalo.github.io/marine-calculators-/thruster.html
 - **Exhaust Backflow & Waterlock:** https://magicindalo.github.io/marine-calculators-/exhaust.html
+- **Cable Sizing & Voltage Drop:** https://magicindalo.github.io/marine-calculators-/cable.html
 
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
@@ -37,6 +38,7 @@ Reports are branded **Indalo Marine Calculators** and generated directly on-devi
 - **Battery Systems:** 12 / 24 / 48 V battery banks, series/parallel/series-parallel combinations, flooded lead-acid / AGM / LiFePO4, total kWh / Ah, usable capacity, constant-load runtime, charger current and approximate charging time. Includes BMS/manufacturer-limit cautions.
 - **VETUS Thruster Selection:** Beaufort/custom wind-pressure sizing, estimated required bow/stern kgf, tunnel size and 12/24/48 V source filters; suitable product model numbers, PDF report and saved vessel records.
 - **Exhaust Backflow & Waterlock:** 25% VETUS hose-water return rule and 2x capacity selection (from `Vetus Calculator Book 12-10-2018.xls` Flow Back worksheet and VETUS 2026–27 catalogue), model shortlist by capacity and hose diameter; optional engine power/backpressure screen, anti-siphon warnings, A4 report and saved project.
+- **Cable Sizing & Voltage Drop:** 12/24/48 V DC; 230 V AC single-phase and 400 V AC three-phase screening; ampacity/voltage-drop sizing in mm², engine-room and bundling derating, existing-conductor checks and carefully limited nominal fuse/breaker advice. Saves vessel projects and exports Indalo-branded A4 PDFs.
 
 ## Engineering limitations
 All results are preliminary estimates. The resistance model includes a non-standard wave/residuary resistance heuristic, not a verified Holtrop–Mennen method. Sea-trial and known resistance data improve the calibration, but professional verification remains necessary before installation, cable/protection selection or propeller manufacture.
@@ -48,3 +50,11 @@ All results are preliminary estimates. The resistance model includes a non-stand
 - All four calculator pages and generated A4 PDF reports use the Indalo name.
 
 If an iPhone still displays the old app icon or name, open the main URL in Safari, wait for it to reload, then remove the old Home Screen shortcut and use **Share → Add to Home Screen** again. Saved projects remain in Safari website storage unless that data is cleared.
+
+## Cable sizing reference and limits
+
+The cable tool uses ISO 13297:2020 Annex A metric copper 70°C, 85–90°C and 105°C ampacity tables with Annex A.2 derating factors for engine spaces and bundled conductors. It computes voltage loss using copper resistance at selected cable temperature, and separately checks the current-carrying capacity. Sources: ISO 13297:2020 (https://www.iso.org/standard/69551.html), Blue Sea Systems (https://www.bluesea.com/resources/95), and Victron Wiring Unlimited (https://www.victronenergy.com/media/pg/The_Wiring_Unlimited_book/en/dc-wiring.html).
+
+The fuse/breaker figure is explicitly **provisional** and offered only for single-conductor non-motor circuits up to 150 A where a standard nominal rating fits the selected cable's derated ampacity, load allowance and optional equipment limit. The selection does **not** check available short-circuit current, fuse interrupt rating, breaker curve, cable termination temperature, or equipment manufacturer protection. Fuse output is withheld for electric propulsion, motors, thrusters, parallel-conductor runs and three-phase AC.
+
+Three-phase circuit voltage drop is a resistance-only screening estimate; IEC 60092-507 and manufacturer-specific specifications must be checked for marine AC three-phase installations. Electric propulsion follows ISO 16315 rather than the ordinary small-craft wiring scope. Reports are design working papers, not a certified electrical installation design.
