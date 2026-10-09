@@ -31,12 +31,7 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 .propChartPanel{background:#06263b;border:1px solid #2b637e;border-radius:14px;padding:12px;margin:13px 0}
 .propChartPanel h3{font-size:14px;margin:0 0 8px;color:#d8f9ff}
 .chartHost{width:100%;overflow:hidden;border-radius:12px;min-height:135px}
-.benchmarkTable{width:100%;min-width:570px;border-collapse:collapse;margin:10px 0;text-align:right;font-size:11px}
-.benchmarkTable th{text-align:right;background:#114260;color:#c2eff7;padding:9px 7px;white-space:normal}
-.benchmarkTable th:first-child,.benchmarkTable td:first-child{text-align:left}
-.benchmarkTable td{padding:9px 7px;border-bottom:1px solid #315a73}
-.benchmarkTable tbody tr:nth-child(even){background:#0a3145}
-#loadPhotoBenchmark{margin-top:3px}
+
 </style>
 <link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
 </head>
@@ -138,17 +133,7 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
   <p class="note">Solid: Wageningen propeller absorbed power. Dashed: <b>illustrative engine envelope only</b> — not an actual VETUS diesel torque curve or manufacturer data. Plotting at other RPMs uses an assumed relationship between boat speed and engine RPM; enter a measured cruise point above when available.</p>
 </div>
 <p id="curveNote" class="note"></p>
-<div class="message" style="margin-top:14px">
-<strong>Photographed software benchmark</strong>
-<p class="note" style="margin:6px 0 10px">Load the 60 ft / 36-tonne, 4-blade 22 × 16 in, 2:1 case shown in the supplied screenshots <b>for testing only</b>. The propeller size has NOT been verified as appropriate for Kiwi Wonderer.</p>
-<button type="button" id="loadPhotoBenchmark" class="btn">Load photographed benchmark into calculator</button>
-<div id="photoComparison" data-active="no" class="hidden">
-<p class="note">Reference values transcribed from the supplied software screenshots. Top 9.4 mph / 2,400 engine rpm; cruise 3.5 mph / 849 rpm. Differences reflect distinct calculation methods and assumptions; reference output is not a validation standard.</p>
-<div style="overflow-x:auto"><table class="benchmarkTable">
-<thead><tr><th>Quantity</th><th>Reference top</th><th>Indalo top</th><th>Reference cruise</th><th>Indalo cruise</th></tr></thead>
-<tbody id="photoComparisonRows"></tbody></table></div>
-<div id="photoAgreement" class="message" role="status"></div>
-</div></div>
+
 </div></section>
 <div class="section"><div class="head"><h2>Engineering interpretation</h2><span class="badge" id="statusBadge">Preliminary</span></div><div class="body"><div id="message" class="message"></div><div class="mini" id="technical"></div></div></div>
 </section>
@@ -276,7 +261,6 @@ if(x.drive==='electric')issues.push('Electric sizing is based on continuous mech
 function calculate(){const x=getInputs();if((x.lwl||x.beam||x.draft||x.disp) && x.cb>1.02){alert('The vessel dimensions and displacement imply an impossible block coefficient above 1. Check tonnes and metres.');return;}let p;if(mode==='size'){p=optimize(x)}else{const D=Math.max(.05,n($('existingD').value,0)*.0254),P=Math.max(.01,n($('existingP').value,0)*.0254);p=performance(D,P/D,x)}if(!p){alert('No valid propeller match was found. Check the inputs, especially shaft RPM, speed and diameter limits.');return}render(p,x)}
 function updateVesselSummary(){const x=getInputs(),V=x.speed*.514444,fn=x.lwl>0?V/Math.sqrt(9.80665*x.lwl):0,kwt=x.disp>0?x.totalPower/x.disp:0;$('cbOut').textContent=x.cb>0?fmt(x.cb,3):'—';$('fnOut').textContent=fn>0?fmt(fn,3):'—';$('kwtOut').textContent=kwt>0?fmt(kwt,2)+' kW/t':'—';$('confidenceOut').textContent=x.resistance>0?'Vessel matched':(x.cb>0?'Hull-informed':'Propeller match only');if($('hull').value==='auto'&&x.cb>0)$('wake').value=fmt(x.wake,3)}function setMode(m){mode=m;$('sizeTab').classList.toggle('active',m==='size');$('checkTab').classList.toggle('active',m==='check');$('maxDField').classList.toggle('hidden',m==='check');$('existingDField').classList.toggle('hidden',m!=='check');$('existingPField').classList.toggle('hidden',m!=='check');$('modeHint').textContent=m==='size'?'Find a starting diameter & pitch':'Analyse an existing diameter & pitch';$('calculate').textContent=m==='size'?'Calculate propeller':'Check propeller';$('heroLabel').textContent=m==='size'?'Practical starting size':'Existing propeller';$('resultsWrap').classList.add('hidden')}
 $('sizeTab').addEventListener('click',()=>setMode('size'));$('checkTab').addEventListener('click',()=>setMode('check'));$('calculate').addEventListener('click',calculate);$('hull').addEventListener('change',()=>{if($('hull').value!=='custom'&&$('hull').value!=='auto')$('wake').value=$('hull').value;updateVesselSummary()});$('blades').addEventListener('change',()=>{let z=n($('blades').value,3);$('ear').value=z<=3?.55:z===4?.65:.75});$('drive').addEventListener('change',()=>{$('powerHelp').textContent=$('drive').value==='electric'?'Use continuous mechanical motor output for continuous-duty sizing; set ratio 1.00 for direct drive.':'Use power available at the propeller shaft after transmission losses.';$('driveHelp').textContent=$('drive').value==='electric'?'Electric mode also shows a power-limited static-thrust estimate.':'Diesel / engine mode uses the same hydrodynamic shaft matching.'});$('example').addEventListener('click',()=>{if($('drive').value==='electric'){$('lwl').value=18;$('beam').value=3.2;$('draft').value=.75;$('disp').value=16;$('propCount').value=1;$('water').value=1000;$('resistance').value='';$('trialSpeed').value='';$('trialPower').value='';$('power').value=22;$('powerUnit').value='kw';$('rpm').value=1600;$('ratio').value=1;$('speed').value=4;$('hull').value='0.25';$('wake').value=.25;$('blades').value=3;$('ear').value=.55;$('maxD').value=18}else{$('lwl').value=18;$('beam').value=4.2;$('draft').value=1.1;$('disp').value=35;$('propCount').value=1;$('water').value=1025;$('resistance').value='';$('trialSpeed').value='';$('trialPower').value='';$('power').value=140;$('powerUnit').value='hp';$('rpm').value=2800;$('ratio').value=2.5;$('speed').value=8;$('hull').value='0.25';$('wake').value=.25;$('blades').value=4;$('ear').value=.65;$('maxD').value=26}updateVesselSummary();calculate()});
-$('loadPhotoBenchmark').addEventListener('click',()=>globalThis.PropellerGraphs?.benchmark());
 ['curveCruiseRPM','curveCruiseMph'].forEach(id=>$(id).addEventListener('change',()=>{if($('resultsWrap').classList.contains('hidden'))return;const current=getInputs();let prop;if(mode==='check'){const D=n($('existingD').value,0)*.0254,P=n($('existingP').value,0)*.0254;prop=performance(D,P/D,current)}else{prop=optimize(current)}if(prop)globalThis.PropellerGraphs?.render(prop,current,performance)}));
 ['lwl','beam','draft','disp','propCount','resistance','trialSpeed','trialPower','trialEta','speed','power','powerUnit','water'].forEach(id=>$(id).addEventListener('input',updateVesselSummary));setMode('size');updateVesselSummary();
 
@@ -387,12 +371,12 @@ globalThis.MarineReports.init({
          ["Cruise speed input",n($('curveCruiseMph').value,0)>0?f(n($('curveCruiseMph').value,0),1)+" mph":"Not entered"],
          ["Cruise engine RPM input",n($('curveCruiseRPM').value,0)>0?f(n($('curveCruiseRPM').value,0),0)+" rpm":"Not entered"],
          ["Engine full-load curve","Illustrative only; actual engine torque/power curve NOT supplied"],
-         ["Photographed 22 x 16 in test","Unverified test configuration; not confirmed suitable for Kiwi Wonderer"]
+         ["Validation","Propeller sizing remains preliminary; confirm real installation, clearance and operating duty"]
        ]},
        {title:"Interpretation and limitations",paragraphs:[
          pStatus,
          resultNote,
-         "Graph 1 plots approximate shaft power versus speed using the uncalibrated/anchored hull resistance; Graph 2 shows calculated propeller absorption versus engine RPM plus an illustrative (NOT manufacturer-verified) engine-power envelope. The photographed software data is an external comparison only. Geometric slip and wake-corrected slip are distinct quantities. Wageningen B-series open-water polynomial; early-design wake estimate; wetted area and ITTC-1957 frictional correlation with non-standard heuristic residuary resistance. Uncalibrated speed is a preliminary screening estimate, not a validated Holtrop calculation.",
+         "Graph 1 plots approximate shaft power versus speed using the uncalibrated/anchored hull resistance; Graph 2 shows calculated propeller absorption versus engine RPM plus an illustrative (NOT manufacturer-verified) engine-power envelope. The power curves are illustrative engineering estimates. Geometric slip and wake-corrected slip are distinct quantities. Wageningen B-series open-water polynomial; early-design wake estimate; wetted area and ITTC-1957 frictional correlation with non-standard heuristic residuary resistance. Uncalibrated speed is a preliminary screening estimate, not a validated Holtrop calculation.",
          "Actual motor torque curve, gearbox efficiency, propeller aperture / tip clearance, blade area / cavitation and vessel resistance must be checked before specification. Air and water conditions, loading, shallow-water effects, fouling and appendages may change actual trials."
        ]}
      ]
