@@ -1,7 +1,7 @@
 {
   "name": "Indalo Marine Calculators",
   "short_name": "Indalo Marine",
-  "description": "Indalo Marine engineering calculators for electrical loads, batteries, propulsion, VETUS thrusters, exhaust waterlocks and marine cable sizing.",
+  "description": "Indalo Marine engineering calculators: loads, cable sizing, batteries, propulsion, VETUS engines and E-Line, thrusters and exhaust systems.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
