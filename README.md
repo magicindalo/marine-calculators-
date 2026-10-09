@@ -1,6 +1,7 @@
-# Indalo Marine Calculators
-
+# Indalo Marine Calculators — Version 1.0
 Indalo Marine branded, responsive, installable marine engineering toolkit for iPhone, iPad and desktop.
+
+Review the [Version 1 validation record](docs/V1_VALIDATION.md) before using the app to assist with vessel specification. The app is an engineering-estimate tool and is not a certified design or manufacturer-approval service.
 
 ## Open the app
 - **Main menu:** https://magicindalo.github.io/marine-calculators-/
@@ -73,3 +74,5 @@ A 24 V-class propulsion bank is matched only to EAIR05024; all other listed E-Ai
 Hull power calculations use the preliminary ITTC-1957 friction + custom wave term from `resistance.js` for displacement craft with Fn ≤ 0.42. Sea-trial power can calibrate this. Planing craft use a Crouch empirical power-versus-weight method, with a hull-dependent coefficient and near-maximum target speed. These are **screening models only**, not a validated powering/propeller prediction and not a marine engine suitability certificate.
 
 Diesel and E-Line rated outputs are not interchangeable by horsepower. Manufacturer verified propeller-load spectra, available torque, duty/thermal limits, gearbox ratio, cooling, physical installation, emissions approvals and BMS/battery design must be established before specification. The allowed diesel duty, E-Line duty, gearbox losses and electric efficiency are user-entered assumptions, not universal product ratings.
+
+© 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved. VETUS trademarks and product information remain the property of their respective owners.
