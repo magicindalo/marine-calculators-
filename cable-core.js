@@ -44,7 +44,7 @@ function compute(form){
  if(conductorTemp>insulation)errors.push("The assumed conductor temperature must not exceed the insulation rating.");
  if(!(voltageTarget>=.1&&voltageTarget<=20))errors.push("Set voltage-drop allowance between 0.1% and 20%.");
  if(!dc&&!(pf>.1&&pf<=1))errors.push("AC power factor must be between 0.1 and 1.");
- if(makerAmpacity<0||manufacturerFuseMax<0)errors.push("Optional manufacturer limits must be non-negative.");
+ if(!Number.isFinite(makerAmpacity)||!Number.isFinite(manufacturerFuseMax)||makerAmpacity<0||manufacturerFuseMax<0)errors.push("Optional manufacturer limits must be valid non-negative numbers.");
  if(customSize&&!SIZES.includes(customSize))errors.push("Choose a listed cable cross-section for the existing cable check.");
  let amps=currentMode==="a"?loadN:dc?loadN*(currentMode==="kw"?1000:1)/volts:
   ac1?loadN*(currentMode==="kw"?1000:1)/(volts*pf):loadN*(currentMode==="kw"?1000:1)/(Math.sqrt(3)*volts*pf);
@@ -80,7 +80,7 @@ function compute(form){
  const fuseMin=continuous?amps*1.25:amps; // continuous-load heat-management assumption; not a motor start design
  let fuse=null,fuseReason="";
  // High-current, motor, parallel and 3φ contexts always require specialist protection coordination.
- const canPropose=!!chosen&&chosen.allowed&&parallel===1&&!motor&&!propulsion&&!ac3&&amps<=150;
+ const canPropose=errors.length===0&&!!chosen&&chosen.allowed&&parallel===1&&!motor&&!propulsion&&!ac3&&amps<=150;
  if(canPropose){
    const pool=BREAKERS.filter(size=>size>=fuseMin-1e-8&&size<=chosen.ampacity+1e-8&&
      (!manufacturerFuseMax||size<=manufacturerFuseMax+1e-8));
@@ -110,6 +110,7 @@ function compute(form){
  warnings.push("Conductor size is the larger requirement of voltage drop and derated ampacity. Voltage drop excludes terminations, joints and battery internal resistance.");
  if(dc)warnings.push("Position DC circuit protection close to the source; ISO 13297:2020 generally specifies within 175 mm unless its stated exceptions apply.");
  warnings.push("Use marine-rated stranded copper wiring and suitably rated terminals. Confirm the smallest conductor/connector rating in the entire circuit.");
+ if(errors.length){fuse=null;fuseReason="Invalid circuit inputs — no protective-device recommendation can be issued.";}
  return{valid:errors.length===0,errors,warnings,scheme,dc,ac1,ac3,volts,amps,watts:dc?volts*amps:ac1?volts*amps*pf:Math.sqrt(3)*volts*amps*pf,powerFactor:pf,
   length:len,conductorTemp,insulation,hot,bundle,parallel,rho,voltageTarget,
   rows,recommended,chosen,checked,sizeByDrop,sizeByAmpacity,fuseMin,fuse,fuseReason,manufacturerFuseMax,makerAmpacity,
