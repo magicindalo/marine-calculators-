@@ -15,6 +15,7 @@ const LINKS={
   d:"https://webshop.vetus.com/en/products/engines/d-line-engines",
   e:"https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines"
 };
+const DLINE={ "VD4.120":{kw:90,shaftKW:86,torqueNm:449},"VD4.140":{kw:103,shaftKW:98.9,torqueNm:520},"VD6.170":{kw:125,shaftKW:120,torqueNm:680},"VD6.210":{kw:155,shaftKW:149,torqueNm:810}};
 const diesel=[
  ["M2.13","M213A---A",12,"M-Line",3000],
  ["M2.18","M218A---A",16,"M-Line",3600],
@@ -28,7 +29,7 @@ const diesel=[
  ["VD4.140","VD4140---A",140,"D-Line",null],
  ["VD6.170","VD6170---A",170,"D-Line",null],
  ["VD6.210","VD6210---A",210,"D-Line",null]
-].map(([name,sku,hp,family,rpm])=>({name,sku,hp,kw:hp*.745699872,family,rpm,fuel:"diesel",url:LINKS[family[0].toLowerCase()],notes:family==="D-Line"?"Common rail; verify load spectrum and gearbox":"Verify propulsion duty rating and gearbox"}));
+].map(([name,sku,hp,family,rpm])=>({name,sku,hp,kw:DLINE[name]?.kw??hp*.745699872,shaftKW:DLINE[name]?.shaftKW??null,torqueNm:DLINE[name]?.torqueNm??null,torqueRpm:DLINE[name]?1600:null,family,rpm:DLINE[name]?2400:rpm,fuel:"diesel",url:LINKS[family[0].toLowerCase()],notes:family==="D-Line"?"Common rail; verify load spectrum and gearbox":"Verify propulsion duty rating and gearbox"}));
 const electric=[
  ["E-AIR 5 kW (24V)","EAIR05024",5,24,"air"],
  ["E-AIR 5 kW","EAIR050",5,48,"air"],
@@ -78,6 +79,8 @@ function evaluate(input){
  const densityClass=hull==="planing"?"planing":"displacement";
  let model="resistance-screening",canMatch=true,resistanceN=null,effPowerKW=null;
  if(hull==="sail"&&CB<.2&&!(trialSpeed>0&&trialPower>0)){canMatch=false;warnings.push("Sailing yacht with deep fin keel: the simple displacement model cannot represent keel/rudder wetted area and hull draft correctly. Supply measured shaft power at a measured speed before accepting engine or E-Line candidates.");}
+ if(["displacement","canal","semi"].includes(hull)&&displacement>=25&&!(trialSpeed>0&&trialPower>0)){
+ canMatch=false;warnings.push("HEAVY VESSEL: Above 25 tonnes, uncalibrated calm-water resistance cannot support an automatic engine recommendation. Gearbox/propeller load, available propeller aperture, shallow-water losses, manoeuvrability and trials need checking. Select a known installed engine for a separate gearbox-speed and torque reference.");}
  let powerKW=null,factor=1,trialSource="uncalibrated",modelMetrics=null;
  const planing=hull==="planing";
  if(planing){
