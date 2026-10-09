@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 1.3 — PDF power curves (9 October 2026)
+
+- Added both propeller-performance charts directly to the A4 **Save PDF report** output.
+- Charts are rendered as sharp PDF vector lines, axes, labels and design/cruise markers, with no screenshot conversion or external dependency.
+- Dedicated "Performance and power curves" PDF page, including model assumptions.
+- Vessels without enough dimensions export only the valid propeller RPM/absorption chart; blank graphs are not added.
+- Kept all other calculator PDFs, the shared project library, and the main propeller results intact.
+- Tested generated PDF structure, both sizing/checking modes, full hull data and missing-hull-data scenarios.
+
+
 ## Version 1.2 — Propeller performance graphs (9 October 2026)
 
 - Added responsive SVG installed-hull-power versus speed and propeller absorption versus RPM graphs, styled in the Indalo theme.
