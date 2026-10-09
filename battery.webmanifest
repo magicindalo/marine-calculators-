@@ -1,6 +1,6 @@
 {
-  "name": "Marine Battery System Calculator",
-  "short_name": "Battery Systems",
+  "name": "Indalo Marine — Battery Systems",
+  "short_name": "Indalo Battery",
   "start_url": "./battery.html",
   "scope": "./",
   "display": "standalone",
@@ -8,10 +8,10 @@
   "theme_color": "#071c2b",
   "icons": [
     {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "./assets/indalo-app-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
