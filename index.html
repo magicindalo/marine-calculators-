@@ -6,65 +6,97 @@
 <meta name="theme-color" content="#071c2b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Marine Calculators">
+<meta name="apple-mobile-web-app-title" content="Indalo Marine">
+<meta name="description" content="Indalo Marine Calculators: marine electrical loads, propeller and vessel speed, batteries and VETUS thruster selection.">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Marine Calculators — Engineering Tools</title>
+<link rel="icon" type="image/png" href="./assets/indalo-app-icon.png">
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators | Marine Engineering Tools</title>
 <style>
-:root{--dark:#071c2b;--panel:#0c2a3d;--border:#1e4962;--bright:#21c0d9;--text:#eef8ff;--muted:#a3bccb}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#061722 0%,#0b2b3d 55%,#051826 100%)}
-main{max-width:850px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 28px) 16px calc(env(safe-area-inset-bottom) + 40px)}
-.logo{height:53px;width:53px;display:grid;place-items:center;border-radius:16px;background:#153d52;color:#32c7dd;border:1px solid #367189;font-size:29px}
-.eyebrow{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--bright);text-transform:uppercase}
-h1{font-size:clamp(30px,6vw,44px);margin:7px 0 9px;line-height:1.05;letter-spacing:-1px}p{color:var(--muted);margin:0;line-height:1.55}.intro{margin-top:25px;max-width:600px}.grid{margin:24px 0;display:grid;gap:13px;grid-template-columns:1fr}
-.tile{display:block;text-decoration:none;color:inherit;background:linear-gradient(145deg,#10364b,#0b2b3f);border:1px solid #28556c;border-radius:20px;padding:22px;min-width:0}
-.tile:focus-visible{outline:3px solid var(--bright);outline-offset:3px}.tile h2{font-size:21px;margin:14px 0 8px}.tile p{font-size:14px;min-height:48px}.symbol{font-size:30px;width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:#174e63;color:#72e5e5}.bottom{margin-top:22px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:#a5c3d2;font-size:13px}.go{color:var(--bright);font-size:15px;font-weight:800}.tag{border:1px solid #3c6679;border-radius:999px;padding:5px 9px;color:#bbd8e2;font-size:11px}.upcoming{border:1px dashed #376178;border-radius:17px;padding:17px;margin-top:28px}.upcoming h3{font-size:16px;margin:0 0 6px}.future{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.future span{border:1px solid #2f566b;border-radius:9px;padding:7px 9px;font-size:12px;color:#a6c0cd}.saveNote{font-size:12px;border-top:1px solid #254b5e;margin-top:27px;padding-top:19px}.count{color:#7cd6cc;font-size:12px}
-@media(min-width:650px){.grid{grid-template-columns:1fr 1fr}.tile{min-height:278px}}@media(min-width:830px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+:root{--deep:#051829;--navy:#072d4e;--blue:#06436a;--cyan:#1bd4ea;--white:#f0faff;--muted:#a9c7dc;--edge:#16bbd8}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--deep)}
+body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at 12% 16%,#0d436b 0%,transparent 40%),radial-gradient(ellipse at 91% 42%,#09446b 0%,transparent 38%),linear-gradient(180deg,#04172c 1%,#082d4b 55%,#03233b 100%);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--white)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,#9beaff 4px,transparent 6px);mask-image:linear-gradient(transparent 25%,#000 100%)}
+main{position:relative;max-width:960px;margin:auto;padding:calc(env(safe-area-inset-top) + 24px) 16px calc(env(safe-area-inset-bottom) + 45px)}
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin:3px auto 28px}
+.brandFull{width:min(590px,100%);height:auto;display:block;filter:grayscale(1) invert(1) brightness(1.5);mix-blend-mode:screen}
+.brand h1{font-size:clamp(20px,3.7vw,31px);font-weight:800;letter-spacing:.29em;line-height:1.25;margin:0 0 12px 0;padding-left:.29em;color:var(--cyan)}
+.brandLine{display:flex;align-items:center;gap:14px;color:#c3d7e6;font-size:13px;white-space:nowrap}
+.brandLine:before,.brandLine:after{content:"";height:1px;width:clamp(18px,10vw,110px);background:linear-gradient(90deg,transparent,#77bdce)}
+.brandLine:after{background:linear-gradient(90deg,#77bdce,transparent)}
+.brandHint{max-width:560px;color:var(--muted);font-size:13px;line-height:1.55;margin:12px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:25px auto 0}
+.tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:0;min-height:211px;overflow:hidden;background:linear-gradient(145deg,#0d3c5f 0%,#06253f 78%);border:1px solid #28bed7;border-radius:19px;text-decoration:none;color:#f1faff;padding:19px 15px 15px;box-shadow:inset 0 1px 0 #5edfff35,0 16px 28px #0010224a;transition:border-color .2s,transform .2s}
+.tile:after{content:"";position:absolute;left:-20%;bottom:-34px;width:145%;height:75px;opacity:.42;background:radial-gradient(ellipse at 46% 6%,#147cae 0%,#074b78 57%,transparent 62%);transform:rotate(-6deg)}
+.tile:hover{border-color:#87f6ff;transform:translateY(-2px)}
+.tile:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.tileIcon{height:67px;width:67px;display:grid;place-items:center;border-radius:50%;border:1px solid #24b8dc75;background:#062e4e;box-shadow:0 0 20px #24ddfb15;color:var(--cyan)}
+.tileIcon svg{width:44px;height:44px}
+.tile h2{font-size:clamp(14px,2.7vw,21px);letter-spacing:-.03em;line-height:1.18;margin:14px 0 10px;max-width:95%}
+.tileMeta{font-size:11px;color:#a9d1e1;max-width:84%;margin:0 0 4px}
+.tileFoot{display:flex;justify-content:flex-end;width:100%;margin-top:auto;position:relative;z-index:1}
+.go{width:37px;height:37px;display:grid;place-items:center;color:#c6f9ff;background:#15527b;border-radius:50%;font-size:24px;font-weight:700}
+.next{border:1px solid #2f6180;background:#0b314caa;border-radius:16px;padding:18px;margin:26px auto 0}
+.next h3{font-size:16px;margin:0 0 6px}.next p,.disclaimer{font-size:12px;color:var(--muted);line-height:1.5;margin:0}
+.future{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.future span{font-size:11px;border-radius:9px;background:#11405c;border:1px solid #315c72;padding:6px 9px;color:#c1d9e7}
+.footerWave{height:30px;margin:24px -16px 10px;border-radius:50% 50% 0 0 / 100% 100% 0 0;background:linear-gradient(110deg,#1680bc,#2ec4df 46%,#0b528d 79%,#071b3c);opacity:.45}
+.disclaimer{text-align:center;max-width:650px;margin:0 auto}
+@media(min-width:760px){.grid{gap:18px}.tile{min-height:240px;padding:21px}.tileIcon{width:75px;height:75px}.tile h2{font-size:21px}.tileMeta{font-size:12px}}
+@media(max-width:360px){main{padding-left:10px;padding-right:10px}.grid{gap:9px}.tile{padding:14px 10px;min-height:203px}.tileIcon{width:55px;height:55px}.tileIcon svg{width:38px;height:38px}.brand h1{letter-spacing:.19em;padding-left:.19em}}
+@media(prefers-reduced-motion:reduce){.tile{transition:none}}
 </style>
 </head>
 <body>
 <main>
-<div style="display:flex;align-items:center;gap:13px"><div class="logo">⚓</div><div><div class="eyebrow">Mobile Engineering Toolkit</div><div style="font-size:13px;color:#bbd4e2;margin-top:4px">Independent marine applications calculators</div></div></div>
-<div class="intro"><h1>Marine Calculators</h1><p>Fast, clear marine engineering tools for onboard surveys, electrical systems, battery-bank design and propulsion selection. Choose a calculator to start.</p></div>
-<div class="grid">
-<a class="tile" href="./load.html" aria-label="Open Electrical Load Demand calculator">
-  <div class="symbol">⚡</div><h2>Electrical Load Demand</h2>
-  <p>Calculate AC, 3-phase and DC load demand, startup allowance, inverter/generator sizing and battery capacity.</p>
-  <div class="bottom"><span class="count" id="loadSaved">AC + DC systems</span><span class="go">Open calculator →</span></div>
+<header class="brand">
+  <img class="brandFull" src="./assets/indalo-marine-logo.webp" alt="Indalo Marine logo" width="500" height="229">
+  <h1>CALCULATORS</h1>
+  <div class="brandLine">Marine engineering tools</div>
+  <p class="brandHint">Indalo Marine Calculators — engineering tools for electrical design, propulsion and marine systems.</p>
+</header>
+<section class="grid" aria-label="Choose a calculator">
+<a class="tile" href="./load.html" aria-label="Open electrical Load Demand calculator">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M27 3L11 25h12l-2 20 17-25H25l2-17Z" fill="#17d9ee" stroke="#8beeff" stroke-width="1.5"/></svg></div>
+  <h2>Load Demand</h2>
+  <p class="tileMeta" id="loadSaved">AC / DC • Generator • Battery</p>
+  <div class="tileFoot"><span class="go">›</span></div>
 </a>
-<a class="tile" href="./propeller.html" aria-label="Open Marine Propeller calculator">
-  <div class="symbol">⚙</div><h2>Propeller & Vessel Speed</h2>
-  <p>Size or check a propeller using hull data, shaft power, RPM and B-series curves; estimate resistance and vessel speed.</p>
-  <div class="bottom"><span class="count" id="propSaved">Diesel + electric</span><span class="go">Open calculator →</span></div>
+<a class="tile" href="./propeller.html" aria-label="Open Propeller and Speed calculator">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#b6f5ff" stroke-width="1.8"><circle cx="24" cy="24" r="5" fill="#0c466b"/><path d="M24 19C17 9 15 7 22 5c8-2 14 8 6 15 M29 25c12-5 16-3 16 4 0 9-11 12-17 1 M21 29C17 39 11 45 5 39c-5-5 2-17 14-16" fill="#19cfe7"/><circle cx="24" cy="24" r="19" stroke-dasharray="13 5" opacity=".55"/></svg></div>
+  <h2>Propeller &amp; Speed</h2>
+  <p class="tileMeta" id="propSaved">Propeller sizing • Vessel speed</p>
+  <div class="tileFoot"><span class="go">›</span></div>
 </a>
-<a class="tile" href="./battery.html" aria-label="Open Marine Battery System Calculator">
-  <div class="symbol">🔋</div><h2>Battery Systems & Charging</h2>
-  <p>Design 12, 24 or 48 V battery banks, compare lead-acid, AGM and LiFePO₄, view series/parallel connections, energy and charger output.</p>
-  <div class="bottom"><span class="count" id="batterySaved">Ah · kWh · chargers</span><span class="go">Open calculator →</span></div>
+<a class="tile" href="./battery.html" aria-label="Open Battery Systems calculator">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#c9faff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="36" height="24" rx="5"/><path d="M40 21h4v8h-4M16 20v10M11 25h10M29 25h8"/></svg></div>
+  <h2>Battery Systems</h2>
+  <p class="tileMeta" id="batterySaved">12 / 24 / 48 V • Charger selection</p>
+  <div class="tileFoot"><span class="go">›</span></div>
 </a>
-<a class="tile" href="./thruster.html" aria-label="Open VETUS Bow and Stern Thruster Selection calculator">
-  <div class="symbol">⇆</div><h2>Bow & Stern Thruster Selection</h2>
-  <p>Calculate crosswind thrust demand and shortlist VETUS standard DC, BOW PRO, Boosted or ignition-protected thrusters by voltage and tunnel size.</p>
-  <div class="bottom"><span class="count" id="thrusterSaved">VETUS model matching</span><span class="go">Open calculator →</span></div>
+<a class="tile" href="./thruster.html" aria-label="Open VETUS Thruster Selection calculator">
+  <div class="tileIcon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#b6f7ff" stroke-width="1.9" stroke-linejoin="round"><circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="4"/><path d="M24 20C18 15 20 10 25 9c7-1 10 5 3 12M28 26c8-1 13 4 9 10-4 5-10 1-12-8M21 28c-3 8-10 9-13 3-3-6 1-11 13-8" fill="#1bd4ea"/><path d="M3 24h7M38 24h7M3 24l4-4M3 24l4 4M45 24l-4-4M45 24l-4 4" stroke-linecap="round"/></svg></div>
+  <h2>Thruster Selection</h2>
+  <p class="tileMeta" id="thrusterSaved">VETUS bow / stern model matching</p>
+  <div class="tileFoot"><span class="go">›</span></div>
 </a>
-</div>
-<section class="upcoming"><h3>More calculators are coming</h3>
-  <p style="font-size:13px">The home screen is built to accept new engineering calculators without changing how you access the existing ones.</p>
-  <div class="future"><span>Cable sizing & voltage drop</span><span>Generator sizing</span><span>Hybrid propulsion</span></div>
 </section>
-<p class="saveNote">Project saves are stored on this iPhone/browser. Use <b>Save PDF report</b> inside a calculator to create a shareable A4 PDF. Browser data may be lost if the website data is cleared; your downloaded PDFs remain separate files.</p>
+<section class="next"><h3>More calculators on the way</h3><p>Indalo Marine Calculators is designed to expand without changing the existing tools.</p>
+<div class="future"><span>Cable sizing &amp; voltage drop</span><span>Generator sizing</span><span>Hybrid propulsion</span></div></section>
+<div class="footerWave" aria-hidden="true"></div>
+<footer class="disclaimer">Engineering calculation aids. Review assumptions and manufacturer requirements before final specification. Saved projects remain local to your device; PDF reports can be shared separately.</footer>
 </main>
 <script>
-(()=>{
+(function(){
 try{
- const p=JSON.parse(localStorage.getItem('marine-calculators.saved-projects.v1'))||[];
- if(!Array.isArray(p))return;
- const n=k=>p.filter(x=>x.kind===k).length;
- const a=n('load'),b=n('propeller'),c=n('battery'),d=n('thruster');
- if(a)document.getElementById('loadSaved').textContent=a+' saved '+(a===1?'project':'projects');
- if(b)document.getElementById('propSaved').textContent=b+' saved '+(b===1?'vessel':'vessels');if(c)document.getElementById('batterySaved').textContent=c+' saved '+(c===1?'system':'systems');if(d)document.getElementById('thrusterSaved').textContent=d+' saved '+(d===1?'selection':'selections');
+ const p=JSON.parse(localStorage.getItem("marine-calculators.saved-projects.v1"))||[];
+ if(Array.isArray(p)){
+   const counts={load:"loadSaved",propeller:"propSaved",battery:"batterySaved",thruster:"thrusterSaved"};
+   Object.keys(counts).forEach(k=>{const n=p.filter(x=>x.kind===k).length;if(n)document.getElementById(counts[k]).textContent=n+" saved "+(n===1?"project":"projects")});
+ }
 }catch(e){}
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
 </script>
 </body>
