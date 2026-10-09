@@ -1,7 +1,7 @@
 {
   "name": "Marine Calculators",
   "short_name": "Marine Calc",
-  "description": "Marine engineering calculators: electrical loads, vessel and propeller sizing, 12/24/48 V battery systems and charger sizing",
+  "description": "Marine engineering calculators: electrical load, propeller and speed, battery banks and VETUS thruster sizing",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
