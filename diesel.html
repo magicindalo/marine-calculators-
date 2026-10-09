@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Indalo Marine"><link rel="apple-touch-icon" href="./assets/indalo-app-icon.png"><link rel="icon" href="./assets/indalo-app-icon.png" type="image/png"><link rel="manifest" href="./diesel.webmanifest"><link rel="stylesheet" href="./propulsion.css"><title>Indalo Marine Calculators — Diesel Engine Sizing</title></head><body data-mode="diesel"><main><header><div><div class="brand">INDALO MARINE CALCULATORS</div><h1>Diesel Engine Sizing</h1><p>Displacement hull speed • diesel shaft-power screen • gearbox reference</p></div><nav><a href="./" class="nav">Home</a><a href="./eline.html" class="nav">E-Line Selector</a></nav></header>
+<section class="card"><div class="top"><h2>1. Vessel and desired speed</h2><span>Loaded hull measurements</span></div><div class="inner"><div class="fields">
+<div class="field wide"><label for="project">Vessel / project</label><input data-field id="project" placeholder="Customer and vessel reference" type="text"></div>
+<div class="field"><label for="hull">Vessel type</label><select data-field id="hull"><option value="displacement" selected>Displacement cruiser / barge</option><option value="canal">Canal / narrowboat</option><option value="semi">Semi-displacement</option><option value="sail">Auxiliary sailing yacht</option></select></div>
+<div class="field"><label for="water">Water type</label><select data-field id="water"><option value="fresh" selected>Freshwater</option><option value="sea">Seawater</option></select></div>
+<div class="field"><label for="lwl">Length at loaded waterline (m)</label><input data-field id="lwl" type="number" min="3" max="80" step="0.1" value="18"><small>Use waterline length, not overall length.</small></div>
+<div class="field"><label for="beam">Waterline beam (m)</label><input data-field id="beam" type="number" min="0.8" max="16" step="0.1" value="3.3"></div>
+<div class="field"><label for="draft">Loaded hull draft (m)</label><input data-field id="draft" type="number" min="0.1" max="7" step="0.05" value="0.8"><small>For deep keels, the simplified resistance model is not reliable.</small></div>
+<div class="field"><label for="displacement">Loaded displacement (tonnes)</label><input data-field id="displacement" type="number" min="0.3" max="1500" step="0.5" value="16"><small>Total loaded weight, not gross tonnage.</small></div>
+<div class="field"><label for="cruise">Desired boat speed (knots)</label><input data-field id="cruise" type="number" min="0.1" max="60" step="0.1" value="5"><small>Through water, not GPS speed over ground.</small></div>
+<div class="field"><label for="engines">Propulsion lines</label><select data-field id="engines"><option value="1" selected>Single engine / shaft</option><option value="2">Twin engine / shafts</option></select></div>
+</div>
+<details><summary>Optional measured sea-trial calibration</summary><div class="fields">
+<div class="field"><label for="trialSpeed">Measured through-water speed (kn)</label><input data-field id="trialSpeed" type="number" min="0" max="40" step="0.1" value=""><small>Enter together with measured TOTAL shaft kW.</small></div>
+<div class="field"><label for="trialPower">Measured delivered TOTAL shaft power (kW)</label><input data-field id="trialPower" type="number" min="0" max="2000" step="0.1" value=""><small>Not nameplate engine power. Engine ECU percent load alone is not a shaft measurement.</small></div>
+</div><p class="note">Both trial entries are required to calibrate the resistance estimate. An uncalibrated estimate is not adequate for a final engine order.</p></details></div></section>
+<section class="card"><div class="top"><h2>2. Diesel power and duty assumptions</h2><span>Power required for theoretical hull speed</span></div><div class="inner"><div class="fields">
+<div class="field"><label for="reservePct">Installed power reserve (%)</label><input data-field id="reservePct" type="number" min="0" max="100" step="5" value="25"><small>Applied to the estimated shaft requirement.</small></div>
+<div class="field"><label for="dieselDuty">Rated diesel duty allowance (%)</label><input data-field id="dieselDuty" type="number" min="50" max="100" step="5" value="80"><small>Planning assumption; manufacturer loading/duty takes priority.</small></div>
+<div class="field"><label for="propulsiveEfficiency">Propulsive efficiency (%)</label><input data-field id="propulsiveEfficiency" type="number" min="25" max="85" step="5" value="55"><small>Effective hull power ÷ propeller shaft power.</small></div>
+<div class="field"><label for="gearEfficiency">Gearbox efficiency (%)</label><input data-field id="gearEfficiency" type="number" min="70" max="100" step="1" value="96"><small>Used to compare diesel engine rated output to shaft power.</small></div>
+</div></div></section>
+<section class="card"><div class="top"><h2>3. Hull speed and power demand</h2><span>Live calculation</span></div><div class="inner">
+<div id="error" class="warning critical hide" role="alert"></div>
+<div id="powerResults">
+<div class="stats">
+ <div class="stat hero"><span>Traditional theoretical hull speed</span><strong id="hullSpeed">—</strong><em>1.34 × √(waterline length in feet). A speed threshold, not a hard limit.</em></div>
+ <div class="stat"><span>Estimated shaft power at chosen speed</span><strong id="cruisePower">—</strong><em id="cruiseQual">Preliminary calm-water prediction</em></div>
+ <div class="stat"><span>Estimated shaft power at hull speed</span><strong id="hullPower">—</strong><em id="hullQual">This is not a guaranteed maximum engine power</em></div>
+ <div class="stat"><span>With installed power allowance</span><strong id="installedPower">—</strong><em>Reserve applied to hull-speed shaft estimate</em></div>
+ <div class="stat"><span>Target percentage of hull speed</span><strong id="speedRatio">—</strong><em>Near hull speed, wave-making resistance increases rapidly</em></div>
+</div>
+<div id="dieselStatus" class="warning" role="status">Loading results…</div>
+<p class="note">The model calculates an <strong>estimated power to reach theoretical hull speed</strong>, not an absolute maximum horsepower needed. No exact maximum can be established from waterline length, displacement and speed alone.</p>
+
+</div></div></section>
+<section class="card"><div class="top"><h2>4. Diesel engine candidates</h2><span>Published VETUS model families</span></div><div class="inner"><div id="candidates" aria-live="polite"></div></div></section>
+<section class="card"><div class="top"><h2>5. Existing engine and gearbox</h2><span>Reference analysis — no assumed propeller</span></div><div class="inner">
+<div class="fields">
+<div class="field"><label for="referenceEngine">Existing VETUS engine</label><select data-field id="referenceEngine"><option value="" selected>Unknown / not applicable</option><option value="M2.13">M2.13</option><option value="M2.18">M2.18</option><option value="M3.29">M3.29</option><option value="M4.35">M4.35</option><option value="M4.45">M4.45</option><option value="M4.56">M4.56</option><option value="VH4.65">VH4.65</option><option value="VH4.80">VH4.80</option><option value="VD4.120">VD4.120</option><option value="VD4.140">VD4.140</option><option value="VD6.170">VD6.170</option><option value="VD6.210">VD6.210</option></select><small>Independent existing-engine comparison.</small></div>
+<div class="field"><label for="gearboxRatio">Ahead gearbox reduction (:1)</label><input data-field id="gearboxRatio" type="number" min="1" max="8" step="0.05" value=""><small>2 means 2 engine revs per shaft revolution.</small></div>
+<div class="field"><label for="observedEngineRPM">Observed engine RPM</label><input data-field id="observedEngineRPM" type="number" min="200" max="8000" step="50" value=""><small>From underway sea trial, if known.</small></div>
+</div>
+<div id="referenceResults" class="stats" style="margin-top:12px"></div>
+<p class="note">No propeller diameter, pitch or absorbed torque is assumed. Gearbox ratio affects shaft RPM and torque, <strong>not shaft power</strong>. Peak torque and rated power occur at different engine speeds.</p></div></section>
+<section class="card"><div class="top"><h2>Save vessel & PDF report</h2><span>Same local project library</span></div><div class="inner"><div id="projectTools"></div><p class="note">Saved projects stay on this iPhone/browser. Existing combined Engine &amp; E-Line saved projects remain accessible through the <a href="./engine.html">legacy combined calculator</a>.</p></div></section>
+<section class="card"><div class="top"><h2>Engineering cautions & sources</h2><span>Read before ordering</span></div><div class="inner"><div id="notices"></div><details><summary>Calculation notes and references</summary>
+<p class="note">Displacement hull speed = 1.34 × √(LWL in feet), in knots. The powering estimate uses the existing Indalo friction and simplified residual resistance model. Sea-trial measured total shaft power can calibrate the model.</p>
+<p class="note">Diesel ratings / E-Line product models are from the <a href="https://webshop.vetus.com/en/products/engines/m-line-engines/" target="_blank" rel="noopener noreferrer">VETUS diesel engine catalogue</a> and <a href="https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines" target="_blank" rel="noopener noreferrer">VETUS E-Line catalogue</a>. Installation and torque/duty curves must be checked for each model.</p>
+</details></div></section>
+<footer class="disclaimer">Version 1.1 · © 2026 J. Spaven · Engineering estimate only · VETUS trademarks belong to their respective owners</footer></main><script src="./resistance.js"></script><script src="./engine-core.js"></script><script src="./propulsion-split.js"></script><script src="./reports.js"></script><script src="./propulsion-ui.js"></script></body></html>
