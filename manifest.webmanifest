@@ -1,18 +1,18 @@
 {
-  "name": "Marine Calculators",
-  "short_name": "Marine Calc",
-  "description": "Marine engineering calculators: electrical load, propeller and speed, battery banks and VETUS thruster sizing",
+  "name": "Indalo Marine Calculators",
+  "short_name": "Indalo Marine",
+  "description": "Indalo Marine engineering calculators: load demand, propeller sizing and speed, battery banks, charging and VETUS thruster selection.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#071c2b",
+  "background_color": "#051829",
   "theme_color": "#071c2b",
   "icons": [
     {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "./assets/indalo-app-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
