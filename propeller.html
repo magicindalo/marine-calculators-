@@ -364,7 +364,8 @@ globalThis.MarineReports.init({
          ["Shaft torque per propeller",f(p.Q,1)+" Nm"],
          ["Open-water propeller efficiency",f(p.eta*100,1)+"%"],
          ["Advance ratio J",f(p.J,3)],
-         ["Apparent slip",f(p.slip*100,1)+"%"],
+         ["Geometric apparent slip (no wake)",f((1-(x.speed*.514444)/((x.srpm/60)*p.pitch))*100,1)+"%"],
+         ["Wake-corrected slip",f(p.slip*100,1)+"%"],
          ["Tip speed",f(p.tip,1)+" m/s"],
          ["Estimated Reynolds number",p.Re?f(p.Re/1e6,2)+" million":"Not calculated"]
        ]},
@@ -378,10 +379,19 @@ globalThis.MarineReports.init({
          ["Sea-trial speed",x.trialSpeed?f(x.trialSpeed,2)+" knots":"Not supplied"],
          ["Sea-trial delivered power",x.trialPower?fmtPower(x.trialPower):"Not supplied"]
        ]},
+       {title:"Power curve checks (speed and RPM)",rows:[
+         ["Design boat speed",f(x.speed*1.150779448,2)+" mph / "+f(x.speed,2)+" knots"],
+         ["Design propeller absorption",f(p.P*x.propCount/.745699872,2)+" hp at "+f(x.erpm,0)+" engine rpm"],
+         ["Assumed engine power for input shaft",f(x.totalPower/.745699872,1)+" hp delivered at shaft"],
+         ["Cruise speed input",n($('curveCruiseMph').value,0)>0?f(n($('curveCruiseMph').value,0),1)+" mph":"Not entered"],
+         ["Cruise engine RPM input",n($('curveCruiseRPM').value,0)>0?f(n($('curveCruiseRPM').value,0),0)+" rpm":"Not entered"],
+         ["Engine full-load curve","Illustrative only; actual engine torque/power curve NOT supplied"],
+         ["Photographed 22 x 16 in test","Unverified test configuration; not confirmed suitable for Kiwi Wonderer"]
+       ]},
        {title:"Interpretation and limitations",paragraphs:[
          pStatus,
          resultNote,
-         "Wageningen B-series open-water polynomial; early-design wake estimate; wetted area and ITTC-1957 frictional correlation with non-standard heuristic residuary resistance. Uncalibrated speed is a preliminary screening estimate, not a validated Holtrop calculation.",
+         "Graph 1 plots approximate shaft power versus speed using the uncalibrated/anchored hull resistance; Graph 2 shows calculated propeller absorption versus engine RPM plus an illustrative (NOT manufacturer-verified) engine-power envelope. The photographed software data is an external comparison only. Geometric slip and wake-corrected slip are distinct quantities. Wageningen B-series open-water polynomial; early-design wake estimate; wetted area and ITTC-1957 frictional correlation with non-standard heuristic residuary resistance. Uncalibrated speed is a preliminary screening estimate, not a validated Holtrop calculation.",
          "Actual motor torque curve, gearbox efficiency, propeller aperture / tip clearance, blade area / cavitation and vessel resistance must be checked before specification. Air and water conditions, loading, shallow-water effects, fouling and appendages may change actual trials."
        ]}
      ]
