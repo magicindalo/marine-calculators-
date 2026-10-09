@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Indalo Marine">
+<link rel="manifest" href="./engine.webmanifest"><link rel="icon" type="image/png" href="./assets/indalo-app-icon.png"><link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Engine &amp; E-Line Selection</title>
+<style>
+:root{--bg:#071c2b;--panel:#0c2e48;--border:#265d79;--text:#edfbff;--muted:#b1cddd;--cyan:#25d1e6;--good:#9aebc5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 16% 4%,#105179,transparent 38%),radial-gradient(ellipse at 89% 66%,#064366,transparent 40%),linear-gradient(#051a2c,#0a2d48 59%,#031c30);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+button,input,select{font:inherit}main{max-width:1000px;margin:auto;padding:calc(15px + env(safe-area-inset-top)) 14px calc(38px + env(safe-area-inset-bottom))}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}.brand{font-size:10px;letter-spacing:.15em;color:var(--cyan);font-weight:850;margin-bottom:5px}
+h1{font-size:clamp(21px,4.7vw,27px);margin:0;line-height:1.14}header p{margin:4px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;flex-wrap:wrap;gap:7px}.nav{color:#f0fcff;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;background:#123c55;border:1px solid #346a80;min-height:43px;padding:9px 13px;border-radius:11px;font-size:12px;font-weight:750}
+.panel{border:1px solid var(--border);border-radius:17px;overflow:hidden;margin-top:13px;background:linear-gradient(145deg,#0e3550,#082740)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #255d79;padding:13px}.head h2{margin:0;font-size:16px}.head span{color:var(--muted);font-size:11px;text-align:right}
+.body{padding:13px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field{min-width:0}.wide{grid-column:1/-1}.field label{display:block;margin-bottom:5px;font-size:12px;color:var(--muted)}
+.field input,.field select{display:block;width:100%;min-width:0;min-height:45px;color:var(--text);background:#061f33;border:1px solid #2d6780;border-radius:10px;padding:9px;font-size:16px}
+.field small{color:var(--muted);display:block;margin-top:5px;font-size:10.5px;line-height:1.35}.note{color:var(--muted);font-size:12px;line-height:1.5;margin:9px 0 0}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.stat{border:1px solid #2d6b83;border-radius:13px;background:#0c354d;min-width:0;padding:13px}
+.stat.hero{grid-column:1/-1;background:linear-gradient(126deg,#10546c,#0a6e86);border-color:#3cb5bf}
+.stat span{display:block;font-size:11px;color:#b7d7e2}.stat strong{display:block;font-size:24px;overflow-wrap:anywhere;line-height:1.2;margin:5px 0}
+.stat.hero strong{font-size:30px}.stat em{display:block;font-style:normal;font-size:11px;color:#b4d9e6}
+.line{border:0;border-top:1px solid #235a74;margin:13px 0}
+.switches{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 3px}
+.tag{border:1px solid #437892;background:#123f59;border-radius:999px;padding:6px 9px;font-size:11px;color:#d5f2fa}
+.tabs{display:flex;gap:8px;margin-top:7px}
+.tabs button{flex:1;min-height:45px;border:1px solid #336c84;border-radius:10px;background:#0a314a;color:#d3effa;font-size:14px;font-weight:750}
+.tabs button.active{color:#072a36;background:#25d3e8;border-color:#25d3e8}
+.product{border:1px solid #39718a;border-radius:14px;padding:13px;margin-top:11px;background:#08283e}
+.product:first-child{border-color:#37c5d6}
+.prodTop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.prodTop strong{font-size:17px}
+.pill{font-size:10px;font-weight:750;border:1px solid #4291a7;background:#124b65;color:#d5faff;border-radius:999px;padding:5px 8px;white-space:nowrap}
+.productMeta{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 3px}
+.productMeta span{border-radius:8px;background:#13415a;border:1px solid #245b74;color:#cae0e9;padding:5px 7px;font-size:11px}
+.product a{color:#7ee3f4;display:inline-block;font-size:12px;font-weight:750;margin-top:10px}
+.warn{font-size:12px;line-height:1.5;background:#322f2b;border:1px solid #776345;border-radius:10px;padding:10px 11px;color:#f6dbaf;margin:9px 0}
+.err{background:#4c2730;border:1px solid #b96271;color:#ffe7ee;padding:12px;border-radius:10px;margin-top:8px;font-size:13px}
+.empty{background:#082c43;border:1px dashed #42798a;padding:16px;border-radius:11px;color:#c4d9e2;font-size:13px;margin-top:10px}
+.hidden{display:none!important}
+details{margin-top:12px;border-top:1px solid #24617a}details summary{display:flex;align-items:center;min-height:45px;cursor:pointer;font-size:13px;font-weight:750}details .fields{padding-top:8px}
+a{color:#7ce6ed}
+@media(min-width:700px){.fields{grid-template-columns:repeat(4,minmax(0,1fr))}.wide{grid-column:span 2}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}}
+</style>
+</head><body><main>
+<header><div><div class="brand">INDALO MARINE CALCULATORS</div><h1>Engine &amp; E-Line Selection</h1><p>VETUS diesel and electric propulsion • vessel powering guidance</p></div>
+<nav><a class="nav" href="./">Home</a><a class="nav" href="./propeller.html">Propeller</a><a class="nav" href="./battery.html">Battery</a></nav></header>
+
+<section class="panel"><div class="head"><h2>1. Your vessel</h2><span>Loaded dimensions and desired speed</span></div><div class="body">
+<div class="fields">
+<div class="field wide"><label for="project">Vessel / customer reference</label><input id="project" placeholder="e.g. 60 ft canal boat — refit"></div>
+<div class="field"><label for="hull">Vessel / hull type</label><select id="hull">
+<option value="canal" selected>Canal / narrowboat / inland</option>
+<option value="displacement">Displacement cruiser / workboat</option>
+<option value="sail">Displacement sailing yacht</option>
+<option value="semi">Semi-displacement vessel</option>
+<option value="planing">Planing powerboat</option></select></div>
+<div class="field"><label for="lwl">Length at waterline (m)</label><input id="lwl" type="number" min="3" max="80" step=".1" value="18"></div>
+<div class="field"><label for="beam">Beam at waterline (m)</label><input id="beam" type="number" min=".8" max="16" step=".1" value="3.3"></div>
+<div class="field"><label for="draft">Loaded draft (m)</label><input id="draft" type="number" min=".1" max="7" step=".05" value=".8"></div>
+<div class="field"><label for="displacement">Loaded vessel displacement (tonnes)</label><input id="displacement" type="number" min=".3" max="1500" step=".5" value="16"></div>
+<div class="field"><label for="cruise">Target boat speed (knots)</label><input id="cruise" type="number" min=".1" max="60" step=".1" value="5"><small>For planing hulls, enter near-max design speed rather than economy cruise.</small></div>
+<div class="field"><label for="water">Operating water</label><select id="water"><option value="fresh">Fresh water</option><option value="sea">Seawater</option></select></div>
+<div class="field"><label for="engines">Number of propulsion lines</label><select id="engines"><option value="1">1 engine / motor</option><option value="2">2 engines / motors</option></select></div>
+</div>
+<p class="note">Enter the actual loaded displacement, including fuel, passengers, water and equipment. Waterline length is not the same as overall vessel length. More accurate hull offsets or measured power improve the estimate.</p>
+<details><summary>Have actual sea-trial data? Improve the prediction</summary>
+<div class="fields">
+<div class="field"><label for="trialSpeed">Measured through-water speed (knots)</label><input id="trialSpeed" type="number" min="0" step=".1" placeholder="e.g. 5.2"></div>
+<div class="field"><label for="trialPower">Total measured delivered shaft power (kW)</label><input id="trialPower" type="number" min="0" step=".1" placeholder="e.g. 10.0"><small>Actual shaft output at measured speed, not manufacturer's rated engine output.</small></div>
+</div>
+<p class="note">Entering both figures anchors the power estimate to this vessel. For displacement vessels it scales the resistance estimate; for planing craft it calibrates the empirical Crouch power curve.</p>
+</details>
+</div></section>
+
+<section class="panel"><div class="head"><h2>2. Propulsion preferences</h2><span>Diesel, electric or both</span></div><div class="body">
+<div class="fields">
+<div class="field"><label for="fuel">Compare propulsion</label><select id="fuel"><option value="both">Compare diesel and E-Line</option><option value="diesel">Diesel engines only</option><option value="electric">Electric E-Line only</option></select></div>
+<div class="field"><label for="drive">Mechanical arrangement</label><select id="drive"><option value="shaft">Shaft drive / inboard</option><option value="other">Other arrangement — review</option></select><small>E-Line choices shown for shaft drive only.</small></div>
+<div class="field"><label for="eVoltage">Electric propulsion bank class</label><select id="eVoltage"><option value="48" selected>48 V (main E-Line range)</option><option value="24">24 V (E-AIR 5 kW)</option></select></div>
+<div class="field"><label for="reservePct">Additional power reserve (%)</label><input id="reservePct" type="number" min="0" max="100" step="5" value="25"></div>
+</div>
+<details><summary>Advanced powering assumptions</summary><div class="fields">
+<div class="field"><label for="propulsiveEfficiency">Total shaft-to-effective-power efficiency (%)</label><input id="propulsiveEfficiency" type="number" min="25" max="85" step="5" value="55"><small>Hull/propulsor dependent. Not motor electrical efficiency.</small></div>
+<div class="field"><label for="dieselDuty">Allowed diesel rated-power use (%)</label><input id="dieselDuty" type="number" min="50" max="100" step="5" value="80"><small>Working assumption, not a verified manufacturer duty rating.</small></div>
+<div class="field"><label for="electricDuty">Allowed E-Line rated-power use (%)</label><input id="electricDuty" type="number" min="50" max="100" step="5" value="85"><small>Working assumption; verify thermal continuous duty.</small></div>
+<div class="field"><label for="gearEfficiency">Diesel gearbox efficiency (%)</label><input id="gearEfficiency" type="number" min="70" max="100" step="1" value="96"></div>
+<div class="field"><label for="electricEfficiency">Electric DC-to-shaft efficiency (%)</label><input id="electricEfficiency" type="number" min="60" max="100" step="1" value="88"><small>Motor, inverter/controller and electrical losses.</small></div>
+<div class="field" id="crouchWrap"><label for="crouch">Planing Crouch coefficient (knots formula)</label><input id="crouch" type="number" min="90" max="260" step="5" value="150"><small>Prefer comparable vessel sea-trial data.</small></div>
+</div></details>
+</div></section>
+
+<section class="panel"><div class="head"><h2>3. Power demand &amp; hull speed</h2><span id="confidence">Screening estimate</span></div><div class="body">
+<div id="error" class="err hidden" role="alert"></div>
+<div id="summary" class="stats" aria-live="polite">
+<div class="stat hero"><span>Estimated TOTAL shaft power at target speed</span><strong id="shaft">—</strong><em id="shaftSub">Before reserve, across all propulsion lines</em></div>
+<div class="stat"><span>With power reserve</span><strong id="required">—</strong><em>Requested total installed shaft allowance</em></div>
+<div class="stat"><span>Reference hull speed</span><strong id="hullSpeed">—</strong><em>1.34 × √LWL(ft) — displacement guidance</em></div>
+<div class="stat"><span>Froude number Fn</span><strong id="fn">—</strong><em id="fnSub">Target relative to wave-making</em></div>
+<div class="stat"><span>Vessel block coefficient</span><strong id="cb">—</strong><em id="cbSub">From loaded dimensions and displacement</em></div>
+</div>
+<div id="noMatch" class="warn hidden">This speed or hull type is outside the range of the preliminary model. No engine is recommended: obtain measured resistance/sea-trial data or naval architect advice.</div>
+<div class="switches"><span class="tag" id="modelSource">Method</span><span class="tag" id="driveCount">1 shaft</span><span class="tag" id="calFactor">Uncalibrated</span></div>
+</div></section>
+
+<section class="panel"><div class="head"><h2>4. VETUS engine &amp; E-Line shortlist</h2><span>Manufacturer product ranges • current models</span></div><div class="body">
+<div class="tabs" role="group" aria-label="Filter propulsion recommendations">
+<button id="tabBoth" type="button" class="active">Both</button><button id="tabDiesel" type="button">Diesel</button><button id="tabElectric" type="button">E-Line</button>
+</div>
+<div id="recommendations" aria-live="polite"></div>
+<p class="note">Selection compares shaft-power capacity and user-selected duty/reserve. It does NOT match the propeller diameter, shaft torque curve, gearbox, emissions approval, availability or engine physical fit. Review those before ordering.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>5. Electric endurance &amp; battery</h2><span>48 V / 24 V-class propulsion</span></div><div class="body">
+<div class="fields">
+<div class="field"><label for="hours">Desired boating hours at target speed</label><input id="hours" type="number" min=".25" max="72" step=".5" value="4"></div>
+<div class="field"><label for="batteryKWh">Installed nominal battery bank (kWh)</label><input id="batteryKWh" type="number" min=".1" step=".5" value="20"></div>
+<div class="field"><label for="usablePercent">Usable bank capacity (%)</label><input id="usablePercent" type="number" min="5" max="100" step="5" value="80"></div>
+</div>
+<div class="stats">
+<div class="stat hero"><span>Battery energy needed for chosen endurance</span><strong id="batteryNeeded">—</strong><em>Nominal storage, includes selected usable percentage</em></div>
+<div class="stat"><span>Estimated DC electrical demand</span><strong id="electricInput">—</strong><em>At target speed, based on DC-to-shaft efficiency</em></div>
+<div class="stat"><span>Approximate runtime with entered battery</span><strong id="runtime">—</strong><em>Constant cruise load, no domestic loads</em></div>
+</div>
+<p class="note">This is a steady-speed battery estimate only. Charging method, battery chemistry/BMS, permissible discharge current, cooling and installation must be checked. For detailed battery arrangements, use the Indalo Battery Systems calculator.</p>
+</div></section>
+
+<section class="panel"><div class="head"><h2>Project &amp; PDF report</h2><span>Save • Reopen • Export</span></div><div class="body"><div id="projectTools"></div></div></section>
+<section class="panel"><div class="head"><h2>Engineering limitations &amp; sources</h2><span>Review before specification</span></div><div class="body">
+<div id="warnings"></div>
+<details><summary>Calculation approach &amp; official VETUS references</summary>
+<p class="note">Displacement power screening: shared Indalo resistance model uses ITTC-1957 friction coefficient, a wetted-area approximation and a NON-STANDARD wave term. The estimate is low confidence until calibrated to a measured shaft-power trial. Hull shapes and sea state can change actual powering substantially. The energy conversion uses the user-entered overall shaft-to-effective-power efficiency.</p>
+<p class="note">Planing: empirical Crouch formula P(shaft hp) = loaded weight(lb) × [target speed(knots)/C]², C calibrated to comparable vessels. It should not be used for displacement hulls and is unreliable in the hump/transitional region. The target is treated as near-maximum speed.</p>
+<p class="note">Product ratings and listed families are sourced from official <a href="https://webshop.vetus.com/en/products/engines/m-line-engines/" target="_blank" rel="noopener">M-Line</a>, <a href="https://webshop.vetus.com/en/products/engines/h-line-engines" target="_blank" rel="noopener">H-Line</a>, <a href="https://webshop.vetus.com/en/products/engines/d-line-engines" target="_blank" rel="noopener">D-Line</a> and <a href="https://webshop.vetus.com/en/products/electric-propulsion/e-line-engines" target="_blank" rel="noopener">E-Line</a> listings (October 2026).</p>
+</details>
+</div></section>
+</main>
+<script src="./resistance.js"></script><script src="./engine-core.js"></script><script src="./reports.js"></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const IDS=["project","hull","lwl","beam","draft","displacement","cruise","water","engines","trialSpeed","trialPower","fuel","drive","eVoltage","reservePct","propulsiveEfficiency","dieselDuty","electricDuty","gearEfficiency","electricEfficiency","crouch","hours","batteryKWh","usablePercent"];
+const KEY="indalo-engine-current-v1";
+const format=(n,d=1)=>Number.isFinite(n)?n.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+let tab="both",last=null;
+function input(){return Object.fromEntries(IDS.map(id=>[id,$(id).value]))}
+function evaluate(){return globalThis.EngineCalc.evaluate(input())}
+function getState(){return{fields:input(),tab}}
+function setState(x){if(!x?.fields)throw Error("Not an engine selection project");for(const id of IDS)if(x.fields[id]!==undefined)$(id).value=String(x.fields[id]);tab=["both","diesel","electric"].includes(x.tab)?x.tab:"both";sync();render()}
+function show(tag,show){$(tag).classList.toggle("hidden",!show)}
+function buildText(parent,text,cls){const d=document.createElement("div");d.textContent=text;d.className=cls||"";parent.append(d);return d}
+function sync(){
+ $("crouchWrap").classList.toggle("hidden",$("hull").value!=="planing");
+ $("tabBoth").classList.toggle("active",tab==="both");
+ $("tabDiesel").classList.toggle("active",tab==="diesel");
+ $("tabElectric").classList.toggle("active",tab==="electric");
+}
+function products(kind,r,node){
+ if(r.fuel!=="both"&&r.fuel!==kind)return;
+ if(tab!=="both"&&tab!==kind)return;
+ const family=buildText(node,kind==="diesel"?"VETUS Diesel Engines (M / H / D-Line)":"VETUS E-Line Inboard Electric Motors","note");
+ family.style.fontWeight="800";family.style.fontSize="14px";family.style.marginTop="14px";family.style.color="#bff8ff";
+ const matches=kind==="diesel"?r.dieselMatches:r.electricMatches;
+ if(!r.canMatch){buildText(node,"No model recommended: the target conditions are outside the supported preliminary powering method.","empty");return}
+ if(!matches.length){
+  buildText(node,kind==="diesel"?"No listed diesel model can satisfy the selected power reserve and duty assumption. Review vessel demand, propulsion count or a larger product range.":"No E-Line shaft motor matches the required power/duty and selected DC supply. Do not treat peak power as continuous capacity.","empty");
+  return;
+ }
+ const candidates=matches.slice(0,4);
+ for(let i=0;i<candidates.length;i++){
+  const p=candidates[i];
+  const item=document.createElement("div");item.className="product";
+  const title=document.createElement("div");title.className="prodTop";
+  const name=document.createElement("strong");name.textContent=p.name;
+  const tag=document.createElement("span");tag.className="pill";tag.textContent=i===0?"Closest suitable":"Also meets requirement";
+  title.append(name,tag);item.append(title);
+  buildText(item,"VETUS SKU: "+p.sku+" · "+p.family,"note");
+  const meta=document.createElement("div");meta.className="productMeta";
+  const values=[
+   p.kw.toFixed(1)+" kW rated"+(kind==="diesel"?" / "+p.hp.toFixed(0)+" hp":""),
+   r.boats===2?"2 × units":"1 × unit",
+   "Target cruise load "+format(p.cruiseLoad,0)+"%",
+   "Duty-allowed shaft capacity "+format(p.availableAtDuty,1)+" kW"
+  ];
+  if(p.predictedSpeed!==null)values.push("Screened speed ≈ "+format(p.predictedSpeed,1)+" kn");
+  if(kind==="electric")values.push(p.voltage+" V-class / "+p.cooling+" cooled");
+  if(kind==="diesel"&&p.rpm)values.push(p.rpm+" rpm rated");
+  for(const x of values){const chip=document.createElement("span");chip.textContent=x;meta.append(chip)}
+  item.append(meta);
+  if(p.lowLoad)buildText(item,"Cruise demand is less than 35% of rated power; verify acceptable diesel load spectrum and propeller match.","warn");
+  if(kind==="electric")buildText(item,"Verify manufacturer continuous torque/power, battery discharge capability, E-Line controls, cooling and propeller torque.","note");
+  const link=document.createElement("a");link.href=p.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Official VETUS "+p.family+" range ↗";item.append(link);
+  node.append(item);
+ }
+}
+function render(){
+ const r=evaluate();last=r;sync();
+ show("error",!r.valid);$("error").textContent=r.errors.join(" ");
+ show("summary",r.valid);
+ if(!r.valid){$("recommendations").replaceChildren();$("warnings").replaceChildren();return}
+ $("shaft").textContent=r.canMatch?format(r.shaftCruiseKW,2)+" kW":"Outside model";
+ $("shaftSub").textContent=r.planing?"Estimated near-WOT propeller shaft demand":"Estimated total propeller-shaft demand at target speed";
+ $("required").textContent=r.canMatch?format(r.ratedRequiredKW,2)+" kW":"—";
+ $("hullSpeed").textContent=format(r.hullSpeed,1)+" kn";
+ $("fn").textContent=format(r.Fn,3);
+ $("fnSub").textContent=r.Fn>.4?"High resistance / hump region":"Froude reference only";
+ $("cb").textContent=format(r.CB,3);
+ $("cbSub").textContent="Loaded vessel geometry";
+ $("confidence").textContent=r.trialSource==="uncalibrated"?"Uncalibrated screening":r.trialSource==="sea-trial"?"Trial-calibrated hull estimate":"Trial-calibrated planing";
+ $("modelSource").textContent=r.model;
+ $("driveCount").textContent=r.boats+" propulsion "+(r.boats===1?"line":"lines");
+ $("calFactor").textContent=r.trialSource==="uncalibrated"?"No trial calibration":"Trial factor "+format(r.calibrationFactor,2)+"×";
+ show("noMatch",!r.canMatch);
+ $("batteryNeeded").textContent=r.canMatch?format(r.batteryNeeded,1)+" kWh":"—";
+ $("electricInput").textContent=r.canMatch?format(r.electricDraw,2)+" kW":"—";
+ $("runtime").textContent=r.canMatch?format(r.autonomy,1)+" hours":"—";
+ const host=$("recommendations");host.replaceChildren();
+ products("diesel",r,host);products("electric",r,host);
+ if(!host.children.length)buildText(host,"Select a propulsion range to view compatible candidates.","empty");
+ const warnings=$("warnings");warnings.replaceChildren();
+ r.warnings.forEach(msg=>buildText(warnings,msg,"warn"));
+ try{localStorage.setItem(KEY,JSON.stringify(getState()))}catch(e){}
+}
+for(const id of IDS){$(id).addEventListener("input",render);$(id).addEventListener("change",render)}
+[["tabBoth","both"],["tabDiesel","diesel"],["tabElectric","electric"]].forEach(([id,value])=>{$(id).addEventListener("click",()=>{tab=value;render()})});
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved?.fields){for(const id of IDS)if(saved.fields[id]!==undefined)$(id).value=String(saved.fields[id]);if(["both","diesel","electric"].includes(saved.tab))tab=saved.tab;}}catch(e){}
+sync();render();
+globalThis.MarineReports.init({
+ kind:"engine",getState,setState,
+ suggestName:()=>($("project").value.trim()||"VETUS Engine & E-Line Selection"),
+ report:()=>{
+  const f=input(),r=evaluate();if(!r.valid)throw Error(r.errors.join(". "));
+  const a=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):"Not calculated";
+  const choose=(models,kind)=>models.slice(0,5).map((m,i)=>[i===0?"First match":"Alternative",m.name+" / "+m.sku,a(m.kw,1)+" kW",kind==="diesel"?a(m.hp,0)+" hp":m.voltage+" V",a(m.cruiseLoad,1)+"%"]);
+  const variants=[...choose(r.dieselMatches,"diesel"),...choose(r.electricMatches,"electric")];
+  return{
+   title:"VETUS Engine & E-Line Selection",
+   subtitle:(f.project||"Unnamed vessel")+" / Preliminary marine propulsion report",
+   filename:(f.project||"Indalo-Marine")+"-engine-selection",
+   metrics:[["Target speed",a(r.boatSpeed,1)+" kn"],["Cruise shaft demand",r.canMatch?a(r.shaftCruiseKW,1)+" kW":"Outside method"],
+     ["Preferred diesel",r.bestDiesel?.name||"No match"],["Preferred E-Line",r.bestElectric?.name||"No match"]],
+   sections:[
+    {title:"Vessel input data",rows:[
+      ["Vessel / customer",f.project||"Not entered"],["Hull category",r.hull],
+      ["Waterline length",a(r.lwl)+" m"],["Waterline beam",a(r.beam)+" m"],["Loaded draft",a(r.draft)+" m"],
+      ["Loaded displacement",a(r.displacement)+" tonnes"],["Block coefficient",a(r.CB,3)],
+      ["Target boat speed",a(r.boatSpeed,2)+" knots"],["Reference displacement hull speed",a(r.hullSpeed,1)+" knots"],
+      ["Operating water",r.water],["Number of propulsion lines",String(r.boats)],
+      ["Propulsion arrangement",r.drive]
+    ]},
+    {title:"Powering assumptions & result",rows:[
+      ["Calculation model",r.model],["Froude number",a(r.Fn,3)],
+      ["Confidence",r.trialSource],["Trial calibration factor",a(r.calibrationFactor,2)],
+      ["Measured trial speed",r.trialSpeed?a(r.trialSpeed,2)+" kn":"Not supplied"],
+      ["Measured delivered shaft power",r.trialPower?a(r.trialPower,2)+" kW":"Not supplied"],
+      ["Shaft to effective propulsive efficiency",a(r.shaftEff*100,0)+"%"],
+      ["Estimated total shaft cruise demand",r.canMatch?a(r.shaftCruiseKW,2)+" kW":"Not valid beyond method"],
+      ["Power reserve",a(r.reserve,0)+"%"],
+      ["Required total shaft allowance",r.canMatch?a(r.ratedRequiredKW,2)+" kW":"Not rated"],
+      ["Required output per shaft",r.canMatch?a(r.requiredPerShaft,2)+" kW":"Not rated"],
+      ["Diesel duty assumption",a(r.dieselDuty*100,0)+"%"],
+      ["E-Line duty assumption",a(r.electricDuty*100,0)+"%"],
+      ["Diesel gearbox efficiency",a(r.transEff*100,0)+"%"],
+      ["Electric DC-to-shaft efficiency",a(r.electricEff*100,0)+"%"]
+    ]},
+    {title:"VETUS diesel and E-Line candidates",table:{columns:[["Priority",75],["VETUS model / order code",185],["Rated power",80],["HP / supply",90],["Cruise load",75]],
+      rows:variants.length?variants:[["No suitable model","Review hull powering and product availability","—","—","—"]]}},
+    {title:"Electric system endurance",rows:[
+      ["Propulsion voltage class",r.eVoltage+" V"],["Desired boating hours",a(r.hours,1)+" h"],
+      ["Installed nominal bank capacity",a(r.batteryKWh,1)+" kWh"],
+      ["Usable battery capacity",a(r.usablePct*100,0)+"%"],
+      ["Calculated steady DC propulsion draw",r.canMatch?a(r.electricDraw,2)+" kW":"Not calculated"],
+      ["Indicative battery hours",r.canMatch?a(r.autonomy,2)+" hours":"Not calculated"],
+      ["Nominal battery required for endurance",r.canMatch?a(r.batteryNeeded,1)+" kWh":"Not calculated"]
+    ]},
+    {title:"Engineering notes & manufacturer verification",paragraphs:[
+      ...r.warnings,
+      "M-Line/H-Line/D-Line ratings and current E-Air/E-Line shaft-drive products referenced from VETUS official 2026 webshop family pages. The numbers represent broad published rated capacities and not propeller-load/torque curves.",
+      "Wetted-area friction uses the ITTC 1957 correlation and a simplified/uncalibrated wave component for low-Froude hulls. Planing uses Crouch; not suitable for displacement craft. Neither is an accuracy or performance guarantee.",
+      "Final specification needs engine torque curves, propeller demand, gearbox ratio, shaft strength, cable sizing, BMS/thermal/duty rating, shaft line layout, engine certification and manufacturer approval."
+    ]}
+   ]
+  };
+ }
+});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body></html>
