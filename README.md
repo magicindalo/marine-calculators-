@@ -1,6 +1,6 @@
-# Marine Calculators
+# Indalo Marine Calculators
 
-A responsive, installable marine engineering toolkit for iPhone, iPad and desktop.
+Indalo Marine branded, responsive, installable marine engineering toolkit for iPhone, iPad and desktop.
 
 ## Open the app
 - **Main menu:** https://magicindalo.github.io/marine-calculators-/
@@ -12,7 +12,7 @@ A responsive, installable marine engineering toolkit for iPhone, iPad and deskto
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
 2. Tap **Share > Add to Home Screen > Add**.
-3. Launch Marine Calculators from your Home Screen.
+3. Launch **Indalo Marine** from your Home Screen.
 
 ### Thruster sizing method
 The VETUS thruster selector implements the windage and moment-arm calculation from the two supplied VETUS catalogue pages 220 and 221. It uses an up-to-date shortlist of VETUS standard DC, BOW PRO and Boosted, and ignition-protected model numbers from the official VETUS webshop (reviewed October 2026). Product suggestions are by thrust rating, voltage/source architecture and tunnel size, **not by boat length alone**.
@@ -28,7 +28,7 @@ Inside either calculator, use **Save project** to give the working calculation a
 3. Safari downloads an A4 PDF with inputs, results, assumptions and the engineering caveats.
 4. On iPhone, look in **Files > Downloads** (or Safari's Downloads menu) and share or move the PDF.
 
-The file is generated directly on-device using `reports.js` and requires no PDF service or paid subscription. A long load schedule is automatically split into multiple PDF pages.
+Reports are branded **Indalo Marine Calculators** and generated directly on-device using `reports.js` and requires no PDF service or paid subscription. A long load schedule is automatically split into multiple PDF pages.
 
 ### Included calculators
 - **Electrical:** AC single-phase / three-phase / DC, demand factors, surge loading, daily energy, generator/inverter demand and battery Ah sizing.
@@ -38,3 +38,11 @@ The file is generated directly on-device using `reports.js` and requires no PDF 
 
 ## Engineering limitations
 All results are preliminary estimates. The resistance model includes a non-standard wave/residuary resistance heuristic, not a verified Holtrop–Mennen method. Sea-trial and known resistance data improve the calibration, but professional verification remains necessary before installation, cable/protection selection or propeller manufacture.
+
+## Branding
+- Original Indalo Marine logo: `assets/indalo-marine-logo.webp`
+- Indalo iPhone app icon: `assets/indalo-app-icon.png`
+- Home screen installed app title: **Indalo Marine** (full PWA name: **Indalo Marine Calculators**)
+- All four calculator pages and generated A4 PDF reports use the Indalo name.
+
+If an iPhone still displays the old app icon or name, open the main URL in Safari, wait for it to reload, then remove the old Home Screen shortcut and use **Share → Add to Home Screen** again. Saved projects remain in Safari website storage unless that data is cleared.
