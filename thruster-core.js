@@ -69,6 +69,20 @@ const catalog=[
  ignitionProtected:family==="ignition",
  url:catalogue[family==="standard"?"std":family==="ignition"?"ip":"pro"]
 }));
+// VETUS published approximate vessel-length guidance (m), not force limits.
+const lengths={
+ BOW2512E:[0,7],BOW3512F:[6,10],BOW4012:[8,10.5],BOW4512D:[8,11.5],
+ BOW5512D:[8,12],BOW5524D:[8,12],BOW6012D:[8,12.5],BOW6024D:[8,12.5],
+ BOW7512D:[10,14],BOW7524D:[10,14],BOW9512D:[11.5,17],BOW9524D:[11.5,17],
+ BOW12512D:[12.5,18],BOW12524D:[12.5,18],BOW16024D:[15,20],BOW18024D:[14,22],BOW22024D:[16,22],
+ BOWA0301:[0,7],BOWA0304:[0,7],BOWA0361:[6,10],BOWA0364:[6,10],BOWA0401:[7,11],
+ BOWA0421:[8,11.5],BOWA0571:[8,12],BOWA0574:[8,12],BOWA0651:[8,12.5],BOWA0761:[10,14],BOWA0764:[10,14],
+ BOWB057:[8,12],BOWB065:[8,12.5],BOWB076:[10,14],BOWB090:[11.5,17],
+ BOWB110:[11.5,18],BOWB130:[12.5,18],BOWB150:[12.5,18],
+ BOWB180:[15,20],BOWB210:[16,22],BOWB285:[16,22],BOWB300:[25,30],
+ BOWB320:[25,32],BOWB385:[30,35],BOWB420:[33,40]
+};
+catalog.forEach(m=>{m.lengthGuide=lengths[m.sku]||null});
 const officialProducts={
  BOW2512E:"https://webshop.vetus.com/en/product/bow-thruster-25-kgf-12-v-110-mm-tunnel",
  BOW3512F:"https://webshop.vetus.com/en/product/bow-thruster-35-kgf-12-v-125-mm-tunnel",
