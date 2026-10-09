@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c2b"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VETUS Thrusters"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./thruster.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Marine Thruster Selection Calculator</title>
+<style>
+:root{--bg:#071c2b;--p:#0d2b40;--well:#061c2b;--line:#285269;--txt:#effaff;--muted:#acc6d3;--accent:#24c1d8;--ok:#85e0b3;--warn:#f6d08d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#061925,#0a293d 65%,#061925);min-height:100vh;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--txt)}
+main{max-width:950px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 14px calc(42px + env(safe-area-inset-bottom))}
+h1{font-size:23px;margin:0}h2{font-size:16px;margin:0}header{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+small,.sub,p.note{font-size:12px;color:var(--muted)}header p{margin:4px 0 0}nav{display:flex;gap:7px;flex-wrap:wrap}
+a.nav,button{min-height:44px;border:1px solid var(--line);border-radius:11px;background:#153e56;color:#f2fcff;text-decoration:none;padding:9px 12px;font:inherit;font-size:13px;font-weight:750;display:inline-flex;align-items:center;justify-content:center}
+button.primary{background:var(--accent);color:#06222b;border:0}button:disabled{opacity:.55}
+.section{background:var(--p);border:1px solid var(--line);border-radius:16px;margin-top:13px;overflow:hidden}
+.head{padding:13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}.head span{font-size:11px;color:var(--muted);text-align:right}
+.body{padding:13px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.field{min-width:0}.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+.field input,.field select{display:block;width:100%;min-width:0;min-height:46px;color:var(--txt);border:1px solid var(--line);background:var(--well);border-radius:10px;padding:10px;font-size:16px}
+.field small{display:block;margin-top:4px;font-size:11px;line-height:1.3}.wide{grid-column:1/-1}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.stat{background:#0b3046;border:1px solid #2c566d;border-radius:13px;padding:12px;min-width:0}
+.stat.hero{background:linear-gradient(120deg,#0e465b,#166681);grid-column:span 2;border-color:#3e8190}
+.stat span{display:block;color:#b4cfd9;font-size:11px}.stat strong{font-size:24px;display:block;line-height:1.2;margin-top:5px;overflow-wrap:anywhere}.stat.hero strong{font-size:30px}.stat em{font-size:11px;color:#afd0df;font-style:normal;display:block;margin-top:4px}
+.cards{display:grid;gap:10px}.recommend{background:#072437;border:1px solid #2c5d70;border-radius:14px;padding:12px}
+.recommend:first-child{border-color:#31a1a7}.recommendTitle{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:11px}
+.badge{font-size:11px;border:1px solid #31718a;background:#114259;padding:4px 8px;border-radius:999px;color:#c2ecf2}
+.product{border:1px solid #294f61;background:#0a3043;border-radius:10px;padding:11px;margin-top:7px}
+.product .top{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}.product strong{font-size:17px}
+.product .meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:#adcbd6}
+.product .meta span{background:#133d52;padding:4px 7px;border-radius:8px}
+.product a{display:inline-block;color:#61dbec;font-weight:700;font-size:12px;margin-top:9px}
+.caution{padding:10px 11px;background:#2f302c;color:#f5dfb2;border:1px solid #6b6247;border-radius:9px;font-size:12px;margin-top:9px;line-height:1.5}
+.error{background:#39252b;border:1px solid #884b59;color:#ffe0e3;border-radius:12px;padding:12px;font-size:13px;margin-top:10px}
+.hidden{display:none!important}.optionInfo{border:1px solid #23596c;border-radius:11px;padding:9px 12px;font-size:12px;background:#0a2d3d;margin-top:11px;color:#c3dbe5}
+.details{margin-top:10px}.details summary{font-size:13px;font-weight:700;min-height:44px;display:flex;align-items:center;cursor:pointer}
+.details .fields{padding-top:8px}.diagram{background:#061d2b;border:1px solid #285368;border-radius:13px;padding:12px;margin-top:12px}
+.vessel{position:relative;max-width:550px;width:100%;min-height:102px;border:2px solid #5b92a4;border-radius:50% 50% 44% 44% / 24% 24% 24% 24%;margin:12px auto 16px;display:flex;align-items:center;justify-content:space-between;padding:8px 14px}
+.vessel .end{font-size:11px;color:#b8d3db;text-align:center}.vessel .end .thruster{font-size:21px;color:#71d5e0;display:block}.vessel .wind{font-size:13px;color:#ffe5ac;text-align:center}.vessel .wind b{display:block;font-size:19px}
+.legend{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;font-size:11px;color:#c3d6df}
+@media(min-width:720px){.fields{grid-template-columns:repeat(4,minmax(0,1fr))}.results{grid-template-columns:repeat(4,minmax(0,1fr))}.stat.hero{grid-column:span 2}.wide{grid-column:span 2}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div><h1>Thruster Selection Calculator</h1><p>VETUS bow & stern thrusters • DC • BOW PRO • Boosted</p></div>
+<nav><a class="nav" href="./">Home</a><a class="nav" href="./battery.html">Battery</a><a class="nav" href="./propeller.html">Propeller</a></nav>
+</header>
+
+<section class="section"><div class="head"><h2>1. Vessel & design conditions</h2><span>Based on VETUS catalogue page 220</span></div><div class="body">
+<div class="fields">
+<div class="field wide"><label for="project">Vessel / project name</label><input id="project" placeholder="e.g. 36 ft cruiser"></div>
+<div class="field"><label for="length">Vessel length overall (m)</label><input id="length" type="number" min="2" max="80" step="0.1" value="11"></div>
+<div class="field"><label for="area">Side windage area (m²)</label><input id="area" type="number" min=".1" step=".5" value="18"><small>Total projected profile ABOVE the waterline.</small></div>
+<div class="field"><label for="windMode">Wind design input</label><select id="windMode"><option value="beaufort">Beaufort condition</option><option value="speed">Wind speed (m/s)</option><option value="pressure">Wind pressure (N/m²)</option></select></div>
+<div class="field" id="beaufortField"><label for="beaufort">Design wind strength</label><select id="beaufort"><option value="4">Beaufort 4 — moderate</option><option value="5" selected>Beaufort 5 — fresh breeze</option><option value="6">Beaufort 6 — strong breeze</option><option value="7">Beaufort 7 — near gale</option><option value="8">Beaufort 8 — gale</option></select></div>
+<div class="field hidden" id="windMSField"><label for="windMS">Wind speed (m/s)</label><input id="windMS" type="number" min=".1" max="50" step=".1" value="9.4"></div>
+<div class="field hidden" id="pressureField"><label for="pressureN">Wind pressure (N/m²)</label><input id="pressureN" type="number" min="1" max="2000" step="1" value="60"></div>
+<div class="field"><label for="side">Thruster arrangement</label><select id="side"><option value="bow">Bow only</option><option value="stern">Stern only</option><option value="both">Bow and stern</option></select></div>
+</div>
+<details class="details"><summary>Advanced vessel settings (optional)</summary>
+<div class="fields">
+<div class="field"><label for="shape">Wind streamlining factor</label><input id="shape" type="number" min=".25" max="1" step=".05" value=".75"><small>VETUS catalogue uses 0.75.</small></div>
+<div class="field"><label for="centerArm">Wind-centre to pivot (m)</label><input id="centerArm" type="number" min="0" step=".1" placeholder="Auto: half vessel length"></div>
+<div class="field"><label for="bowLever">Bow tunnel to pivot (m)</label><input id="bowLever" type="number" min="0" step=".1" placeholder="Auto: 95% LOA"></div>
+<div class="field"><label for="sternLever">Stern tunnel to pivot (m)</label><input id="sternLever" type="number" min="0" step=".1" placeholder="Auto: 95% LOA"></div>
+<div class="field"><label for="margin">Extra design margin (%)</label><input id="margin" type="number" min="0" max="100" step="5" value="0"></div>
+<div class="field"><label for="currentAllowance">Additional manoeuvring allowance (%)</label><input id="currentAllowance" type="number" min="0" max="100" step="5" value="0"><small>Multiplier only; does NOT model underwater current.</small></div>
+</div></details>
+<div class="diagram">
+<div class="vessel" role="img" aria-label="Schematic vessel seen from above, with the bow, stern and side wind load">
+<div class="end"><span class="thruster">↔</span>STERN</div>
+<div class="wind"><b>↓</b>Side wind<br><span id="diagramPressure">60 N/m²</span></div>
+<div class="end"><span class="thruster">↔</span>BOW</div>
+</div>
+<div class="legend"><span>Turning moment = wind force × moment arm</span><span>Required thrust = moment / thruster arm</span></div>
+</div>
+</div></section>
+
+<section class="section"><div class="head"><h2>2. VETUS thruster preferences</h2><span>Verified model / tunnel reference data</span></div><div class="body">
+<div class="fields">
+<div class="field"><label for="voltage">DC charging/source supply</label><select id="voltage"><option value="12">12 V</option><option value="24">24 V</option><option value="48">48 V</option></select></div>
+<div class="field"><label for="family">Thruster range</label><select id="family"><option value="all">Show all compatible types</option><option value="standard" selected>Standard DC (on/off)</option><option value="pro">BOW PRO (proportional)</option><option value="boosted">BOW PRO Boosted</option></select></div>
+<div class="field"><label for="tunnel">Tunnel diameter</label><select id="tunnel"><option value="0">New installation / any size</option><option value="110">110 mm</option><option value="125">125 mm</option><option value="140">140 mm</option><option value="150">150 mm</option><option value="185">185 mm</option><option value="250">250 mm</option><option value="300">300 mm</option><option value="400">400 mm</option></select><small>Existing tunnel: match diameter exactly.</small></div>
+<div class="field"><label for="ignition">Ignition-protected compartment?</label><select id="ignition"><option value="no">No</option><option value="yes">Yes — IP-rated options only</option></select></div>
+</div>
+<div id="boostExplanation" class="optionInfo">Standard DC thrusters use the selected 12 V or 24 V battery supply directly. For proportional BOW PRO and Boosted models, control and power-system architecture must be checked separately.</div>
+<div id="error" class="error hidden"></div>
+</div></section>
+
+<section id="results">
+<div class="results" aria-live="polite">
+<div class="stat hero"><span>Wind-induced turning moment</span><strong id="moment">4,455 Nm</strong><em>VETUS static windage method</em></div>
+<div class="stat"><span>Calculated transverse wind force</span><strong id="windForce">810 N</strong><em>At stated wind pressure</em></div>
+<div class="stat"><span>Required bow thrust</span><strong id="bowRequired">43.3 kgf</strong><em id="bowForceN">424 N incl. design factors</em></div>
+<div class="stat"><span>Required stern thrust</span><strong id="sternRequired">—</strong><em id="sternForceN">Not selected</em></div>
+<div class="stat"><span>Design wind pressure</span><strong id="pressureOut">60 N/m²</strong><em id="windDescription">Beaufort 5 · fresh breeze</em></div>
+</div>
+
+<section class="section"><div class="head"><h2>3. Suitable VETUS models</h2><span id="optionsLabel">Based on actual kgf rating</span></div>
+<div class="body"><div id="models" class="cards" aria-live="polite"></div></div></section>
+</section>
+
+<section class="section"><div class="head"><h2>Project & report</h2><span>Save • Open • PDF</span></div><div class="body"><div id="projectTools"></div></div></section>
+
+<section class="section"><div class="head"><h2>Engineering considerations</h2><span>Review before specifying</span></div>
+<div class="body">
+<div id="checks"></div>
+<details class="details"><summary>Method & sources</summary>
+<p class="note">VETUS catalogue page 220 provides the wind calculation: pressure (N/m²) × lateral windage (m²) × 0.75 streamlining factor × wind-to-pivot arm (normally LOA/2), divided by thruster-to-pivot arm. Results in newtons are converted to kilogram-force with 9.80665 N/kgf. Beaufort 4–8 reference pressures are taken from the catalogue.</p>
+<p class="note">Page 221 supplies a reference chart of thruster ranges, tunnel diameters and approximate boat lengths. The in-app product list is supplemented by VETUS webshop information, including current BOW PRO Boosted models. All proposed models must be verified at order time; length guidance does not supersede the calculated force.</p>
+<p class="note"><a href="https://webshop.vetus.com/en/products/thruster-systems/bow-and-stern-thrusters/bow-pro-thrusters/" style="color:#62ddeb">VETUS BOW PRO products</a> · <a href="https://webshop.vetus.com/en/products/thruster-systems/bow-and-stern-thrusters/standard-dc-thrusters" style="color:#62ddeb">VETUS standard DC products</a></p>
+</details>
+</div></section>
+</main>
+<script src="./thruster-core.js"></script><script src="./reports.js"></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const KEY="marine-thruster-working-v1";
+const ids=["project","length","area","windMode","beaufort","windMS","pressureN","side","shape","centerArm","bowLever","sternLever","margin","currentAllowance","voltage","family","tunnel","ignition"];
+const fmt=(v,d=1)=>Number.isFinite(v)?v.toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+let last=null;
+function getState(){return{fields:Object.fromEntries(ids.map(id=>[id,$(id).value]))}}
+function setState(payload){if(!payload||!payload.fields)throw Error("Invalid thruster project");for(const id of ids)if(payload.fields[id]!==undefined)$(id).value=String(payload.fields[id]);render();}
+function config(){return Object.fromEntries(ids.map(id=>[id,$(id).value]));}
+function store(){try{localStorage.setItem(KEY,JSON.stringify(getState()))}catch(e){}}
+function addText(node,text,cls){const el=document.createElement("div");el.className=cls||"";el.textContent=text;node.append(el);return el;}
+function renderProducts(r,parent){
+ const section=document.createElement("div");section.className="recommend";
+ const header=document.createElement("div");header.className="recommendTitle";
+ const strong=document.createElement("strong");strong.textContent=(r.side==="bow"?"Bow":"Stern")+" selection";header.append(strong);
+ const tag=document.createElement("span");tag.className="badge";tag.textContent=fmt(r.requiredKGF,1)+" kgf required";header.append(tag);section.append(header);
+ addText(section,"Moment arm "+fmt(r.lever,2)+" m · Nominal force "+fmt(r.nominalN,0)+" N","sub");
+ if(!r.models.length){
+  addText(section,"No sufficiently rated model in the selected supply / product family / tunnel combination.","caution");
+  if(r.closestBelow)addText(section,"Largest compatible unit found: "+r.closestBelow.sku+" ("+r.closestBelow.kgf+" kgf) — UNDER-RATED for the calculation. Do not select it solely to fit the existing tunnel.","caution");
+  else addText(section,"Try another supply arrangement, thruster family or a different tunnel diameter. Confirm ignition protection requirements.","caution");
+ } else {
+  r.models.forEach((m,i)=>{
+    const item=document.createElement("div");item.className="product";
+    const top=document.createElement("div");top.className="top";
+    const name=document.createElement("strong");name.textContent=m.sku;top.append(name);
+    const rating=document.createElement("span");rating.className="badge";rating.textContent=m.kgf+" kgf"+(i===0?" · closest rating":"");top.append(rating);item.append(top);
+    const meta=document.createElement("div");meta.className="meta";
+    [m.tunnel+" mm tunnel",m.family==="boosted"?"BOW PRO Boosted":m.family==="pro"?"BOW PRO proportional":m.family==="ignition"?"Ignition protected":"Standard DC on/off",
+     m.boosted?m.sourceV+" V source → "+m.motorV+" V bank":m.motorV+" V battery",
+     fmt(m.kgf/r.requiredKGF*100,0)+"% of required thrust"].forEach(t=>{const e=document.createElement("span");e.textContent=t;meta.append(e)});
+    item.append(meta);
+    if(m.boosted)addText(item,"Separate higher-voltage thruster battery bank is required; the lower voltage is the DC-DC charging source.","sub");
+    const link=document.createElement("a");link.href=m.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="VETUS model / range details ↗";item.append(link);
+    section.append(item);
+  });
+ }
+ parent.append(section);
+}
+function render(){
+ const c=config(),r=globalThis.ThrusterCalc.calculate(c);last=r;
+ const mode=c.windMode;
+ $("beaufortField").classList.toggle("hidden",mode!=="beaufort");
+ $("windMSField").classList.toggle("hidden",mode!=="speed");
+ $("pressureField").classList.toggle("hidden",mode!=="pressure");
+ $("results").classList.toggle("hidden",!r.valid);
+ $("error").classList.toggle("hidden",r.valid);
+ $("error").textContent=r.errors.join(" ");
+ $("diagramPressure").textContent=fmt(r.pressureN,0)+" N/m²";
+ $("boostExplanation").textContent=c.ignition==="yes"?
+ "Ignition-protected installations: only confirmed ignition-protected DC thrusters are offered. Check ISO 8846 and local installation requirements.":
+ c.family==="boosted"?"BOW PRO Boosted: 12/24 V = 12 V charging source + separate 24 V thruster bank; 24/48 V = 24 V charging source + separate 48 V bank.":"Standard DC thrusters are directly supplied at their listed voltage. BOW PRO uses electronic proportional control; Boosted models need a dedicated higher-voltage thruster battery bank.";
+ if(!r.valid){$("models").replaceChildren();$("checks").replaceChildren();store();return}
+ $("moment").textContent=fmt(r.moment,0)+" Nm";
+ $("windForce").textContent=fmt(r.windForce,0)+" N";
+ $("pressureOut").textContent=fmt(r.pressureN,0)+" N/m²";
+ $("windDescription").textContent=mode==="beaufort"?"Beaufort "+c.beaufort+" · "+(globalThis.ThrusterCalc.pressure[c.beaufort]?.label||""):mode==="speed"?"At "+c.windMS+" m/s wind speed":"Specified pressure";
+ const bow=r.requirements.find(x=>x.side==="bow"),stern=r.requirements.find(x=>x.side==="stern");
+ $("bowRequired").textContent=bow?fmt(bow.requiredKGF,1)+" kgf":"Not selected";
+ $("bowForceN").textContent=bow?fmt(bow.requiredN,0)+" N incl. margins":"—";
+ $("sternRequired").textContent=stern?fmt(stern.requiredKGF,1)+" kgf":"Not selected";
+ $("sternForceN").textContent=stern?fmt(stern.requiredN,0)+" N incl. margins":"—";
+ $("optionsLabel").textContent=r.modelsAvailable+" models match supply / tunnel / family";
+ const modelNode=$("models");modelNode.replaceChildren();r.recommendations.forEach(x=>renderProducts(x,modelNode));
+ const checks=$("checks");checks.replaceChildren();r.notes.forEach(n=>addText(checks,n,"caution"));
+ if(!r.modelsAvailable)addText(checks,"No products match the selected voltage, tunnel, family and ignition requirement.","caution");
+ store();
+}
+ids.forEach(id=>{$(id).addEventListener("input",render);$(id).addEventListener("change",render)});
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved?.fields){for(const id of ids)if(saved.fields[id]!==undefined)$(id).value=String(saved.fields[id]);}}catch(e){}
+render();
+globalThis.MarineReports.init({
+kind:"thruster",
+suggestName:()=>($("project").value.trim()||"VETUS Thruster Selection"),
+getState,setState,
+report:()=>{
+ const c=config(),r=globalThis.ThrusterCalc.calculate(c);
+ if(!r.valid)throw Error(r.errors.join(" "));
+ const num=(v,d=1)=>Number(v).toFixed(d);
+ const recommendationRows=[];
+ for(const rr of r.recommendations){
+  if(!rr.models.length){recommendationRows.push([rr.side.toUpperCase(),"NO SUITABLE MODEL","—","—","Revisit supply / tunnel"]);continue;}
+  rr.models.forEach((m,i)=>{
+   recommendationRows.push([rr.side.toUpperCase(),m.sku,m.kgf+" kgf",m.tunnel+" mm",
+   m.boosted?m.sourceV+"V → "+m.motorV+"V bank":m.motorV+" V"]);
+  });
+ }
+ return{
+  title:"VETUS Thruster Selection Report",
+  subtitle:(c.project||"Unnamed vessel")+" / Preliminary bow and stern thruster assessment",
+  filename:(c.project||"VETUS-thruster")+"-selection",
+  metrics:[["Vessel LOA",num(r.length)+" m"],["Windage area",num(r.area)+" m2"],["Moment",num(r.moment,0)+" Nm"],["Wind pressure",num(r.pressureN,0)+" N/m2"]],
+  sections:[
+   {title:"Vessel & design inputs",rows:[
+    ["Project / vessel",c.project||"Not entered"],["Overall length",num(r.length,2)+" m"],
+    ["Windage area (side profile)",num(r.area,2)+" m2"],
+    ["Wind design condition",r.windMode==="beaufort"?"Beaufort "+r.beaufort:r.windMode==="speed"?c.windMS+" m/s":"Specified pressure"],
+    ["Calculation wind pressure",num(r.pressureN,1)+" N/m2"],
+    ["Streamlining reduction factor",num(r.shape,2)],
+    ["Wind force",num(r.windForce,0)+" N"],
+    ["Turning arm (wind to pivot)",num(r.center,2)+" m"],
+    ["Wind turning moment",num(r.moment,0)+" Nm"],
+    ["Combined reserve factor",num((r.designFactor-1)*100,1)+"%"],
+    ["Requested arrangement",c.side],
+    ["Electrical charging/source system",c.voltage+" V"],
+    ["Thruster family",c.ignition==="yes"?"Ignition protected only":c.family],
+    ["Existing tunnel constraint",Number(c.tunnel)?c.tunnel+" mm":"None entered"]
+   ]},
+   {title:"Calculated thrust requirement",rows:r.requirements.flatMap(rr=>[
+     [rr.side==="bow"?"Bow tunnel lever":"Stern tunnel lever",num(rr.lever,2)+" m"],
+     [rr.side==="bow"?"Bow required thrust":"Stern required thrust",num(rr.requiredN,0)+" N = "+num(rr.requiredKGF,2)+" kgf"]
+   ])},
+   {title:"Suitable VETUS candidates",table:{columns:[["Position",70],["VETUS model",125],["Rated thrust",90],["Tunnel",75],["Supply/bank",125]],rows:recommendationRows}},
+   {title:"Selection notes and important limits",paragraphs:[
+    ...r.notes,
+    "Catalogue wind-pressure bands: Bft 4 = 20–40 N/m2; Bft 5 = 41–74; Bft 6 = 75–123; Bft 7 = 125–189; Bft 8 = 191–276. The mid-range design pressure selected by the calculator is a simplification.",
+    "Sources: VETUS catalogue pages 220–221 supplied by the user, and VETUS official webshop model listings (October 2026). Always confirm final current data sheets and installation requirements.",
+    "Model ranking uses rated thrust and input filters. It does not determine mounting feasibility, electric current, duty cycle, propeller immersion, cable voltage drop or the effect of underwater cross-current."
+   ]}
+  ]
+ };
+}
+});
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body></html>
