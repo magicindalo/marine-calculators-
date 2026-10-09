@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 1.2 — Propeller performance graphs (9 October 2026)
+
+- Added responsive SVG installed-hull-power versus speed and propeller absorption versus RPM graphs, styled in the Indalo theme.
+- Added an illustrative (not manufacturer-verified) engine full-load profile, optional cruise speed/RPM and separate top/cruise markers.
+- Added a one-tap photographed 60ft/36t benchmarking case; existing propeller 22x16 is used exclusively as unverified test input.
+- Compared power, open-water efficiency, thrust, geometric slip and hull power from source screenshots; results and discrepancies are documented in README.
+- Corrected 'apparent slip' to the geometric convention in UI/PDF and retained wake-corrected slip in the technical readout.
+- Added benchmark warnings when hull power differs substantially. Updated PDF curve assumptions.
+- No change to saved-project storage structure or other calculator engines.
+
+
 ## Version 1.1 — Diesel and E-Line selection split (9 October 2026)
 
 - Split one combined home-menu tool into two focused calculators: Diesel Engine Sizing and E-Line Electric Selection.
