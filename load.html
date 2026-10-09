@@ -6,20 +6,23 @@
 <meta name="theme-color" content="#071c2b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Load Demand">
+<meta name="apple-mobile-web-app-title" content="Indalo Marine">
 <link rel="manifest" href="./load.webmanifest">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Marine Load Demand</title>
+<link rel="icon" type="image/png" href="./assets/indalo-app-icon.png">
+<title>Indalo Marine Calculators — Load Demand</title>
 <style>
+.indalo-page-brand{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#25d4e9;font-size:10px;font-weight:850;letter-spacing:.15em;margin-bottom:5px}
+
 :root{--bg:#071c2b;--p:#0c2a3d;--p2:#10354c;--f:#061c2a;--t:#eff8ff;--m:#9eb8c9;--l:#1e4962;--a:#21c0d9;--g:#66d9a6;--d:#ff7b7b}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#061925,#0a2536 55%,#071c2b);color:var(--t);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}button,input,select{font:inherit}.app{max-width:900px;margin:auto;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 36px)}header{display:flex;justify-content:space-between;gap:10px;align-items:center}h1{font-size:22px;margin:0}header p{font-size:12px;color:var(--m);margin:3px 0}.btn{min-height:44px;border-radius:12px;border:1px solid var(--l);background:var(--p2);color:var(--t);padding:0 14px;font-weight:700}.primary{background:var(--a);color:#03212a;border:0}.danger{background:#3a1e24;color:#ffd8d8;border-color:#6f323c}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.card,.section{background:rgba(12,42,61,.95);border:1px solid var(--l);border-radius:16px}.card{padding:12px}.lab{font-size:11px;color:var(--m)}.val{font-size:22px;font-weight:800;margin-top:4px}.sub{font-size:11px;color:var(--m);margin-top:2px}.section{margin:12px 0;overflow:hidden}.head{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 13px;border-bottom:1px solid var(--l)}.head h2{font-size:16px;margin:0}.head span{font-size:11px;color:var(--m)}.body{padding:10px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.toolbar .btn{flex:1 1 130px}.load{background:var(--f);border:1px solid var(--l);border-radius:14px;padding:11px;margin-bottom:10px}.top{display:flex;gap:8px}.top input{flex:1;font-weight:800}.rm{width:44px;min-width:44px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}.field label{display:block;font-size:10px;color:var(--m);margin-bottom:4px}.field input,.field select,.top input{width:100%;min-height:44px;border:1px solid var(--l);border-radius:10px;background:#061c2a;color:var(--t);padding:8px 9px}.result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;border-top:1px dashed var(--l);margin-top:9px;padding-top:9px;font-size:10px;color:var(--m)}.result strong{display:block;color:var(--t);font-size:13px;margin-top:2px}.snap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.note{font-size:11px;color:var(--m)}.empty{text-align:center;padding:24px;color:var(--m)}.add{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 10px);display:flex;margin-top:12px}.add .btn{width:100%}
 dialog{width:min(94%,700px);border:1px solid var(--l);border-radius:18px;background:#0b2738;color:var(--t);padding:0}dialog::backdrop{background:#0009}.dlg{padding:13px}.dlghead{display:flex;justify-content:space-between;align-items:center}.dlghead h3{margin:0}.presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.preset{text-align:left;min-height:58px;border:1px solid var(--l);border-radius:12px;background:var(--f);color:var(--t);padding:9px}.preset small{display:block;color:var(--m);margin-top:2px}.status{font-size:12px;color:var(--g);min-height:17px}
 @media(min-width:700px){.summary{grid-template-columns:repeat(4,minmax(0,1fr))}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.presets{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Marine Load Demand</h1><p>AC • 3-phase • DC • Generator • Inverter • Battery</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="./">Home</a><a class="btn" href="./propeller.html">Propeller</a><button class="btn" id="settings">⚙︎</button></div></header>
+<header><div><div class="indalo-page-brand">INDALO MARINE CALCULATORS</div><h1>Marine Load Demand</h1><p>AC • 3-phase • DC • Generator • Inverter • Battery</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="./">Home</a><a class="btn" href="./propeller.html">Propeller</a><button class="btn" id="settings">⚙︎</button></div></header>
 <div class="summary">
 <div class="card"><div class="lab">AC running demand</div><div class="val" id="acKW">0.00 kW</div><div class="sub" id="acKVA">0.00 kVA</div></div>
 <div class="card"><div class="lab">Design / surge</div><div class="val" id="designKVA">0.00 kVA</div><div class="sub" id="designKW">0.00 kW</div></div>
