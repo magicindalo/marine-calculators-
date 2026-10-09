@@ -94,3 +94,28 @@ The home screen now displays **Diesel Engine Sizing** and **E-Line Electric Sele
 **E-Line:** screens VETUS E-AIR/E-Line shaft-drive motors against the target speed, expected shaft power, 24/48 V bank class, propulsion sizing margin and allowable duty. It calculates propulsion and constant domestic DC demand, available usable bank kWh after a separate retained reserve, cruising duration, indicative current and nominal battery for desired hours. Battery-life figures are withheld where no compatible motor passes the selection criteria, or hull powering is insufficiently supported. Manufacturer torque, thermal, BMS, DC fault-protection, cable and propeller verification is mandatory.
 
 For current work, use the two separate menus. Saved projects on the original combined page are not transferred or deleted.
+
+### Propeller performance curves and photographed benchmark (Version 1.2)
+
+The **Propeller & Speed** calculator now draws two responsive marine-engineering charts:
+
+1. Estimated vessel shaft-power demand versus speed through water (mph), calculated from the existing ITTC friction plus heuristic wave/resistance model. This is a **preliminary hull powering screen**, NOT a certified power curve.
+2. Fixed-pitch Wageningen B-series propeller absorbed power versus engine RPM, with a distinct, dashed **illustrative** full-load diesel envelope. The latter is NOT a verified engine manufacturer torque curve.
+
+The graph section accepts an optional observed cruise engine RPM and boat speed (mph) to refine the speed/RPM relationship. The main output's **geometric apparent pitch slip** uses uncorrected vessel speed, to match the supplied software screenshot convention; the previous wake-corrected slip remains visible in the technical details.
+
+The `Load photographed benchmark` button fills **test data only**: 60 ft / assumed LWL 18.29 m, assumed beam 4.22 m, draft 0.95 m, displacement 36 t, seawater, four blades, blade area ratio 0.690, 22 × 16 in propeller, 2:1 reduction, rated engine 2400 RPM, 9.4 mph top speed / 849 RPM and 3.5 mph cruise. The shaft power supplied is ~129.98 hp from the photographed 134 hp rated engine and 97% gearbox efficiency. **The 22 × 16 size is not verified for Kiwi Wonderer and must not be transferred into other vessel selections.**
+
+**Photographed software versus Indalo (top/cruise):**
+
+| Test quantity | Photo top | Indalo top | Photo cruise | Indalo cruise |
+|---|---:|---:|---:|---:|
+| Propeller absorbed hp | 113 | 97.2 | 5 | 4.25 |
+| Open-water efficiency % | 40.1 | 40.2 | 40.8 | 41.5 |
+| Delivered thrust lbf | 1754 | 1922 | 212 | 233 |
+| Geometric pitch slip % | 48.2 | 48.3 | 45.6 | 45.6 |
+| Vessel power curve hp | 90 | 50.5 | 5 | 1.39 |
+
+Propeller absorbed power is ~14–15% lower in Indalo and the efficiency/slip agree closely. In contrast, the independently estimated **hull powering curve is ~44% low at the target top speed and ~72% low at cruise** compared to the other software. These two software calculations are **not interchangeable**, nor is either verified against measured shaft-power or full-scale speed/power trials. The engine power envelope in the graph is illustrative, and the photographed reference 90 hp vessel curve and 113 hp propeller-absorption figure represent different methods/quantities. Do not treat an uncalibrated Indalo hull power graph as sufficient for engine selection.
+
+The PDF report includes curve assumptions and the slip-method distinction. The actual responsive graphs are drawn in the browser.
