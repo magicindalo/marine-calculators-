@@ -8,6 +8,7 @@ Indalo Marine branded, responsive, installable marine engineering toolkit for iP
 - **Propeller & Vessel Speed:** https://magicindalo.github.io/marine-calculators-/propeller.html
 - **Battery Systems & Charging:** https://magicindalo.github.io/marine-calculators-/battery.html
 - **VETUS Thruster Selection:** https://magicindalo.github.io/marine-calculators-/thruster.html
+- **Exhaust Backflow & Waterlock:** https://magicindalo.github.io/marine-calculators-/exhaust.html
 
 ### Installing on iPhone
 1. Open the **Main menu** in Safari.
@@ -35,6 +36,7 @@ Reports are branded **Indalo Marine Calculators** and generated directly on-devi
 - **Propulsion:** preliminary Wageningen B-series propeller sizing and checking, resistance screening, predicted calm-water vessel speed, diesel and electric options.
 - **Battery Systems:** 12 / 24 / 48 V battery banks, series/parallel/series-parallel combinations, flooded lead-acid / AGM / LiFePO4, total kWh / Ah, usable capacity, constant-load runtime, charger current and approximate charging time. Includes BMS/manufacturer-limit cautions.
 - **VETUS Thruster Selection:** Beaufort/custom wind-pressure sizing, estimated required bow/stern kgf, tunnel size and 12/24/48 V source filters; suitable product model numbers, PDF report and saved vessel records.
+- **Exhaust Backflow & Waterlock:** 25% VETUS hose-water return rule and 2x capacity selection (from `Vetus Calculator Book 12-10-2018.xls` Flow Back worksheet and VETUS 2026–27 catalogue), model shortlist by capacity and hose diameter; optional engine power/backpressure screen, anti-siphon warnings, A4 report and saved project.
 
 ## Engineering limitations
 All results are preliminary estimates. The resistance model includes a non-standard wave/residuary resistance heuristic, not a verified Holtrop–Mennen method. Sea-trial and known resistance data improve the calibration, but professional verification remains necessary before installation, cable/protection selection or propeller manufacture.
