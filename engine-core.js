@@ -154,7 +154,7 @@ function evaluate(input){
    const available=p.kw*(kind==="diesel"?transEff:1)*boats;
    const cruiseLoad=cruiseTotal/available*100;
    const installLoad=requiredTotal/(p.kw*(kind==="diesel"?transEff:1)*boats)*100;
-   const availableAtDuty=available*(kind==="diesel"?dieselDuty:electricDuty);
+   const availableAtDuty=kind==="electric"&&p.sku==="ELINE220S"?Math.min(available*electricDuty,20*boats):available*(kind==="diesel"?dieselDuty:electricDuty);
    const suitable=canMatch&&availableAtDuty>=requiredTotal-1e-7;
    const undersized=canMatch&&availableAtDuty<requiredTotal;
    const lowLoad=kind==="diesel"&&cruiseLoad<35;
@@ -191,6 +191,7 @@ function evaluate(input){
  if(trialSource==="sea-trial"&&(factor>3||factor<.33))dutyAdvice.push("Sea-trial calibration is "+factor.toFixed(2)+"× the uncalibrated resistance estimate. Review the shaft-power measurement and propulsion efficiency assumption.");
  if(boats===1&&reqElectric>22)dutyAdvice.push("The largest catalogued single E-LINE shaft-drive motor in this selection is 22 kW. A different propulsion architecture may be necessary.");
  dutyAdvice.push("Rated kW, torque-versus-speed, gearbox ratio, propeller sizing and installation space must all be checked against actual product data before specification.");
+ dutyAdvice.push("The E-LINE 22 is advertised as 22 kW maximum output; VETUS also lists 20 kW at 1500 rpm in normal mode. This selector limits its normal-mode screened capacity to 20 kW per motor, subject to thermal and propeller verification.");
  dutyAdvice.push("Electric system runtime assumes constant target-speed shaft demand and user-entered DC-to-shaft efficiency, with no hotel loads, wind, current, charging or reserve beyond usable capacity.");
  dutyAdvice.push("Diesel and electric ratings are NOT equivalent torque/propeller performance at the same rated power; obtain engine torque curves and match the propeller shaft design.");
  if(planing)dutyAdvice.push("Crouch 180 is a default planning coefficient derived from comparable fast-cruiser examples, not a universal hull constant. Crouch predicts near-maximum planing power/speed, not efficient partial-throttle cruising. The target speed is treated as a near-WOT design point. Full-load trials and hull-specific C values are recommended; hump, trim and shaft performance are not modelled.");
