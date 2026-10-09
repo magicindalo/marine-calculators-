@@ -15,7 +15,7 @@ const catalog=[
  ["BOW4512D",45,125,"standard",12,12,0],
  ["BOW5512D",55,150,"standard",12,12,0],
  ["BOW5524D",60,150,"standard",24,24,0],
- ["BOW6012D",65,185,"standard",12,12,0],
+ ["BOW6012D",60,185,"standard",12,12,0],
  ["BOW6024D",70,185,"standard",24,24,0],
  ["BOW7512D",75,185,"standard",12,12,0],
  ["BOW7524D",85,185,"standard",24,24,0],
@@ -87,6 +87,7 @@ const officialProducts={
  BOW2512E:"https://webshop.vetus.com/en/product/bow-thruster-25-kgf-12-v-110-mm-tunnel",
  BOW3512F:"https://webshop.vetus.com/en/product/bow-thruster-35-kgf-12-v-125-mm-tunnel",
  BOW5512D:"https://webshop.vetus.com/en/product/bow-thruster-55-kgf-12-v-150-mm-tunnel",
+ BOW6012D:"https://webshop.vetus.com/en/product/bow-thruster-65-kgf-12-v-185-mm-tunnel",
  BOW9512D:"https://webshop.vetus.com/en/product/bow-thruster-95-kgf-12-v-185-mm-tunnel",
  BOW12512D:"https://webshop.vetus.com/en/product/bow-thruster-125-kgf-12-v-250-mm-tunnel",
  BOW16024D:"https://webshop.vetus.com/en/product/bow-thruster-160-kgf-24-v-250-mm-tunnel",
@@ -103,6 +104,8 @@ const officialProducts={
  BOW5524DI:"https://webshop.vetus.com/en/product/bow5524di-bow-thruster-55kgf"
 };
 catalog.forEach(m=>{if(officialProducts[m.sku])m.url=officialProducts[m.sku]});
+const conflictingRatings={BOW6012D:"VETUS product heading says 65 kgf while description says 60 kgf; the tool uses the conservative 60 kgf and requires datasheet confirmation.",BOW5524DI:"VETUS product heading says 55 kgf while detailed specifications say 60 kgf; the tool uses the conservative 55 kgf pending order-stage confirmation."};
+catalog.forEach(m=>{if(conflictingRatings[m.sku])m.ratingNote=conflictingRatings[m.sku]});
 const pressure={4:{low:20,high:40,typ:30,label:"Moderate breeze"},5:{low:41,high:74,typ:60,label:"Fresh breeze"},6:{low:75,high:123,typ:100,label:"Strong breeze"},7:{low:125,high:189,typ:157,label:"Near gale"},8:{low:191,high:276,typ:234,label:"Gale"}};
 function n(v,def=0){if(v===null||v===undefined||String(v).trim()==="")return def;const a=Number(v);return Number.isFinite(a)?a:def}
 function safe(v,a,b){return Math.max(a,Math.min(b,v))}
