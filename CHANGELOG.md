@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 1.4 — Logo and supply sizing (11 October 2026)
+
+- Replaced the noisy traced wave/properller elements with smooth vector shapes while retaining Indalo's original compass and lettering; corrected mobile CSS to prevent cropping.
+- Added a transparent, clean-logo asset to the main menu and offline cache.
+- Added recommended nominal battery capacity (Ah and kWh) from daily AC/DC use, autonomy, DoD, efficiencies, 15% margin and 25 Ah upward rounding.
+- Added marine generator kVA sizing from AC kVA/kW, 0.8 rated PF, 80% operating loading and largest simultaneous motor-start allowance, with 3-phase warning.
+- Optional generator-assisted battery recharge sizing; excluded by default to prevent double counting.
+- Added recommendations to the PDF report and verified old saved schedules remain compatible.
+- Tested sizing invariants, old-state loading, settings changes and PDF section output.
+
+
 ## Version 1.3 — PDF power curves (9 October 2026)
 
 - Added both propeller-performance charts directly to the A4 **Save PDF report** output.
