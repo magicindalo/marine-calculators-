@@ -45,6 +45,15 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 <div class="card"><div class="lab">DC running demand</div><div class="val" id="dcW">0 W</div></div>
 <div class="card"><div class="lab">Connected load</div><div class="val" id="conn">0.00 kW</div></div>
 </div></div>
+<section class="section" aria-label="Recommended battery and generator">
+<div class="head"><h2>Recommended supply sizes</h2><span>Based on load schedule · planning only</span></div>
+<div class="body">
+<div class="summary" style="margin:0 0 10px">
+<div class="card"><div class="lab">Recommended battery bank</div><div class="val" id="bankRec" style="font-size:21px">Add loads</div><div class="sub" id="bankRecDetail">Includes usable-capacity setting and sizing allowance</div></div>
+<div class="card"><div class="lab">Suggested AC generator</div><div class="val" id="genRec" style="font-size:21px">Add AC loads</div><div class="sub" id="genRecDetail">Running power • starting allowance • operating reserve</div></div>
+</div>
+<p class="note" id="supplyNotes" style="margin:8px 0 0">Generator is sized for AC loads only unless optional battery recharging is enabled in settings.</p>
+</div></section>
 <div class="toolbar"><button class="btn" id="preset">＋ Common load</button><button class="btn" id="export">Export</button><button class="btn" id="import">Import</button><input type="file" id="file" accept=".json,application/json" hidden></div>
 <div class="section"><div class="head"><h2>Project & report</h2><span>Save • reopen • PDF</span></div><div class="body"><label for="loadProjectName" style="display:block;font-size:12px;color:#a3bccb;margin:0 0 5px">Vessel / project name</label><input id="loadProjectName" placeholder="e.g. Yacht refit — electrical audit" style="display:block;width:100%;min-height:44px;background:#061c2a;color:#edf9ff;border:1px solid #1e4962;border-radius:9px;padding:10px;font-size:16px;margin-bottom:12px"><div id="projectTools"></div></div></div><div class="section"><div class="head"><h2>Load schedule</h2><span>Saved on this device</span></div><div class="body" id="loads"></div></div>
 <div class="add"><button class="btn primary" id="add">＋ Add load</button></div>
@@ -61,18 +70,31 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 <div class="field"><label>DC efficiency (%)</label><input id="sDE" type="number"></div>
 <div class="field"><label>Usable battery / DoD (%)</label><input id="sD" type="number"></div>
 <div class="field"><label>Autonomy (days)</label><input id="sDays" type="number" step="0.1"></div>
+<div class="field"><label>Battery sizing margin (%)</label><input id="sBankMargin" type="number" min="0" max="100" step="5"></div>
+<div class="field"><label>Target generator loading (%)</label><input id="sGenLoad" type="number" min="50" max="95" step="5"></div>
+<div class="field"><label>Generator rated power factor</label><input id="sGenPF" type="number" min=".7" max="1" step=".05"></div>
+<div class="field"><label>Battery recharge window (hours)</label><input id="sChargeHours" type="number" min="1" max="24" step=".5"></div>
+<div class="field" style="grid-column:1/-1"><label style="display:flex;gap:10px;align-items:center;font-size:12px"><input id="sIncCharge" type="checkbox" style="width:20px;height:20px"> Include battery recharging when sizing generator</label><small style="color:var(--m)">Do not enable if an equivalent battery charger is already listed as an AC load.</small></div>
 </div><div class="toolbar"><button class="btn primary" id="saveSettings">Save settings</button><button class="btn danger" id="reset">Reset all</button></div><div class="status" id="status"></div></div></dialog>
 
 <script src="./reports.js"></script>
+<script src="./load-recommendations.js"></script>
 <script>
 (()=>{
 const $=id=>document.getElementById(id), KEY='marine-load-demand-v2';
-const defaults={settings:{v1:230,v3:400,bv:24,head:20,inv:92,dcEff:95,dod:80,days:1},loads:[]};
+const defaults={settings:{v1:230,v3:400,bv:24,head:20,inv:92,dcEff:95,dod:80,days:1,batteryMargin:15,genLoad:80,genPF:.8,includeCharging:false,chargeHours:5},loads:[]};
 let state;try{state=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}catch(e){state=structuredClone(defaults)}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const clamp=(v,min,max,fb)=>{v=Number(v);return Number.isFinite(v)?Math.min(max,Math.max(min,v)):fb};
 const fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):(0).toFixed(d);
 const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function recommendations(){
+ const s={...defaults.settings,...(state.settings||{})};
+ return globalThis.LoadRecommendations.calculate(total(),s,{
+  batteryMargin:s.batteryMargin,genLoad:s.genLoad,gensetPF:s.genPF,
+  includeCharging:s.includeCharging===true,chargeHours:s.chargeHours
+ });
+}
 const blank=()=>({id:uid(),name:'New load',type:'AC1',qty:1,v:state.settings.v1,mode:'W',input:0,pf:1,demand:100,hours:1,surge:1,startQty:1});
 const presets=[
 {name:'Navigation electronics',type:'DC',v:12,input:60,mode:'W',pf:1,demand:100,hours:8,surge:1,qty:1,startQty:1},
@@ -100,7 +122,18 @@ function total(){
  let s=state.settings,h=1+s.head/100;t.designVA=(t.acVA+t.surgeVA)*h;t.designW=(t.acW+t.surgeW)*h;t.ah=((t.acWh/(s.inv/100))+(t.dcWh/(s.dcEff/100)))*s.days/(s.bv*(s.dod/100));t.a1=t.va1/s.v1;t.a3=t.va3/(Math.sqrt(3)*s.v3);return t;
 }
 function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function summary(){let t=total(),s=state.settings;$('acKW').textContent=fmt(t.acW/1000,2)+' kW';$('acKVA').textContent=fmt(t.acVA/1000,2)+' kVA running';$('designKVA').textContent=fmt(t.designVA/1000,2)+' kVA';$('designKW').textContent=fmt(t.designW/1000,2)+' kW equivalent';$('kWh').textContent=fmt(t.wh/1000,2)+' kWh';$('Ah').textContent=Math.ceil(t.ah||0)+' Ah';$('AhSub').textContent='at '+s.bv+' V • '+s.dod+'% usable';$('A1').textContent=fmt(t.a1,1)+' A';$('A1s').textContent='@ '+s.v1+' V';$('A3').textContent=fmt(t.a3,1)+' A';$('A3s').textContent='@ '+s.v3+' V';$('dcW').textContent=Math.round(t.dcW)+' W';$('conn').textContent=fmt(t.conn/1000,2)+' kW';$('count').textContent=state.loads.length+' '+(state.loads.length===1?'load':'loads')}
+function summary(){let t=total(),s=state.settings;$('acKW').textContent=fmt(t.acW/1000,2)+' kW';$('acKVA').textContent=fmt(t.acVA/1000,2)+' kVA running';$('designKVA').textContent=fmt(t.designVA/1000,2)+' kVA';$('designKW').textContent=fmt(t.designW/1000,2)+' kW equivalent';$('kWh').textContent=fmt(t.wh/1000,2)+' kWh';$('Ah').textContent=Math.ceil(t.ah||0)+' Ah';$('AhSub').textContent='at '+s.bv+' V • '+s.dod+'% usable';$('A1').textContent=fmt(t.a1,1)+' A';$('A1s').textContent='@ '+s.v1+' V';$('A3').textContent=fmt(t.a3,1)+' A';$('A3s').textContent='@ '+s.v3+' V';$('dcW').textContent=Math.round(t.dcW)+' W';$('conn').textContent=fmt(t.conn/1000,2)+' kW';$('count').textContent=state.loads.length+' '+(state.loads.length===1?'load':'loads');
+const q=recommendations();
+$('bankRec').textContent=t.wh>0&&q.valid?q.battery.recommendedAh+' Ah':'No demand';
+$('bankRecDetail').textContent=t.wh>0&&q.valid?
+  fmt(q.battery.recommendedKWh,2)+' kWh nominal @ '+s.bv+' V · min '+Math.ceil(q.battery.minimumAh)+' Ah':
+  'At selected battery voltage and autonomy';
+$('genRec').textContent=q.valid&&q.generator.recommendedKVA!==null?fmt(q.generator.recommendedKVA,1)+' kVA':'No AC demand';
+$('genRecDetail').textContent=q.valid&&q.generator.recommendedKVA!==null?
+  fmt(q.generator.requiredKVA,2)+' kVA calculated minimum · '+q.generator.kind:
+  'Generator is not required for DC loads unless recharging is included';
+$('supplyNotes').textContent=(q.notes||[]).slice(0,4).join(' ');
+}
 function card(l,i){let c=calc(l),d=document.createElement('div');d.className='load';d.dataset.id=l.id;d.innerHTML=`
 <div class="top"><input data-k="name" value="${esc(l.name)}"><button class="btn danger rm">−</button></div>
 <div class="grid">
@@ -121,10 +154,22 @@ d.querySelectorAll('[data-k]').forEach(el=>{el.onchange=()=>{let k=el.dataset.k;
 return d}
 function render(){summary();let w=$('loads');w.innerHTML='';if(!state.loads.length)w.innerHTML='<div class="empty">No loads yet. Add one manually or choose a common marine load.</div>';else state.loads.forEach((l,i)=>w.appendChild(card(l,i)))}
 function add(x){state.loads.push({...blank(),...x,id:uid()});save();render()}
-$('add').onclick=()=>add(blank());$('preset').onclick=()=>$('presetDlg').showModal();$('settings').onclick=()=>{let s=state.settings;$('sV1').value=s.v1;$('sV3').value=s.v3;$('sBV').value=s.bv;$('sH').value=s.head;$('sIE').value=s.inv;$('sDE').value=s.dcEff;$('sD').value=s.dod;$('sDays').value=s.days;$('status').textContent='';$('settingsDlg').showModal()};
+$('add').onclick=()=>add(blank());$('preset').onclick=()=>$('presetDlg').showModal();$('settings').onclick=()=>{let s=state.settings;$('sV1').value=s.v1;$('sV3').value=s.v3;$('sBV').value=s.bv;$('sH').value=s.head;$('sIE').value=s.inv;$('sDE').value=s.dcEff;$('sD').value=s.dod;$('sDays').value=s.days;
+$('sBankMargin').value=s.batteryMargin??15;
+$('sGenLoad').value=s.genLoad??80;
+$('sGenPF').value=s.genPF??.8;
+$('sChargeHours').value=s.chargeHours??5;
+$('sIncCharge').checked=s.includeCharging===true;
+$('status').textContent='';$('settingsDlg').showModal()};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 presets.forEach(p=>{let b=document.createElement('button');b.className='preset';b.innerHTML=esc(p.name)+'<small>'+(p.type==='AC1'?'AC 1φ':p.type==='AC3'?'AC 3φ':'DC')+' • '+p.input+p.mode+'</small>';b.onclick=()=>{add(p);$('presetDlg').close()};$('presets').appendChild(b)});
-$('saveSettings').onclick=()=>{state.settings={v1:clamp($('sV1').value,1,1000,230),v3:clamp($('sV3').value,1,2000,400),bv:clamp($('sBV').value,1,1000,24),head:clamp($('sH').value,0,200,20),inv:clamp($('sIE').value,1,100,92),dcEff:clamp($('sDE').value,1,100,95),dod:clamp($('sD').value,1,100,80),days:clamp($('sDays').value,.1,30,1)};save();render();$('status').textContent='Settings saved.'};
+$('saveSettings').onclick=()=>{state.settings={v1:clamp($('sV1').value,1,1000,230),v3:clamp($('sV3').value,1,2000,400),bv:clamp($('sBV').value,1,1000,24),head:clamp($('sH').value,0,200,20),inv:clamp($('sIE').value,1,100,92),dcEff:clamp($('sDE').value,1,100,95),dod:clamp($('sD').value,1,100,80),days:clamp($('sDays').value,.1,30,1),
+ batteryMargin:clamp($('sBankMargin').value,0,100,15),
+ genLoad:clamp($('sGenLoad').value,50,95,80),
+ genPF:clamp($('sGenPF').value,.7,1,.8),
+ includeCharging:$('sIncCharge').checked===true,
+ chargeHours:clamp($('sChargeHours').value,1,24,5)
+ };save();render();$('status').textContent='Settings saved.'};
 $('reset').onclick=()=>{if(confirm('Reset all loads and settings?')){state=structuredClone(defaults);$('loadProjectName').value='';save();render();$('settingsDlg').close()}};
 $('export').onclick=()=>{let b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='marine-load-demand.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 $('import').onclick=()=>$('file').click();$('file').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.settings||!Array.isArray(x.loads))throw 0;state=x;state.loads=state.loads.map(y=>({...blank(),...y,id:y.id||uid()}));save();render();alert('Project imported.')}catch(_){alert('Invalid Marine Load Demand project file.')}};r.readAsText(f);e.target.value=''};
@@ -144,7 +189,8 @@ globalThis.MarineReports.init({
  report:()=>{
    const populated=state.loads.filter(l=>l.name&&l.input>0&&l.qty>0);
    if(!populated.length)throw Error("Add at least one equipment load with a wattage or current.");
-   const t=total(),s=state.settings;
+   const t=total(),s=state.settings,q=recommendations();
+   if(!q.valid)throw Error("Correct the battery and generator sizing settings before exporting.");
    const fmt=(v,d=1)=>Number(v||0).toFixed(d);
    return{
       title:"Electrical Load Demand Report",
@@ -154,7 +200,7 @@ globalThis.MarineReports.init({
         ["AC running",fmt(t.acW/1000,2)+" kW"],
         ["AC apparent",fmt(t.acVA/1000,2)+" kVA"],
         ["Daily energy",fmt(t.wh/1000,2)+" kWh"],
-        ["Battery estimate",Math.ceil(t.ah||0)+" Ah"]
+        ["Recommended battery",q.battery.recommendedAh+" Ah"]
       ],
       sections:[
         {title:"Electrical demand summary",rows:[
@@ -167,6 +213,25 @@ globalThis.MarineReports.init({
           ["Three-phase current",fmt(t.a3,1)+" A at "+s.v3+" V"],
           ["Estimated daily energy",fmt(t.wh/1000,2)+" kWh/day"],
           ["Nominal battery requirement",Math.ceil(t.ah||0)+" Ah at "+s.bv+" V"]
+        ]},
+        {title:"Preliminary battery-bank recommendation",rows:[
+          ["Nominal system voltage",q.battery.voltage+" V"],
+          ["Minimum bank estimate",Math.ceil(q.battery.minimumAh)+" Ah ("+fmt(q.battery.minimumKWh,2)+" kWh)"],
+          ["Recommended bank (rounded)",q.battery.recommendedAh+" Ah / "+fmt(q.battery.recommendedKWh,2)+" kWh nominal"],
+          ["Usable battery fraction / DoD",q.battery.usablePercent+"%"],
+          ["Battery planning margin",q.battery.marginPercent+"%"],
+          ["Autonomy requirement",q.battery.autonomyDays+" day(s)"],
+          ["Sizing basis","AC inverter and DC conversion efficiency applied to diversified daily energy; rounded to next 25 Ah"]
+        ]},
+        {title:"Preliminary AC generator recommendation",rows:[
+          ["Minimum calculated genset rating",q.generator.requiredKVA===null?"No AC demand / not calculated":fmt(q.generator.requiredKVA,2)+" kVA"],
+          ["Suggested generator rating",q.generator.recommendedKVA===null?"No generator recommendation":fmt(q.generator.recommendedKVA,1)+" kVA ("+q.generator.kind+")"],
+          ["AC continuous loading target",q.generator.utilizationPct+"% of rated"],
+          ["Generator nameplate power factor",fmt(q.generator.powerFactor,2)],
+          ["Estimated running demand with optional charging",fmt(q.generator.continuousDemandKVA,2)+" kVA before loading allowance"],
+          ["Starting / step load screening",fmt(q.generator.peakDemandKVA,2)+" kVA with headroom"],
+          ["Extra battery charging included",q.generator.includesCharging?"Yes, over "+q.generator.chargingHours+" hours; estimated "+fmt(q.generator.addedChargingKVA,2)+" kVA":"No; loads on AC schedule only"],
+          ["Generator arrangement","Verify phase compatibility, voltage dip at motor starts, derating and charger/inverter behaviour"]
         ]},
         {title:"System assumptions",rows:[
           ["Engineering headroom",s.head+"%"],
@@ -184,6 +249,7 @@ globalThis.MarineReports.init({
           })
         }},
         {title:"Engineering qualifications",paragraphs:[
+          ...q.notes,
           "All figures are preliminary electrical demand estimates based on entered nameplate ratings, power factors, duty factors, operating hours and simultaneous starting assumptions.",
           "Do not use this worksheet alone to specify protective devices, cables, short-circuit performance, marine bonding, shore connection or generator step-load capability. Validate against applicable vessel rules and manufacturers' data.",
           "The demand factor influences both peak running load and the daily energy calculation in this app. For intermittent equipment, adjust hours per day to reflect actual aggregate running time and avoid double-counting compressor duty."
