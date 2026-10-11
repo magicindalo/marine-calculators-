@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071c2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Indalo Marine">
+<meta name="description" content="Find the nearest authorised VETUS dealer using postcode or iPhone location and the official worldwide VETUS dealer locator.">
+<link rel="icon" href="./assets/indalo-app-icon.png">
+<link rel="apple-touch-icon" href="./assets/indalo-app-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Find Your Nearest VETUS Supplier | Indalo Marine</title>
+<style>
+:root{color-scheme:dark;--navy:#041b30;--panel:#0a314e;--cyan:#23d4ed;--border:#297b9a;--ink:#effaff;--muted:#b3d4e2}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;min-height:100%;background:#041a30}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 12% 2%,#145475 0%,transparent 45%),radial-gradient(ellipse at 88% 80%,#074b70 0%,transparent 43%),linear-gradient(160deg,#061931,#06263e 65%,#052034)}
+main{max-width:720px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 17px calc(34px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.homeLink{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #3d829e;border-radius:12px;color:#effcff;text-decoration:none;background:#103e59;font-weight:700;font-size:13px}
+.brandname{font-size:10px;letter-spacing:.17em;color:var(--cyan);font-weight:800}
+.hero{text-align:center;padding:24px 0 18px}
+.emblem{width:76px;height:76px;border:1px solid #36b8d1;border-radius:24px;background:#073b56;margin:0 auto 15px;display:grid;place-items:center;box-shadow:0 0 26px #14aacf33}
+.emblem svg{width:47px;height:47px}
+h1{font-size:clamp(25px,5.4vw,34px);line-height:1.15;margin:0 0 12px;font-weight:800}
+.hero p{font-size:14px;color:var(--muted);max-width:560px;margin:0 auto}
+.panel{background:linear-gradient(140deg,#113955,#082a45);border:1px solid var(--border);border-radius:20px;padding:19px;margin:12px 0;box-shadow:0 15px 30px #00162b44}
+h2{font-size:16px;margin:0 0 8px}
+.intro{font-size:12px;color:var(--muted);margin:0 0 13px}
+label{display:block;color:#d8eaf3;font-size:13px;font-weight:700;margin:0 0 7px}
+input[type=text]{width:100%;min-height:52px;appearance:none;-webkit-appearance:none;border:1px solid #5291a7;background:#031e34;color:#fff;border-radius:12px;padding:12px 14px;font-size:17px;outline-offset:3px}
+input::placeholder{color:#a8c3d3}
+.actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:13px}
+button,.buttonLink{display:flex;align-items:center;justify-content:center;gap:8px;min-height:49px;width:100%;border-radius:12px;padding:12px 14px;border:1px solid #299fc1;font-size:14px;font-weight:750;cursor:pointer;font-family:inherit}
+.primary{background:linear-gradient(115deg,#10b6d3,#25dcf0);color:#053049;border-color:#2aebf9}
+.secondary{background:#0c425d;color:#ecfbff;border-color:#358aa5}
+.mutedButton{background:#0a314a;color:#b8e3ec;border-color:#2b738c}
+button:disabled{opacity:.6;cursor:wait}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #92f8ff;outline-offset:3px}
+.row{display:flex;gap:9px;align-items:center}
+.row button{flex:1}
+.notice{margin-top:14px;border-radius:11px;border:1px solid #5a94a8;background:#06263c;color:#d7f4fd;padding:12px 13px;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+.notice[hidden]{display:none}
+.instructions{display:grid;gap:10px}
+.instruction{display:flex;gap:12px;font-size:13px;color:#d9e8f2}
+.step{flex:none;width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#0e617c;border:1px solid #39bedc;color:white;font-weight:700}
+.small{color:#b2d1df;font-size:11px;line-height:1.55}
+.official{color:#80edf6;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+footer{text-align:center;margin:24px auto 0;max-width:550px;color:#a6c5d6;font-size:11px;line-height:1.6}
+@media(min-width:500px){.actions{grid-template-columns:1fr 1fr}.actions .primary{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<main>
+<div class="topbar"><div class="brandname">INDALO MARINE CALCULATORS</div><a class="homeLink" href="./">‹ Main menu</a></div>
+<section class="hero">
+<div class="emblem" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="#dafaff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><path d="M24 43s15-16 15-27A15 15 0 0 0 9 16c0 11 15 27 15 27Z" fill="#116b8a"/><circle cx="24" cy="16" r="5.3" fill="#24d6ee"/><path d="M15 43h18" stroke="#24d6ee"/></svg></div>
+<h1>Find your nearest<br>VETUS supplier</h1>
+<p>Search VETUS's official worldwide dealer network using a postcode, town or your phone's location.</p>
+</section>
+<section class="panel">
+<h2>Where are you looking?</h2>
+<p class="intro">Enter a UK postcode or town/city. You can also let your phone find a nearby UK postcode.</p>
+<form id="locationForm" novalidate>
+<label for="locationInput">Postcode, town or city</label>
+<input id="locationInput" name="location" type="text" inputmode="text" autocomplete="postal-code" autocapitalize="characters" maxlength="90" placeholder="e.g. SO31 4NB or Southampton">
+<div class="actions">
+<button class="primary" id="findDealers" type="submit">Find VETUS suppliers <span aria-hidden="true">↗</span></button>
+<button class="secondary" type="button" id="useLocation">⌖ Use My Location</button>
+<button class="mutedButton" type="button" id="copyLocation">Copy location</button>
+</div>
+</form>
+<div id="status" class="notice" role="status" aria-live="polite" hidden></div>
+<div class="row" style="margin-top:11px"><button type="button" id="clearLocation" class="mutedButton">Clear search</button></div>
+</section>
+<section class="panel">
+<h2>How the dealer search works</h2>
+<div class="instructions">
+<div class="instruction"><div class="step">1</div><div>Enter a postcode or choose <strong>Use My Location</strong>, then tap <strong>Find VETUS suppliers</strong>.</div></div>
+<div class="instruction"><div class="step">2</div><div>VETUS's official dealer finder opens. Paste or enter your postcode in its <strong>Postal code or city</strong> search box to find nearby suppliers.</div></div>
+</div>
+<p class="small" style="margin:16px 0 0">Dealer locations and authorised dealer categories come from VETUS, not a stored list in this calculator. The external dealer finder needs an internet connection. You may also <a class="official" href="https://vetus.com/dealer-locator/" target="_blank" rel="noopener noreferrer">open the official VETUS locator directly</a>.</p>
+</section>
+<section class="panel">
+<h2>Location and privacy</h2>
+<p class="small" style="margin:0">Your location is requested <strong>only if you tap Use My Location</strong>. If you allow access, your coordinates are sent to <a class="official" href="https://postcodes.io/" target="_blank" rel="noopener noreferrer">Postcodes.io</a> to identify a nearby UK postcode. This app does not store your location or postcode. You will need to enter or paste the location into the VETUS website to finish the live dealer search.</p>
+</section>
+<footer>© 2026 J. Spaven · Indalo Marine Calculators<br>Independent application. VETUS names and trademarks remain the property of VETUS B.V.</footer>
+</main>
+<script src="./dealer-locator.js"></script>
+</body>
+</html>
