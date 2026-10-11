@@ -14,8 +14,9 @@ async function clipboardCopy(s){
  try{await navigator.clipboard.writeText(s);return true;}catch(_){return false;}
 }
 function openOfficial(){
- const opened=window.open(OFFICIAL,"_blank","noopener,noreferrer");
- if(!opened){window.location.href=OFFICIAL;}
+ const opened=window.open(OFFICIAL,"_blank");
+ if(opened){try{opened.opener=null;}catch(_){}}
+ else window.location.href=OFFICIAL;
 }
 function search(){
  const place=cleanLocation(input.value);
@@ -47,7 +48,7 @@ function useLocation(){
   try{
    display("Location received. Finding the nearest UK postcode…");
    const url=lookup+"?lat="+encodeURIComponent(lat.toFixed(5))+"&lon="+encodeURIComponent(lon.toFixed(5))+"&limit=1";
-   const response=await fetch(url,{headers:{Accept:"application/json"},cache:"no-store",signal:AbortSignal.timeout?AbortSignal.timeout(12000):undefined});
+   const response=await fetch(url,{headers:{Accept:"application/json"},cache:"no-store",signal:typeof AbortSignal!=="undefined"&&typeof AbortSignal.timeout==="function"?AbortSignal.timeout(12000):undefined});
    if(!response.ok)throw new Error("Postcode lookup unavailable");
    const data=await response.json();
    const nearest=data?.result?.[0]?.postcode;
