@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 1.5 — VETUS supplier finder (11 October 2026)
+
+- New **Find your nearest VETUS supplier** button below the eight main-menu calculators.
+- New mobile `dealer.html` postcode/town search and opt-in **Use My Location** workflow.
+- UK GPS coordinates are reverse-geocoded into a nearby postcode by Postcodes.io with user permission; no GPS or postcode data is saved.
+- Search location can be copied, and the official VETUS worldwide dealer finder opens to complete the authoritative nearest-dealer search.
+- No unverified supplier listings, guesses at closest dealers or fictitious deep links into the VETUS website.
+- Added offline shell caching of the supplier page. Real dealer data and postcode geocoding continue to require the internet.
+- Tested manual postcode, GPS, denied permission, clipboard failure, popup fallback, bad input and offline messaging.
+
+
 ## Version 1.4 — Logo and supply sizing (11 October 2026)
 
 - Replaced the noisy traced wave/properller elements with smooth vector shapes while retaining Indalo's original compass and lettering; corrected mobile CSS to prevent cropping.
