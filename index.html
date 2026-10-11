@@ -160,6 +160,18 @@ main{padding-left:13px;padding-right:13px}
  .brandPlate{width:100%;padding:9px 8px;border-radius:12px}
  .brand{padding-top:clamp(12px,3vh,28px)!important}
 }
+
+/* Clear full-width external service tool, separate from the eight offline calculators */
+.dealerCTA{display:flex;align-items:center;gap:14px;min-height:93px;margin:24px auto 4px;padding:17px 16px;text-decoration:none;color:#f3fcff;background:linear-gradient(125deg,#0e4865,#0a344f 80%);border:1px solid #39cbe3;border-radius:17px;box-shadow:0 11px 25px #0015287d,inset 0 1px 0 #64eaff44;transition:border-color .2s}
+.dealerCTA:hover{border-color:#9df7ff}
+.dealerCTA:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.dealerIcon{flex:0 0 52px;width:52px;height:52px;display:grid;place-items:center;border-radius:14px;background:#073551;border:1px solid #2386a5}
+.dealerIcon svg{width:36px;height:36px}
+.dealerText{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;text-align:left;line-height:1.28}
+.dealerText strong{font-size:clamp(14px,3.7vw,17px)}
+.dealerText small{font-size:11px;color:#bad9e7;line-height:1.4}
+.dealerArrow{flex:none;width:32px;height:32px;border-radius:50%;background:#17617e;display:grid;place-items:center;font-size:27px;color:#effcff}
+@media(max-width:365px){.dealerCTA{gap:9px;padding:13px 10px}.dealerIcon{flex-basis:43px;width:43px;height:43px}.dealerText strong{font-size:13px}.dealerText small{font-size:10px}}
 </style>
 </head>
 <body>
@@ -233,8 +245,18 @@ main{padding-left:13px;padding-right:13px}
  <div class="tileFoot"><span class="go">›</span></div>
 </a>
 </section>
+<a href="./dealer.html" class="dealerCTA" aria-label="Find your nearest VETUS supplier using postcode or your phone location">
+  <span class="dealerIcon" aria-hidden="true">
+    <svg viewBox="0 0 48 48" fill="none" stroke="#e6fbff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 43s15-17 15-28a15 15 0 1 0-30 0c0 11 15 28 15 28Z" fill="#0a7092"/>
+      <circle cx="24" cy="15" r="5.5" fill="#21d2eb"/>
+    </svg>
+  </span>
+  <span class="dealerText"><strong>Find your nearest VETUS supplier</strong><small>UK postcode or phone location · official dealer finder</small></span>
+  <span class="dealerArrow" aria-hidden="true">›</span>
+</a>
 <div class="footerWave" aria-hidden="true"></div>
-<footer class="disclaimer"><div>Engineering calculation aids. Check assumptions and manufacturer requirements before final specification. Projects are stored on your device.</div><div class="ownership">Version 1.4 · © 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved.</div><div class="thirdParty">VETUS product names and trademarks belong to their respective owners. Independent calculation tool.</div></footer>
+<footer class="disclaimer"><div>Engineering calculation aids. Check assumptions and manufacturer requirements before final specification. Projects are stored on your device.</div><div class="ownership">Version 1.5 · © 2026 J. Spaven. App and Indalo Marine logos owned by J. Spaven. All rights reserved.</div><div class="thirdParty">VETUS product names and trademarks belong to their respective owners. Independent calculation tool.</div></footer>
 </main>
 <script>
 (function(){
