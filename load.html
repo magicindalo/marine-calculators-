@@ -52,7 +52,7 @@ h1,h2,h3,strong { overflow-wrap: break-word; }
 <div class="card"><div class="lab">Recommended battery bank</div><div class="val" id="bankRec" style="font-size:21px">Add loads</div><div class="sub" id="bankRecDetail">Includes usable-capacity setting and sizing allowance</div></div>
 <div class="card"><div class="lab">Suggested AC generator</div><div class="val" id="genRec" style="font-size:21px">Add AC loads</div><div class="sub" id="genRecDetail">Running power • starting allowance • operating reserve</div></div>
 </div>
-<p class="note" id="supplyNotes" style="margin:8px 0 0">Generator is sized for AC loads only unless optional battery recharging is enabled in settings.</p>
+<p class="note" id="supplyNotes" style="margin:8px 0 0">Generator is sized for AC loads unless optional battery recharging is enabled. For AGM/lead-acid banks, use an appropriate lower usable-capacity percentage (often 50%) in Settings.</p>
 </div></section>
 <div class="toolbar"><button class="btn" id="preset">＋ Common load</button><button class="btn" id="export">Export</button><button class="btn" id="import">Import</button><input type="file" id="file" accept=".json,application/json" hidden></div>
 <div class="section"><div class="head"><h2>Project & report</h2><span>Save • reopen • PDF</span></div><div class="body"><label for="loadProjectName" style="display:block;font-size:12px;color:#a3bccb;margin:0 0 5px">Vessel / project name</label><input id="loadProjectName" placeholder="e.g. Yacht refit — electrical audit" style="display:block;width:100%;min-height:44px;background:#061c2a;color:#edf9ff;border:1px solid #1e4962;border-radius:9px;padding:10px;font-size:16px;margin-bottom:12px"><div id="projectTools"></div></div></div><div class="section"><div class="head"><h2>Load schedule</h2><span>Saved on this device</span></div><div class="body" id="loads"></div></div>
@@ -228,7 +228,7 @@ globalThis.MarineReports.init({
           ["Suggested generator rating",q.generator.recommendedKVA===null?"No generator recommendation":fmt(q.generator.recommendedKVA,1)+" kVA ("+q.generator.kind+")"],
           ["AC continuous loading target",q.generator.utilizationPct+"% of rated"],
           ["Generator nameplate power factor",fmt(q.generator.powerFactor,2)],
-          ["Estimated running demand with optional charging",fmt(q.generator.continuousDemandKVA,2)+" kVA before loading allowance"],
+          ["Minimum generator continuous-duty rating",fmt(q.generator.continuousDemandKVA,2)+" kVA at target loading fraction"],
           ["Starting / step load screening",fmt(q.generator.peakDemandKVA,2)+" kVA with headroom"],
           ["Extra battery charging included",q.generator.includesCharging?"Yes, over "+q.generator.chargingHours+" hours; estimated "+fmt(q.generator.addedChargingKVA,2)+" kVA":"No; loads on AC schedule only"],
           ["Generator arrangement","Verify phase compatibility, voltage dip at motor starts, derating and charger/inverter behaviour"]
