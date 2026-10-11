@@ -129,12 +129,43 @@ main{padding-left:13px;padding-right:13px}
  .brandLine{font-size:12px!important}
  .grid{margin-top:22px!important}
 }
+
+/* Original user-supplied Indalo logo artwork — displayed unfiltered and uncropped. */
+.brandPlate{
+ width:min(100%,590px);
+ max-width:100%;
+ margin:0 auto 8px;
+ background:#fff;
+ border:1px solid rgba(194,224,237,.9);
+ border-radius:17px;
+ padding:12px 13px;
+ box-shadow:0 10px 30px rgba(0,14,32,.36);
+ overflow:hidden;
+}
+.brandPlate .brandFull{
+ display:block!important;
+ width:100%!important;
+ max-width:100%!important;
+ height:auto!important;
+ max-height:none!important;
+ margin:0!important;
+ padding:0!important;
+ object-fit:contain!important;
+ filter:none!important;
+ mix-blend-mode:normal!important;
+ background:#fff!important;
+ image-rendering:auto!important;
+}
+@media(max-width:500px){
+ .brandPlate{width:100%;padding:9px 8px;border-radius:12px}
+ .brand{padding-top:clamp(12px,3vh,28px)!important}
+}
 </style>
 </head>
 <body>
 <main>
 <header class="brand">
-  <img class="brandFull" src="./assets/indalo-marine-logo-clean.svg" alt="Indalo Marine compass, marine waves and propeller emblem" width="950" height="422" decoding="async">
+  <div class="brandPlate"><img class="brandFull" src="./assets/indalo-marine-logo.webp" alt="Indalo Marine original logo: compass, blue sea waves, propeller and wordmark" width="400" height="185" decoding="async"></div>
   <h1>CALCULATORS</h1>
   <div class="brandLine">Marine engineering tools</div>
   <p class="brandHint">Indalo Marine Calculators — engineering tools for electrical design, propulsion and marine systems.</p>
